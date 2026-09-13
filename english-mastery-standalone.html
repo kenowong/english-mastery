@@ -1,0 +1,2605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>English-Mastery · 中小学英语学习技巧归档</title>
+  <meta name="description" content="把全网各平台的小学/初中/高中英语学习技巧方法归档分类，配视频与互动练习，让孩子学英语不那么枯燥。" />
+  <style>
+/* english-mastery · 中小学英语学习技巧归档
+ * 视觉风格对齐 math-mastery：纯前端、卡片网格、轻量动效、可离线
+ * 主题：明亮、彩色、不那么枯燥（孩子向）
+ */
+:root {
+  --primary: #2bb673;
+  --junior: #2f80ed;
+  --senior: #eb5757;
+  --ink: #1f2733;
+  --muted: #6b7785;
+  --line: #e7ecf1;
+  --bg: #f5f8fb;
+  --card: #ffffff;
+  --gold: #f2b705;
+  --shadow: 0 6px 20px rgba(31, 39, 51, .08);
+  --shadow-h: 0 10px 30px rgba(31, 39, 51, .14);
+  --radius: 16px;
+  --maxw: 1080px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--junior); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- 顶部 ---------- */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: linear-gradient(120deg, #2bb673 0%, #2f80ed 55%, #eb5757 100%);
+  color: #fff; padding: 14px 18px;
+  box-shadow: var(--shadow);
+}
+.topbar .inner { max-width: var(--maxw); margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+.logo { font-size: 22px; font-weight: 800; letter-spacing: .5px; display: flex; align-items: center; gap: 8px; }
+.logo .fox { font-size: 26px; }
+.tagline { font-size: 12px; opacity: .92; margin-left: 2px; }
+.topbar .spacer { flex: 1; }
+.streak {
+  background: rgba(255,255,255,.18); border-radius: 999px;
+  padding: 6px 12px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px;
+}
+.streak b { color: var(--gold); }
+
+/* ---------- 容器 ---------- */
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 18px; }
+.hero {
+  background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 20px 22px; margin-bottom: 16px; border: 1px solid var(--line);
+}
+.hero h1 { margin: 0 0 6px; font-size: 20px; }
+.hero p { margin: 0; color: var(--muted); font-size: 14px; }
+.stat-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.stat {
+  background: var(--bg); border-radius: 12px; padding: 8px 14px; font-size: 13px; color: var(--muted);
+  border: 1px solid var(--line);
+}
+.stat b { color: var(--ink); font-size: 16px; }
+
+/* ---------- 筛选 ---------- */
+.filters { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+.grade-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.grade-tab {
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+  padding: 9px 16px; border-radius: 999px; cursor: pointer; font-weight: 700; font-size: 14px;
+  transition: all .15s; box-shadow: var(--shadow);
+}
+.grade-tab:hover { transform: translateY(-1px); }
+.grade-tab.active { color: #fff; border-color: transparent; }
+.grade-tab.active[data-grade="all"] { background: #1f2733; }
+.grade-tab.active[data-grade="primary"] { background: var(--primary); }
+.grade-tab.active[data-grade="junior"] { background: var(--junior); }
+.grade-tab.active[data-grade="senior"] { background: var(--senior); }
+
+.dim-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  border: 1px solid var(--line); background: var(--card); color: var(--muted);
+  padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; transition: all .15s;
+}
+.chip:hover { color: var(--ink); }
+.chip.active { background: #eef4ff; color: var(--junior); border-color: #c9ddff; font-weight: 700; }
+
+.search {
+  width: 100%; max-width: 360px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line);
+  font-size: 14px; outline: none; background: var(--card);
+}
+.search:focus { border-color: var(--junior); }
+
+/* ---------- 卡片网格 ---------- */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 16px; cursor: pointer; box-shadow: var(--shadow); transition: all .18s; position: relative; overflow: hidden;
+}
+.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-h); }
+.card .top { display: flex; align-items: center; gap: 10px; }
+.card .icon { font-size: 30px; }
+.card .badge-grade {
+  margin-left: auto; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; color: #fff;
+}
+.card h3 { margin: 10px 0 4px; font-size: 16px; }
+.card .summary { color: var(--muted); font-size: 13px; margin: 0; min-height: 38px; }
+.card .meta { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.tag { font-size: 11px; background: var(--bg); border: 1px solid var(--line); color: var(--muted); padding: 2px 8px; border-radius: 999px; }
+.card .done-flag {
+  position: absolute; top: 10px; right: 10px; font-size: 18px; opacity: 0; transition: opacity .2s;
+}
+.card.done .done-flag { opacity: 1; }
+.card.done { border-color: #bfe9d2; }
+.card .progress-mini { height: 5px; background: var(--bg); border-radius: 999px; margin-top: 12px; overflow: hidden; }
+.card .progress-mini > i { display: block; height: 100%; background: var(--primary); width: 0; }
+
+/* ---------- 详情 ---------- */
+.detail { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; }
+.back {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer; color: var(--muted); font-size: 14px; font-weight: 700;
+  margin-bottom: 12px; background: none; border: none; padding: 4px 0;
+}
+.back:hover { color: var(--ink); }
+.detail .head { display: flex; align-items: center; gap: 14px; }
+.detail .head .icon { font-size: 44px; }
+.detail h2 { margin: 0; font-size: 22px; }
+.detail .sub { color: var(--muted); font-size: 14px; margin: 4px 0 0; }
+.detail .meta { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
+.why {
+  background: #fff8e6; border: 1px solid #f3e2b3; border-radius: 12px; padding: 12px 14px; margin: 16px 0;
+  font-size: 14px; color: #6b5510;
+}
+.why b { color: #8a6d00; }
+
+.section-title { font-size: 15px; font-weight: 800; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
+.section-title .bar { width: 4px; height: 16px; border-radius: 2px; background: var(--junior); }
+
+.steps { list-style: none; padding: 0; margin: 0; counter-reset: s; }
+.steps li {
+  position: relative; padding: 10px 12px 10px 44px; border: 1px solid var(--line); border-radius: 12px;
+  margin-bottom: 8px; background: var(--bg); font-size: 14px;
+}
+.steps li::before {
+  counter-increment: s; content: counter(s); position: absolute; left: 10px; top: 10px;
+  width: 24px; height: 24px; border-radius: 50%; background: var(--junior); color: #fff; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; font-size: 13px;
+}
+.tips { list-style: none; padding: 0; margin: 0; }
+.tips li { padding: 8px 0 8px 24px; position: relative; font-size: 14px; border-bottom: 1px dashed var(--line); }
+.tips li::before { content: "💡"; position: absolute; left: 0; top: 8px; }
+
+/* 视频 */
+.video-list { display: flex; flex-direction: column; gap: 10px; }
+.video-item {
+  display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+  background: var(--bg); transition: all .15s;
+}
+.video-item:hover { border-color: #c9ddff; }
+.video-item .play { font-size: 26px; }
+.video-item .vt { font-weight: 700; font-size: 14px; }
+.video-item .vu { font-size: 12px; color: var(--muted); word-break: break-all; }
+.video-embed { width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 12px; margin-top: 10px; }
+.bv-box { margin-top: 10px; }
+
+/* 练习 */
+.practice {
+  border: 1px solid var(--line); border-radius: 12px; padding: 16px; background: #fbfdff; margin-top: 6px;
+}
+.practice .p-type { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.flashcard-deck { display: flex; flex-wrap: wrap; gap: 10px; }
+.flip {
+  width: 120px; height: 80px; perspective: 600px; cursor: pointer; user-select: none;
+}
+.flip .inner { width: 100%; height: 100%; position: relative; transition: transform .4s; transform-style: preserve-3d; }
+.flip.flipped .inner { transform: rotateY(180deg); }
+.flip .face {
+  position: absolute; inset: 0; backface-visibility: hidden; border-radius: 10px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; font-weight: 800; box-shadow: var(--shadow); border: 1px solid var(--line);
+}
+.flip .front { background: #fff; color: var(--junior); font-size: 18px; }
+.flip .back { background: var(--primary); color: #fff; transform: rotateY(180deg); font-size: 15px; }
+.flip .rate { display: flex; gap: 6px; margin-top: 6px; }
+.flip .rate button {
+  border: none; border-radius: 8px; padding: 4px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: #fff;
+}
+.flip .rate .no { background: #eb5757; }
+.flip .rate .yes { background: var(--primary); }
+
+.q { border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 12px; background: #fff; }
+.q .qt { font-weight: 700; margin-bottom: 10px; }
+.q .opts { display: flex; flex-direction: column; gap: 8px; }
+.q .opt {
+  border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; cursor: pointer; font-size: 14px; background: var(--bg);
+  transition: all .12s; text-align: left;
+}
+.q .opt:hover { border-color: #c9ddff; }
+.q .opt.right { background: #e6f7ee; border-color: #9fe0c0; color: #1c7a4d; }
+.q .opt.wrong { background: #fdeaea; border-color: #f3b5b5; color: #b23b3b; }
+.q .feedback { font-size: 13px; margin-top: 8px; font-weight: 700; }
+
+.fill-q { margin-bottom: 14px; }
+.fill-q .sentence { font-size: 15px; margin-bottom: 6px; }
+.fill-q input {
+  padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line); font-size: 15px; width: 200px; outline: none;
+}
+.fill-q input:focus { border-color: var(--junior); }
+.fill-q .check { margin-left: 8px; border: none; background: var(--junior); color: #fff; border-radius: 10px; padding: 8px 14px; cursor: pointer; font-weight: 700; }
+.fill-q .res { margin-left: 10px; font-weight: 700; }
+
+.checklist { list-style: none; padding: 0; margin: 0; }
+.checklist li { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+.checklist input { width: 18px; height: 18px; }
+
+.mark-done {
+  margin-top: 16px; display: inline-flex; align-items: center; gap: 8px; background: var(--primary); color: #fff;
+  border: none; border-radius: 999px; padding: 11px 22px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: var(--shadow);
+}
+.mark-done:hover { filter: brightness(1.05); }
+.mark-done.done { background: #1f2733; }
+
+.source { margin-top: 18px; font-size: 12px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
+
+/* 进度条 */
+.progress-bar { height: 8px; background: var(--bg); border-radius: 999px; overflow: hidden; margin: 16px 0 0; border: 1px solid var(--line); }
+.progress-bar > i { display: block; height: 100%; background: linear-gradient(90deg, var(--primary), var(--junior)); transition: width .4s; }
+
+/* 撒花 */
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 999; overflow: hidden; }
+.confetti i { position: absolute; top: -10px; width: 10px; height: 14px; opacity: .9; animation: fall 1.6s linear forwards; }
+@keyframes fall { to { transform: translateY(105vh) rotate(540deg); opacity: 0; } }
+
+/* 空状态 */
+.empty { text-align: center; color: var(--muted); padding: 40px; font-size: 14px; }
+.foot { text-align: center; color: var(--muted); font-size: 12px; padding: 24px; }
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr 1fr; }
+  .card .summary { min-height: auto; }
+  .topbar .tagline { display: none; }
+}
+
+/* ---------- 跟读练习（Web Speech API） ---------- */
+.read-box { border: 1px solid var(--line); border-radius: 12px; padding: 16px; background: #f3fbf6; margin-top: 6px; }
+.read-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.read-toolbar select { padding: 5px 8px; border-radius: 8px; border: 1px solid var(--line); background: #fff; font-size: 13px; }
+.read-slow { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+.read-hint { font-size: 12px; }
+.read-row { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; background: #fff; }
+.read-en { font-size: 17px; font-weight: 800; color: var(--ink); }
+.read-zh { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.read-btns { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.read-btns button { border: 1px solid var(--line); border-radius: 10px; padding: 7px 12px; cursor: pointer; font-size: 13px; font-weight: 700; background: var(--bg); transition: all .12s; }
+.read-btns .rb-play { background: var(--junior); color: #fff; border-color: transparent; }
+.read-btns .rb-record { background: var(--primary); color: #fff; border-color: transparent; }
+.read-btns button:hover:not(:disabled) { filter: brightness(1.05); }
+.read-btns button:disabled { cursor: not-allowed; }
+.read-fb { font-size: 13px; margin-top: 8px; min-height: 18px; }
+.read-fb.ok { color: #1c7a4d; }
+.read-fb.low { color: #b23b3b; }
+.read-fb audio { display: block; margin-top: 6px; width: 100%; max-width: 360px; }
+.read-summary { font-size: 13px; font-weight: 700; color: var(--primary); margin-top: 6px; }
+
+/* ---------- 单词词库模块 ---------- */
+.top-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+.top-tab { padding: 8px 18px; border-radius: 999px; background: #eef1f5; color: #445; cursor: pointer; font-weight: 700; font-size: 14px; user-select: none; }
+.top-tab:hover { background: #e3e8ef; }
+.top-tab.active { background: var(--primary); color: #fff; }
+.words-intro { color: var(--muted); font-size: 13px; margin: 4px 0 14px; }
+.unit-card .summary { color: var(--muted); }
+.words-detail { max-width: 860px; margin: 0 auto; }
+.fill-list { display: flex; flex-direction: column; gap: 8px; }
+.word-read { background: #f3fbf6; }
+.read-list { display: flex; flex-direction: column; gap: 0; }
+
+/* 单词单元：练习模式切换（子标签）+ 逐词紧凑布局 */
+.mode-tabs { display: flex; gap: 8px; margin: 18px 0 6px; }
+.mode-tab { padding: 9px 18px; border-radius: 10px; background: #eef1f5; color: #445; cursor: pointer; font-weight: 700; font-size: 14px; user-select: none; }
+.mode-tab:hover { background: #e3e8ef; }
+.mode-tab.active { background: var(--primary); color: #fff; }
+.mode-pane { margin-top: 4px; }
+
+.run-box { border: 1px solid var(--line); border-radius: 14px; padding: 18px; background: #fff; max-width: 560px; }
+.run-head { font-size: 13px; color: var(--muted); font-weight: 700; margin-bottom: 10px; }
+.run-idx { color: var(--primary); }
+.run-zh { font-size: 22px; font-weight: 800; color: #1f2630; margin-bottom: 14px; }
+.run-word-en { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+.run-word-zh { font-size: 14px; font-weight: 600; color: var(--muted); }
+.run-input { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.run-input input { flex: 1; min-width: 180px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 15px; outline: none; }
+.run-input input:focus { border-color: var(--junior); }
+.run-input .check { border: none; background: var(--junior); color: #fff; border-radius: 10px; padding: 10px 18px; cursor: pointer; font-weight: 700; }
+.run-input .res { font-weight: 700; margin-left: 4px; }
+.run-input .rb-play { border: none; background: var(--junior); color: #fff; border-radius: 10px; padding: 9px 16px; cursor: pointer; font-weight: 700; font-size: 14px; }
+.run-input .rb-record { border: none; background: var(--primary); color: #fff; border-radius: 10px; padding: 9px 16px; cursor: pointer; font-weight: 700; font-size: 14px; }
+.run-input button:disabled { opacity: .5; cursor: not-allowed; }
+.run-nav { display: flex; gap: 10px; margin-top: 14px; }
+.run-nav .ghost { border: 1px solid var(--line); background: #fff; color: #445; border-radius: 10px; padding: 9px 16px; cursor: pointer; font-weight: 700; }
+.run-nav .ghost:disabled { opacity: .4; cursor: not-allowed; }
+.run-nav .ghost:not(:disabled):hover { background: #f3f5f8; }
+.run-nav .check-all { border: none; background: var(--gold); color: #4a3a00; border-radius: 10px; padding: 9px 18px; cursor: pointer; font-weight: 800; }
+.run-nav .check-all:hover { filter: brightness(1.04); }
+
+/* 拼写自测：一组一组 */
+.spell-group { display: flex; flex-direction: column; gap: 10px; }
+.spell-row { display: grid; grid-template-columns: 30px 1fr auto auto 1fr; align-items: center; gap: 10px; padding: 10px 12px; background: #f7f9fb; border: 1px solid var(--line); border-radius: 10px; }
+.sp-no { color: var(--muted); font-weight: 700; text-align: center; }
+.sp-zh { font-size: 16px; font-weight: 700; color: #1f2630; }
+.sp-in { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; outline: none; min-width: 130px; }
+.sp-in:focus { border-color: var(--junior); }
+.sp-check { border: none; background: var(--junior); color: #fff; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 700; }
+.sp-res { font-weight: 700; min-width: 90px; }
+
+/* 跟读：一组一组 */
+.read-group { display: flex; flex-direction: column; gap: 10px; }
+.read-row-word { display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 10px; padding: 10px 12px; background: #f7f9fb; border: 1px solid var(--line); border-radius: 10px; }
+.rw-no { color: var(--muted); font-weight: 700; text-align: center; }
+.rw-text { font-size: 15px; }
+.rw-en { font-weight: 800; color: #1f2630; }
+.rw-zh { color: var(--muted); font-size: 13px; }
+.rw-btns { display: flex; gap: 8px; }
+.rw-btns .rb-play { border: none; background: var(--junior); color: #fff; border-radius: 8px; padding: 7px 12px; cursor: pointer; font-weight: 700; font-size: 13px; }
+.rw-btns .rb-record { border: none; background: var(--primary); color: #fff; border-radius: 8px; padding: 7px 12px; cursor: pointer; font-weight: 700; font-size: 13px; }
+.rw-btns button:disabled { opacity: .5; cursor: not-allowed; }
+.read-row-word .read-fb { grid-column: 1 / -1; margin-top: 2px; }
+
+</style>
+</head>
+<body>
+  <!-- 顶栏与内容由 app.js 注入 -->
+  <script>
+/*
+ * english-mastery · 中小学英语学习技巧归档
+ * 数据驱动：window.METHODS 定义全部技巧/方法/视频/练习
+ * 结构对齐 math-mastery：纯前端、零依赖、离线可用、localStorage 进度
+ *
+ * 字段说明：
+ *   id        唯一标识
+ *   grade     primary(小学) | junior(初中) | senior(高中)
+ *   gradeLabel
+ *   dim       能力维度键：phonics/vocabulary/listening/speaking/reading/writing/grammar/habit
+ *   dimLabel  维度中文
+ *   icon      卡片 emoji
+ *   title     方法名
+ *   summary   一句话定位
+ *   why       为什么有用（孩子视角的趣味说明）
+ *   steps     核心步骤（数组）
+ *   tips      实战窍门（数组）
+ *   videos    推荐视频/资源 [{title,url}]（默认 B 站真实检索链接，可换成具体 BV）
+ *   bv        可选：具体 B 站视频 BV 号，填了就内嵌播放器
+ *   practice  互动小练习（可选）：{type:'flashcard'|'choice'|'fill'|'checklist', items:[...]}
+ *   source    来源标注
+ */
+
+window.METHODS = [
+
+  /* ===================== 小学 primary ===================== */
+  {
+    id: "p-phonics",
+    grade: "primary", gradeLabel: "小学",
+    dim: "phonics", dimLabel: "自然拼读",
+    icon: "🔤",
+    title: "自然拼读法 Phonics",
+    summary: "见词能读、听音能写，把字母和声音直接挂钩",
+    why: "不用再一个一个背单词怎么拼，像拼积木一样把声音拼出来，记单词快一倍还不容易忘。",
+    steps: [
+      "先学 26 个字母的「字母音」（a=/æ/ 不是「哎」），再学常见组合音（sh=/ʃ/、ch=/tʃ/、ee=/iː/）。",
+      "练「拆音」：cat → /k/-/æ/-/t/，听到声音能写出字母。",
+      "每天 5 个简单词拼读：cat / dog / pen / sun / map，拼对就给自己贴一颗星。",
+      "用《牛津自然拼读》或 Starfall 游戏巩固，从单音节过渡到多音节。",
+      "「听音能写」逆向训练：家长读 pen，孩子写出 p-e-n。"
+    ],
+    tips: [
+      "千万别用汉字给英语注音（比如把 apple 标成「阿婆」），会毁掉发音。",
+      "中段（三、四年级）是自然拼读黄金期，系统学完就能自主读分级读物。",
+      "配高频词 Sight Words 一起练，见词能读 + 一眼认词，自主阅读两大基石。"
+    ],
+    videos: [
+      { title: "B 站：自然拼读全套教学", url: "https://search.bilibili.com/all?keyword=自然拼读%20Phonics%20教学" },
+      { title: "BBC 自然拼读动画（全集）", url: "https://search.bilibili.com/all?keyword=BBC%20Alphablocks%20自然拼读" }
+    ],
+    practice: {
+      type: "flashcard",
+      items: [
+        { word: "cat", meaning: "猫" },
+        { word: "dog", meaning: "狗" },
+        { word: "pen", meaning: "钢笔" },
+        { word: "sun", meaning: "太阳" },
+        { word: "ship", meaning: "船" },
+        { word: "fish", meaning: "鱼" },
+        { word: "book", meaning: "书" },
+        { word: "tree", meaning: "树" }
+      ]
+    },
+    source: "来源：小学英语教师培训建议 / 家庭英语启蒙素养指南"
+  },
+  {
+    id: "p-topic-words",
+    grade: "primary", gradeLabel: "小学",
+    dim: "vocabulary", dimLabel: "词汇",
+    icon: "🗂️",
+    title: "主题分类记词法",
+    summary: "把单词按场景装进「词筐」，一次记一串",
+    why: "孤立背单词像抓散沙，按主题（动物/食物/颜色）归类，大脑有抽屉放，考试写作随取随用。",
+    steps: [
+      "选一个主题：动物、食物、颜色、家庭、学校……每周一个。",
+      "做单词卡：正面英文 + 图，背面中文 + 例句。",
+      "用实物/图片联想：看到苹果就说 apple，贴在家里的物品上。",
+      "每周学 10–15 个新词，周末用「我说你指」游戏复习。",
+      "把同主题词串成小短文：I like apples, bananas and oranges."
+    ],
+    tips: [
+      "小学阶段需掌握约 800 个基础词汇，按主题分批吃下不费力。",
+      "建立「单词墙」：客厅贴满主题词卡，每天路过看一眼。"
+    ],
+    videos: [
+      { title: "B 站：小学主题单词分类记忆", url: "https://search.bilibili.com/all?keyword=小学%20英语%20主题%20单词%20分类" }
+    ],
+    practice: {
+      type: "choice",
+      items: [
+        { q: "「苹果」的英文是？", options: ["apple", "banana", "orange"], answer: "apple" },
+        { q: "「猫」的英文是？", options: ["cat", "dog", "cow"], answer: "cat" },
+        { q: "「红色」的英文是？", options: ["red", "blue", "green"], answer: "red" },
+        { q: "「书」的英文是？", options: ["book", "look", "cook"], answer: "book" }
+      ]
+    },
+    source: "来源：小学英语学习要点总结（路问教育）/ 许昌教师培训平台"
+  },
+  {
+    id: "p-listen",
+    grade: "primary", gradeLabel: "小学",
+    dim: "listening", dimLabel: "听力",
+    icon: "👂",
+    title: "磨耳朵听力启蒙",
+    summary: "每天 15 分钟可理解输入，耳朵先「醒」过来",
+    why: "小孩是语言模仿家，耳朵对声音超敏感。每天磨耳朵，语音语感悄悄就长了，不枯燥还好玩。",
+    steps: [
+      "选慢速、有趣的材料：《Super Simple Songs》《Peppa Pig》《English Singsing》。",
+      "「可理解输入」：配合动画/图画/动作，知道在说什么再听。",
+      "TPR 全身反应：听到 jump 就跳，听到 clap 就拍手。",
+      "听音选图：听到 cat 选出猫咪图片，练反应速度。",
+      "每天固定 15–20 分钟，晨起听、睡前听，碎片时间也行。"
+    ],
+    tips: [
+      "别追求单词量，先让娃「愿意听、听得懂」。",
+      "不急着纠正每个发音，敢开口最重要。"
+    ],
+    videos: [
+      { title: "B 站：Super Simple Songs 儿歌", url: "https://search.bilibili.com/all?keyword=Super%20Simple%20Songs" },
+      { title: "B 站：Peppa Pig 英文版", url: "https://search.bilibili.com/all?keyword=Peppa%20Pig%20英文版" }
+    ],
+    practice: {
+      type: "checklist",
+      items: [
+        "今天听了 1 段英语儿歌/动画（≥10 分钟）",
+        "跟着唱/跳了 1 首",
+        "用英语做了 1 个 TPR 动作指令",
+        "听了 1 个词并选出正确图片"
+      ]
+    },
+    source: "来源：小学英语启蒙素养指南 / 许昌教师培训平台"
+  },
+  {
+    id: "p-reading",
+    grade: "primary", gradeLabel: "小学",
+    dim: "reading", dimLabel: "阅读",
+    icon: "📚",
+    title: "分级阅读 RAZ / 牛津树",
+    summary: "从绘本到故事书，指读 + 复述步步升级",
+    why: "分级读物像爬楼梯，一级一级刚刚好。大声朗读协调眼口耳脑，是培养语感最有效的训练。",
+    steps: [
+      "选对级别：RAZ 从 AA 级、牛津树从 1–2 级起步。",
+      "指读：边指单词边朗读，建立「字形—声音」对应。",
+      "每天大声朗读 1 本分级读物，不少于 10 分钟。",
+      "读后复述：用中文说大意也行，高年级尝试英文短句。",
+      "把喜欢的句子抄进「摘抄本」，慢慢攒成自己的语料。"
+    ],
+    tips: [
+      "低段用《Dr. Seuss》这种韵律绘本，高段过渡到《21 世纪学生英文报》。",
+      "「朗读」是小学中段核心任务，比刷题管用。"
+    ],
+    videos: [
+      { title: "B 站：RAZ 分级阅读精讲", url: "https://search.bilibili.com/all?keyword=RAZ%20分级阅读" },
+      { title: "B 站：牛津阅读树 Oxford Reading Tree", url: "https://search.bilibili.com/all?keyword=牛津阅读树" }
+    ],
+    source: "来源：小学英语学习要点总结 / 英语启蒙素养指南"
+  },
+  {
+    id: "p-speaking",
+    grade: "primary", gradeLabel: "小学",
+    dim: "speaking", dimLabel: "口语",
+    icon: "🗣️",
+    title: "亲子口语 + TPR 互动",
+    summary: "在家说起来，把英语变成日常对话",
+    why: "敢说才能学好。用 I Spy、角色扮演这种游戏，娃在玩中就开口了，不尴尬。",
+    steps: [
+      "日常短句：Good morning / What's this? / I like...",
+      "I Spy 游戏：I spy something red，让孩子用英语猜。",
+      "角色扮演：模拟购物、问路，用《Peppa Pig》配音。",
+      "对着镜子练自我介绍，录 1 分钟小视频。",
+      "家庭英语角：每周 3 次、每次 20 分钟全英文交流。"
+    ],
+    tips: [
+      "多鼓励敢说，别每个错音都纠正。",
+      "用 Lingokids、Duolingo Kids 等 APP 游戏化练口语。"
+    ],
+    videos: [
+      { title: "B 站：小学英语日常口语对话", url: "https://search.bilibili.com/all?keyword=小学%20英语%20日常%20口语%20对话" }
+    ],
+    source: "来源：许昌教师培训平台 / 小学英语不好怎么补"
+  },
+  {
+    id: "p-writing",
+    grade: "primary", gradeLabel: "小学",
+    dim: "writing", dimLabel: "书写",
+    icon: "✍️",
+    title: "四线三格书写规范",
+    summary: "字母写工整，卷面分从小学抓起",
+    why: "书写规范是隐形分。四线三格练好了，以后写作文老师看得舒服，自己也有信心。",
+    steps: [
+      "用四线三格本，认识每条线的位置（占中格/上伸/下伸）。",
+      "区分大小写：句首字母大写，专有名词大写。",
+      "每周抄写 5 个重点句型，注意笔顺。",
+      "用彩色笔标注课文重点句型（如 There is...）。",
+      "对照字帖描红，形成肌肉记忆。"
+    ],
+    tips: [
+      "书写和拼读同步练，听音能写巩固拼读规则。",
+      "高年级开始写日记/小短文，从短语到句子。"
+    ],
+    videos: [
+      { title: "B 站：英文字母书写规范教学", url: "https://search.bilibili.com/all?keyword=英文字母%20书写%20四线三格" }
+    ],
+    source: "来源：小学英语学习方法（wordln）/ 路问教育"
+  },
+  {
+    id: "p-sightwords",
+    grade: "primary", gradeLabel: "小学",
+    dim: "vocabulary", dimLabel: "高频词",
+    icon: "⚡",
+    title: "高频词 Sight Words 220",
+    summary: "一眼认出最常见 220 词，阅读不卡壳",
+    why: "英文里最常见的 220 个词占了读物的一大半，一眼认得，朗读和阅读速度直接起飞。",
+    steps: [
+      "按 Dolch / Fry 词表分批，每周 20 个。",
+      "闪卡游戏：看到词立刻读出来，不拼读直接认。",
+      "在分级读物里圈出已学高频词，加深印象。",
+      "「我说你找」：一段话里快速圈出 the / and / you。",
+      "和自然拼读配合：拼读词 + 高频词 = 自主阅读双引擎。"
+    ],
+    tips: [
+      "高频词大多不符合拼读规则，靠「整体认读」而非拼。",
+      "配合 RAZ 指读，效果翻倍。"
+    ],
+    videos: [
+      { title: "B 站：Sight Words 高频词动画", url: "https://search.bilibili.com/all?keyword=Sight%20Words%20220%20高频词" }
+    ],
+    practice: {
+      type: "flashcard",
+      items: [
+        { word: "the", meaning: "（定冠词）" },
+        { word: "and", meaning: "和" },
+        { word: "you", meaning: "你" },
+        { word: "what", meaning: "什么" },
+        { word: "they", meaning: "他们" },
+        { word: "were", meaning: "是(过去)" }
+      ]
+    },
+    source: "来源：英语启蒙素养指南（中段阅读准备）"
+  },
+  {
+    id: "p-sentence",
+    grade: "primary", gradeLabel: "小学",
+    dim: "grammar", dimLabel: "句型",
+    icon: "🔁",
+    title: "句型替换造句",
+    summary: "一个骨架套不同词，造句不费劲",
+    why: "用一个句型当模板，换关键词就能造一堆句子，语法不知不觉就懂了。",
+    steps: [
+      "学一个核心句型：I like... / What's this? It's a...",
+      "替换关键词：I like dogs → I like reading → I like apples.",
+      "完成句子填空：She ___ (go) to school → goes.",
+      "每天模仿录音读 5 个句子，注意语音语调。",
+      "用句型描述身边事物：This is a red apple."
+    ],
+    tips: [
+      "从基础对话入手，先求敢说，再求准确。",
+      "准备「句型本」，按功能归类（提问/喜好/描述）。"
+    ],
+    videos: [
+      { title: "B 站：小学英语句型替换训练", url: "https://search.bilibili.com/all?keyword=小学%20英语%20句型%20替换%20造句" }
+    ],
+    practice: {
+      type: "fill",
+      items: [
+        { sentence: "I ___ (like) apples.", answer: "like" },
+        { sentence: "She ___ (go) to school by bus.", answer: "goes" },
+        { sentence: "What ___ this? It's a cat.", answer: "is" },
+        { sentence: "They ___ (be) my friends.", answer: "are" }
+      ]
+    },
+    source: "来源：小学英语学习方法（wordln）"
+  },
+  {
+    id: "p-cartoon",
+    grade: "primary", gradeLabel: "小学",
+    dim: "speaking", dimLabel: "趣味",
+    icon: "📺",
+    title: "看动画学英语",
+    summary: "追动画片顺便练听力口语，娃最买账",
+    why: "孩子天生爱动画。模仿角色台词，语音语调和胆量一起练，比上课有意思多了。",
+    steps: [
+      "选对片子：《Peppa Pig》《Maisy》《Bluey》，语速慢、用词简单。",
+      "每天看 15 分钟，先看懂再跟读。",
+      "挑喜欢的片段配音/角色扮演。",
+      "用英语描述画面：This is Peppa's family.",
+      "录自己朗读视频，对比原版纠正发音。"
+    ],
+    tips: [
+      "别开着中文字幕当背景音，要「可理解输入」。",
+      "《西游记》英语动画版、《看童话学英文》也适合。"
+    ],
+    videos: [
+      { title: "B 站：英文版西游记动画", url: "https://search.bilibili.com/all?keyword=西游记%20英语%20动画版" },
+      { title: "B 站：Bluey 英文版", url: "https://search.bilibili.com/all?keyword=Bluey%20英文版" }
+    ],
+    source: "来源：小学英语不好怎么补 / 初中英语人教版资源"
+  },
+  {
+    id: "p-wordgame",
+    grade: "primary", gradeLabel: "小学",
+    dim: "vocabulary", dimLabel: "游戏",
+    icon: "🎴",
+    title: "单词卡片游戏",
+    summary: "配对、抢答、翻牌，记词像玩游戏",
+    why: "把记单词变成桌游，娃抢着玩。记忆配对、快速认读，不知不觉词汇量就上去了。",
+    steps: [
+      "做一套单词卡（图 + 词）。",
+      "记忆配对：翻两张，英文和图配成对就收走。",
+      "快速认读：家长举卡，娃 1 秒内读出。",
+      "I Spy：用英语描述物品让别人猜。",
+      "Kahoot! 在线单词抢答赛，和家人 PK。"
+    ],
+    tips: [
+      "APP 辅助：Lingokids、Duolingo Kids、Kahoot!。",
+      "每周设「英语之星」奖励墙，完成目标给小奖励。"
+    ],
+    videos: [
+      { title: "B 站：英语单词游戏教学", url: "https://search.bilibili.com/all?keyword=英语%20单词%20卡片%20游戏" }
+    ],
+    source: "来源：许昌教师培训平台 / 小学英语不好怎么补"
+  },
+  {
+    id: "p-mistake",
+    grade: "primary", gradeLabel: "小学",
+    dim: "habit", dimLabel: "习惯",
+    icon: "📒",
+    title: "错题本 + 单词墙",
+    summary: "错过的别再错，墙上天天见",
+    why: "错题本把漏洞记下来，单词墙把词天天见，双管齐下，基础越来越扎实。",
+    steps: [
+      "准备英语错题本，按「单词/句型/语法」分类。",
+      "每道错题写：正确答案 + 为什么错。",
+      "每周复习一次错题，红笔标还不会的。",
+      "在家物品贴英文标签，建「单词墙」。",
+      "每掌握 100 个词给一次正向激励。"
+    ],
+    tips: [
+      "错题本要「周周清」，别堆到考试前。",
+      "单词墙贴在娃常路过的地方，无意识记忆。"
+    ],
+    videos: [
+      { title: "B 站：如何做英语错题本", url: "https://search.bilibili.com/all?keyword=英语%20错题本%20怎么做" }
+    ],
+    source: "来源：小学英语不好怎么补 / 路问教育"
+  },
+  {
+    id: "p-routine",
+    grade: "primary", gradeLabel: "小学",
+    dim: "habit", dimLabel: "习惯",
+    icon: "⏰",
+    title: "晨读晚练「四个一」",
+    summary: "每天固定节奏，进步看得见",
+    why: "学习最怕三天打鱼。固定「四个一」日常，像刷牙一样自然，三个月见明显提升。",
+    steps: [
+      "每天「四个一」：听 1 段对话、读 1 个故事、说 3 句英语、写 2 个新词。",
+      "晨读 15 分钟：大声朗读课文，培养语感。",
+      "晚练 15 分钟：完成每日一练 + 复习当天内容。",
+      "碎片时间磨耳朵：早餐、睡前放英语音频。",
+      "每周 4–5 次、每次 30 分钟，保持稳定节奏。"
+    ],
+    tips: [
+      "家长用成长型思维评价进步，别和别人比。",
+      "配合 DHA 饮食 + 运动，记忆力更好（健康小贴士）。"
+    ],
+    videos: [
+      { title: "B 站：小学生英语日常学习计划", url: "https://search.bilibili.com/all?keyword=小学生%20英语%20每日%20学习计划" }
+    ],
+    source: "来源：小学英语不好怎么补（复禾健康）"
+  },
+
+  /* ===================== 初中 junior ===================== */
+  {
+    id: "j-cornell",
+    grade: "junior", gradeLabel: "初中",
+    dim: "vocabulary", dimLabel: "词汇",
+    icon: "🗒️",
+    title: "康奈尔笔记法记单词",
+    summary: "右释义、左词性、底易错，生词本秒变复习神器",
+    why: "普通生词本只会抄中文，考完就忘。康奈尔格式把词性、同义、易错点分区，复习一眼到位。",
+    steps: [
+      "右侧写英文释义 + 课本原句例句。",
+      "左侧写词性 + 同义词/反义词。",
+      "底部每周总结 3 个易错点。",
+      "每天 3 次黄金记忆：早读 20 分新词、午休 5 分回顾、睡前 10 分造句。",
+      "每周复盘，把总错的词红笔标出优先复习。"
+    ],
+    tips: [
+      "例句优先：结合原句记（如 kind of 配 The panda is kind of shy）。",
+      "场景分类：天气类/情绪类做对比表格。"
+    ],
+    videos: [
+      { title: "B 站：康奈尔笔记法 英语", url: "https://search.bilibili.com/all?keyword=康奈尔笔记法%20英语%20单词" }
+    ],
+    source: "来源：勤学教育网《提高初中英语成绩的方法》"
+  },
+  {
+    id: "j-tense-axis",
+    grade: "junior", gradeLabel: "初中",
+    dim: "grammar", dimLabel: "语法",
+    icon: "🕒",
+    title: "时态时间轴法",
+    summary: "画一条时间轴，时态再也不乱",
+    why: "时态是初中语法的半壁江山。在轴上标「过去—现在—将来」，配合课本例句，混淆瞬间消失。",
+    steps: [
+      "在笔记本画一条横向时间轴。",
+      "标出：过去（一般过去时）—现在（现在进行时）—将来（一般将来时）。",
+      "把课本例句按时间点贴到轴上。",
+      "现在完成时 vs 一般过去时：看动作是否「持续到现在」。",
+      "用「for+时间段 / since+点」判断现在完成时。"
+    ],
+    tips: [
+      "初中语法核心考点不超过 20 个，别买 300 页以上的语法书。",
+      "错题归因：标注错误类型（如时态错误）而非只写答案。"
+    ],
+    videos: [
+      { title: "B 站：初中英语时态时间轴", url: "https://search.bilibili.com/all?keyword=初中%20英语%20时态%20时间轴" }
+    ],
+    practice: {
+      type: "choice",
+      items: [
+        { q: "He ___ here for 5 years.（持续到现在）", options: ["lived", "has lived", "lives"], answer: "has lived" },
+        { q: "She ___ a gift but didn't accept it.", options: ["received", "has received", "receives"], answer: "received" },
+        { q: "Look! They ___ football.（正在进行）", options: ["play", "are playing", "played"], answer: "are playing" }
+      ]
+    },
+    source: "来源：勤学教育网 / 初三英语中考冲刺指南"
+  },
+  {
+    id: "j-cloze",
+    grade: "junior", gradeLabel: "初中",
+    dim: "reading", dimLabel: "完形",
+    icon: "🧩",
+    title: "完形上下文线索法",
+    summary: "答案藏在前后句，瞻前顾后再下手",
+    why: "完形填空 60% 的答案在空格前后 1–2 句。不孤立看空，通读全文，逻辑一下就通了。",
+    steps: [
+      "先通读全文把握主旨，不会的词跳过。",
+      "边读边做：代入选项翻译，看上下文是否出现过原词。",
+      "固定搭配：look forward to doing 等直接选。",
+      "逻辑连接词：however / therefore / although 提示转折因果。",
+      "第二遍联系上下文补漏，局部服从整体。"
+    ],
+    tips: [
+      "遇到逻辑题，先读开头结尾抓主旨。",
+      "填词前先判断成分：名/动/形/副/介/冠。"
+    ],
+    videos: [
+      { title: "B 站：初中完形填空技巧", url: "https://search.bilibili.com/all?keyword=初中%20完形填空%20技巧%20上下文" }
+    ],
+    source: "来源：初中英语题型技巧汇总 / 中考冲刺指南"
+  },
+  {
+    id: "j-reading",
+    grade: "junior", gradeLabel: "初中",
+    dim: "reading", dimLabel: "阅读",
+    icon: "🔍",
+    title: "阅读跳读 + 细节定位",
+    summary: "30 秒抓主旨，细节题回原文扫",
+    why: "阅读扣分多半是「读得慢没时间」。跳读首段末段抓中心，细节题圈专有名词回原文定位，又快又准。",
+    steps: [
+      "跳读找主旨：首段前两句 + 每段首句 + 末段末句。",
+      "细节题：圈题干专有名词/数字，回原文快速扫描。",
+      "推理题：立足原文推断，不凭空猜。",
+      "词义猜测：用 because/but/however 或前后缀猜。",
+      "每天精做 1–2 篇真题，总结错因。"
+    ],
+    tips: [
+      "正确选项 ABCD 个数通常 4–6 个，可用来推理。",
+      "作者态度题一般选客观积极（objectively）。"
+    ],
+    videos: [
+      { title: "B 站：初中英语阅读理解技巧", url: "https://search.bilibili.com/all?keyword=初中%20英语%20阅读理解%20技巧" }
+    ],
+    source: "来源：初中英语题型技巧 / 中考冲刺指南（徐莎）"
+  },
+  {
+    id: "j-listen3",
+    grade: "junior", gradeLabel: "初中",
+    dim: "listening", dimLabel: "听力",
+    icon: "🎧",
+    title: "听力精听三步法",
+    summary: "盲听→听写→跟读，反应慢的克星",
+    why: "听力失分多不是听不懂，是反应慢。三步法把耳朵练「快」，连读弱读都听得出。",
+    steps: [
+      "第一遍盲听抓主旨。",
+      "第二遍听写关键词：数字、地点、转折词 but。",
+      "第三遍对照原文跟读，模仿语音语调。",
+      "碎片时间每天 10 分钟听课本录音，重点听连读（not at all→/no ta tall/）。",
+      "整理「同义替换表」：take a bus = by bus。"
+    ],
+    tips: [
+      "听前 30 秒读选项预测话题，听中圈画时间/数字/转折。",
+      "数字快速写阿拉伯数字，避免记中文混淆。"
+    ],
+    videos: [
+      { title: "B 站：初中英语听力精听法", url: "https://search.bilibili.com/all?keyword=初中%20英语%20听力%20精听%20三步法" }
+    ],
+    source: "来源：勤学教育网 / 初三英语中考冲刺指南"
+  },
+  {
+    id: "j-grammar-example",
+    grade: "junior", gradeLabel: "初中",
+    dim: "grammar", dimLabel: "语法",
+    icon: "💡",
+    title: "语法 + 例句法",
+    summary: "先懂规则再记例句，死背公式没用",
+    why: "把语法当数学公式背最坑。先懂「为什么」，再记 2–3 个典型例句，比背条文管用十倍。",
+    steps: [
+      "学每个语法点，先搞懂规则本质（如主将从现=未发生的假设）。",
+      "记 2–3 个课本原句例句。",
+      "句型转换训练：每天 5 个原句「一变三」（主动变被动、陈述变感叹）。",
+      "错题归类：按时态/复合句/非谓语分类，标错误原因。",
+      "每天 1 篇语法填空真题，分析每空考点。"
+    ],
+    tips: [
+      "非谓语口诀：介词后 doing，want/hope 后 to do，过去分词表被动。",
+      "定语从句只用 that 的 5 种情况贴课本对照。"
+    ],
+    videos: [
+      { title: "B 站：初中语法 例句记忆法", url: "https://search.bilibili.com/all?keyword=初中%20语法%20从句%20例句" }
+    ],
+    source: "来源：勤学教育网 / 初三英语中考冲刺指南"
+  },
+  {
+    id: "j-writing3",
+    grade: "junior", gradeLabel: "初中",
+    dim: "writing", dimLabel: "写作",
+    icon: "📝",
+    title: "写作三段式模板",
+    summary: "三段式保底 18 分，高级替换冲 22+",
+    why: "初中写作 25 分，三段式模板先拿基础分，再用高级词汇和复杂句往上冲，分数稳。",
+    steps: [
+      "开头段：引出要点/核心问题。",
+      "正文段：围绕主题叙述/讨论，用并列或对比结构。",
+      "结尾段：总结观点或展望未来。",
+      "高级词汇替换：nice→warm-hearted / generous。",
+      "背 3–5 个万能句型 + 1 句谚语（Actions speak louder than words）。"
+    ],
+    tips: [
+      "卷面整洁、杜绝简单词拼写错误，分数不会低。",
+      "句式多样化：状语从句、感叹句、被动语态穿插用。"
+    ],
+    videos: [
+      { title: "B 站：初中英语作文三段式", url: "https://search.bilibili.com/all?keyword=初中%20英语%20作文%20三段式%20模板" }
+    ],
+    source: "来源：勤学教育网 / 中考冲刺指南（徐莎）"
+  },
+  {
+    id: "j-affix",
+    grade: "junior", gradeLabel: "初中",
+    dim: "vocabulary", dimLabel: "词汇",
+    icon: "🔗",
+    title: "词根词缀法",
+    summary: "记一个根，串出一串词，效率翻倍",
+    why: "care→careful→carefully→careless→carelessness，一次记一串还懂词性变化，词汇量滚雪球。",
+    steps: [
+      "记词根/前后缀：un-（否定）、dis-（相反）、-ing/-ed（时态）。",
+      "以 care 为例延伸整串派生词。",
+      "场景联想法：restaurant 联想 menu/waiter/order/delicious 成词群。",
+      "每天 30 词：早上 15 分记，晚上 5 分闭眼回忆+开口说。",
+      "红笔标忘的词，第二天优先复习，形成记忆闭环。"
+    ],
+    tips: [
+      "易混词用「例句对比法」：I received a gift but didn't accept it.",
+      "用法易混（rise 不及物 vs raise 及物）做用法表格每天看。"
+    ],
+    videos: [
+      { title: "B 站：初中英语词根词缀记忆", url: "https://search.bilibili.com/all?keyword=初中%20英语%20词根%20词缀%20记忆法" }
+    ],
+    source: "来源：初三英语中考冲刺指南（词汇篇）"
+  },
+  {
+    id: "j-mistake",
+    grade: "junior", gradeLabel: "初中",
+    dim: "habit", dimLabel: "习惯",
+    icon: "📕",
+    title: "错题归类法",
+    summary: "错因写清楚，同类错误不再犯",
+    why: "错题不归类只是抄答案。标明「错在哪类」，每周复盘 30 分钟，漏洞一个个补上。",
+    steps: [
+      "按维度分类：时态 / 复合句 / 非谓语 / 词汇辨析。",
+      "每道错题旁写错误原因（如「没看到 for+时间段误用过去时」）。",
+      "每周花 30 分钟复盘同类错题。",
+      "把易错点做成「特殊情况清单」贴课本。",
+      "语法填空每天 1 篇，勾画需加强的考点精准训练。"
+    ],
+    tips: [
+      "错题本要「周周清」，别堆到期末。",
+      "错题归因比写正确答案重要。"
+    ],
+    videos: [
+      { title: "B 站：初中英语错题本怎么用", url: "https://search.bilibili.com/all?keyword=初中%20英语%20错题本%20归类" }
+    ],
+    source: "来源：初三英语中考冲刺指南 / 勤学教育网"
+  },
+  {
+    id: "j-preread",
+    grade: "junior", gradeLabel: "初中",
+    dim: "listening", dimLabel: "听力",
+    icon: "👀",
+    title: "提前读选项预测法",
+    summary: "听前 30 秒抢分，猜对一半",
+    why: "听力播放前先读选项预测话题，听时更有针对性，等于开考前先拿分。",
+    steps: [
+      "听力前 30 秒快速读所有选项。",
+      "预测话题：选项都是 hospital/doctor→看病场景。",
+      "听中圈画时间、地点、数字、转折词 but/however。",
+      "听到 but 后面往往是重点。",
+      "长独白听开头抓主旨、中间抓细节（时间/数字/原因）。"
+    ],
+    tips: [
+      "数字速记阿拉伯数字，防连读误听（half past seven→7:30）。",
+      "整理「同义替换表」每天读，培养敏感度。"
+    ],
+    videos: [
+      { title: "B 站：听力提前读选项技巧", url: "https://search.bilibili.com/all?keyword=听力%20提前%20读%20选项%20预测" }
+    ],
+    source: "来源：初三英语中考冲刺指南（听力篇）"
+  },
+  {
+    id: "j-recite",
+    grade: "junior", gradeLabel: "初中",
+    dim: "reading", dimLabel: "语感",
+    icon: "🗣️",
+    title: "课文背诵语感法",
+    summary: "背熟课文，语感自己长出来",
+    why: "初中起步没方法时，最直接的就是背。文章印进脑子，语感、结构、词汇一起到位。",
+    steps: [
+      "课本文章反复朗诵，甚至背下来。",
+      "无意识背出后，慢慢就懂结构和意思。",
+      "做完阅读后深度分析：逐句拆成分和含义，再朗读。",
+      "每天保持一篇阅读手感，课外有余力多拓展。",
+      "分析课文句子成分，理解「语不离句、句不离文」。"
+    ],
+    tips: [
+      "背诵+深度分析，阅读水平提升最快。",
+      "坚持阅读，每天找一点时间做一篇。"
+    ],
+    videos: [
+      { title: "B 站：初中英语课文背诵方法", url: "https://search.bilibili.com/all?keyword=初中%20英语%20课文%20背诵%20语感" }
+    ],
+    source: "来源：初中英语人教版同步辅导"
+  },
+  {
+    id: "j-synonym",
+    grade: "junior", gradeLabel: "初中",
+    dim: "reading", dimLabel: "词汇",
+    icon: "🔄",
+    title: "同义替换积累表",
+    summary: "听力阅读都考替换，攒表就得分",
+    why: "听力说 take a bus，选项写 by bus；阅读原文复数，选项用 they。同义替换是隐形考点，攒熟就稳。",
+    steps: [
+      "整理同义替换：take a bus=by bus、look after=take care of。",
+      "not free=busy、not enough time=too busy 等反义转换。",
+      "每天读 1 遍替换表，培养敏感度。",
+      "七选五里原文复数对应选项 they，快速判断。",
+      "阅读中标注同义改写，训练识别能力。"
+    ],
+    tips: [
+      "替换表分「听力替换」和「阅读替换」两类整理。",
+      "结合真题积累，比盲目背单词有用。"
+    ],
+    videos: [
+      { title: "B 站：英语同义替换积累", url: "https://search.bilibili.com/all?keyword=英语%20同义%20替换%20听力%20阅读" }
+    ],
+    source: "来源：合肥八中高分笔记 / 初三中考冲刺指南"
+  },
+
+  /* ===================== 高中 senior ===================== */
+  {
+    id: "s-3500",
+    grade: "senior", gradeLabel: "高中",
+    dim: "vocabulary", dimLabel: "词汇",
+    icon: "🎯",
+    title: "3500 词做减法",
+    summary: "聚焦高频词+熟词生义，拒绝面面俱到",
+    why: "高中词汇量大，但分数来自高频核心词和熟词生义。做减法，把时间花在刀刃上。",
+    steps: [
+      "背熟高考必备 3500 词，注意一词多义和搭配。",
+      "四大重点：高频核心词、阅读完形熟词生义、易混短语、写作高级词。",
+      "勤翻错题本，吃透易错词汇，做到会读会写会用。",
+      "每天精读默写一部分高频词，关注多义/易混/固定搭配。",
+      "优先记历年高考出现过的词汇用法。"
+    ],
+    tips: [
+      "熟词生义是阅读完形隐形坑（如 book 作「预订」）。",
+      "用《闪过高考词汇》按考频背，别按字母顺序。"
+    ],
+    videos: [
+      { title: "B 站：高考3500词高频核心", url: "https://search.bilibili.com/all?keyword=高考%203500%20词%20高频%20核心" }
+    ],
+    source: "来源：寿光中学张玉翠老师 / 中华教育时报网"
+  },
+  {
+    id: "s-seven",
+    grade: "senior", gradeLabel: "高中",
+    dim: "reading", dimLabel: "七选五",
+    icon: "🔢",
+    title: "七选五逻辑词定位",
+    summary: "抓主旨 + 逻辑词，段落呼应秒选",
+    why: "七选五有明确定位技巧。紧抓主旨和逻辑衔接词，原文复数对应选项 they，正确率立刻上来。",
+    steps: [
+      "先读小标题/段首，抓全文主旨。",
+      "看空格前后句的逻辑词：however/therefore/besides。",
+      "原文复数名词↔选项 they，快速判断指代。",
+      "提高段落间逻辑感，熟悉常见连接方式。",
+      "代入选项通读，检查连贯和上下文呼应。"
+    ],
+    tips: [
+      "七选五技巧明确，掌握后正确率提升明显。",
+      "每天练 1 篇，重点在连贯和呼应。"
+    ],
+    videos: [
+      { title: "B 站：高考七选五解题技巧", url: "https://search.bilibili.com/all?keyword=高考%20七选五%20解题%20技巧" }
+    ],
+    source: "来源：合肥八中高分笔记 / 寿光中学张玉翠老师"
+  },
+  {
+    id: "s-continue",
+    grade: "senior", gradeLabel: "高中",
+    dim: "writing", dimLabel: "读后续写",
+    icon: "✨",
+    title: "读后续写描写法",
+    summary: "动作+心理+环境，情节不跑偏文采来",
+    why: "读后续写是高分关键。紧扣原文情节，用动作/心理/环境描写 + 高级句式，语言立刻有质感。",
+    steps: [
+      "紧扣原文情节，不跑偏、不瞎编。",
+      "巧用动作描写（动词链）、心理描写、环境描写。",
+      "灵活运用高级句式提升文采。",
+      "结尾升华：阅读 B 篇积累适合升华的句子。",
+      "每两天完成 1 篇完整写作并修改，积累 20+ 模板词句。"
+    ],
+    tips: [
+      "看《夏洛的网》《秘密花园》《绿山墙的安妮》积累描写语料。",
+      "小作文背 3–5 篇范文，掌握书信/通知/演讲稿格式。"
+    ],
+    videos: [
+      { title: "B 站：高考读后续写技巧", url: "https://search.bilibili.com/all?keyword=高考%20读后续写%20技巧%20描写" }
+    ],
+    source: "来源：寿光中学张玉翠老师 / 桂林桂电中学唐新妍老师"
+  },
+  {
+    id: "s-grammar-fill",
+    grade: "senior", gradeLabel: "高中",
+    dim: "grammar", dimLabel: "语法填空",
+    icon: "🧠",
+    title: "语法填空考点分析法",
+    summary: "每空分析考点，精准补弱",
+    why: "语法填空考查基础语法+句子结构+篇章意识。每空分析考点，对照答案册勾画薄弱点，练得准。",
+    steps: [
+      "先标注备选词词性，再结合语境选词并注意词形变化。",
+      "每空分析考点：非谓语/时态语态/从句引导词。",
+      "利用答案册归纳每空考点，勾画需加强的。",
+      "高频考点：非谓语、时态语态、从句引导词，牢记基础规则。",
+      "每天 1 篇，减少粗心失误。"
+    ],
+    tips: [
+      "时态语态、虚拟语气、定/状语从句、非谓语、强调/倒装是高频。",
+      "每天复习 1–2 个考点 + 配真题练。"
+    ],
+    videos: [
+      { title: "B 站：高考语法填空技巧", url: "https://search.bilibili.com/all?keyword=高考%20语法填空%20技巧%20考点" }
+    ],
+    source: "来源：寿光中学张玉翠老师 / 唐新妍老师"
+  },
+  {
+    id: "s-listen-focus",
+    grade: "senior", gradeLabel: "高中",
+    dim: "listening", dimLabel: "听力",
+    icon: "🎯",
+    title: "听力抗干扰 + 听前猜",
+    summary: "前五题听前猜答案，练抗干扰",
+    why: "高考听力对注意力要求高，考场环境干扰大。平时练抗干扰，前五题听前让题目过一遍大脑。",
+    steps: [
+      "前五题用「听前猜答案」，让题目在大脑过一遍。",
+      "每天练 1 篇真题听力，听后对照文本精听。",
+      "积累听力常用词组句式（整理本）。",
+      "熟读课标所有单词，保证发音正确不漏关键信息。",
+      "模拟考场：关窗关空调环境练抗干扰。"
+    ],
+    tips: [
+      "听力不难，坚持听进步明显。",
+      "精听积累常见表达，比刷题重要。"
+    ],
+    videos: [
+      { title: "B 站：高考听力技巧抗干扰", url: "https://search.bilibili.com/all?keyword=高考%20听力%20技巧%20抗干扰" }
+    ],
+    source: "来源：合肥八中高分笔记（王璇月）"
+  },
+  {
+    id: "s-application",
+    grade: "senior", gradeLabel: "高中",
+    dim: "writing", dimLabel: "应用文",
+    icon: "✉️",
+    title: "应用文万能句型 + 格式",
+    summary: "书信通知演讲稿，格式标准语言得体",
+    why: "应用文有固定格式和常用句型，相对好提分。掌握高频文体格式 + 万能句，基础分稳拿。",
+    steps: [
+      "背熟书信、通知、演讲稿等高频文体格式。",
+      "储备校园生活、传统文化主题万能句型。",
+      "开头段引出主题（背景+观点）。",
+      "中间段表达看法（并列/对比结构）。",
+      "结尾段总结或展望未来，注意礼貌语气。"
+    ],
+    tips: [
+      "攻克要点不全、句式单一、格式不规范三大问题。",
+      "卷面整洁、语言得体，分数不低。"
+    ],
+    videos: [
+      { title: "B 站：高考英语应用文模板", url: "https://search.bilibili.com/all?keyword=高考%20英语%20应用文%20模板%20格式" }
+    ],
+    source: "来源：寿光中学张玉翠老师 / 唐新妍老师"
+  },
+  {
+    id: "s-past-paper",
+    grade: "senior", gradeLabel: "高中",
+    dim: "habit", dimLabel: "真题",
+    icon: "📜",
+    title: "真题深耕近五年",
+    summary: "真题是最好的复习资料，摸清命题规律",
+    why: "真题含金量最高。深耕近五年新高考真题，摸清命题规律和考点分布，比盲目刷题强百倍。",
+    steps: [
+      "深耕近五年本省新高考真题。",
+      "阅读找准原文定位，细心比对选项，不主观臆断。",
+      "完形立足上下文，把握情感与逻辑走向。",
+      "语法填空聚焦高频考点，记基础规则。",
+      "做一篇吃透一篇，分析错因比做三篇囫囵强。"
+    ],
+    tips: [
+      "思维易错练真题，易踩陷阱练模拟题，定期回真题。",
+      "不钻偏题怪题，紧盯错题补短板。"
+    ],
+    videos: [
+      { title: "B 站：高考英语真题精讲", url: "https://search.bilibili.com/all?keyword=高考%20英语%20真题%20精讲%20近五年" }
+    ],
+    source: "来源：寿光中学张玉翠老师 / 中华教育时报网"
+  },
+  {
+    id: "s-long-sentence",
+    grade: "senior", gradeLabel: "高中",
+    dim: "reading", dimLabel: "长难句",
+    icon: "🧩",
+    title: "长难句拆解法",
+    summary: "找主干砍修饰，长句变短句",
+    why: "阅读卡壳多半是长难句。找主谓宾砍掉修饰，句子瞬间变短，理解和速度都上来了。",
+    steps: [
+      "找主干：主语 + 谓语 + 宾语。",
+      "砍修饰：定语从句、分词、插入语先放一边。",
+      "还原修饰，弄清谁修饰谁。",
+      "遇到非谓语（doing/done）判断主动被动。",
+      "每天拆 3–5 个真题长难句，积累语感。"
+    ],
+    tips: [
+      "长难句=简单句+修饰，别被长度吓到。",
+      "配合语法填空的句子结构分析一起练。"
+    ],
+    videos: [
+      { title: "B 站：高考长难句拆解", url: "https://search.bilibili.com/all?keyword=高考%20英语%20长难句%20拆解" }
+    ],
+    source: "来源：唐新妍老师 / 高中知识库"
+  },
+  {
+    id: "s-handwriting",
+    grade: "senior", gradeLabel: "高中",
+    dim: "writing", dimLabel: "书写",
+    icon: "🅰️",
+    title: "衡水体练字",
+    summary: "卷面分白送，千万别写连笔",
+    why: "作文字迹工整直接加分。衡水体圆润规范、无连笔，阅卷老师看着舒服，分数自然高。",
+    steps: [
+      "练衡水体，字母圆润、大小均匀、不连笔。",
+      "每天练 10 分钟，描红+临摹。",
+      "注意间距和基线对齐。",
+      "平时书写就保持整洁规范，考试不临时抱佛脚。",
+      "用四线格本打底，逐步形成肌肉记忆。"
+    ],
+    tips: [
+      "千万不要写连笔，高考书写大忌。",
+      "卷面清爽的作文分数一般都不会太低。"
+    ],
+    videos: [
+      { title: "B 站：高考衡水体练字教程", url: "https://search.bilibili.com/all?keyword=高考%20衡水体%20练字%20教程" }
+    ],
+    source: "来源：合肥八中高分笔记（汪乐妍）"
+  },
+  {
+    id: "s-synonym-senior",
+    grade: "senior", gradeLabel: "高中",
+    dim: "reading", dimLabel: "阅读",
+    icon: "🔁",
+    title: "阅读同义改写识别",
+    summary: "选项多是原文的改写，识破就选对",
+    why: "高考阅读正确选项常是原文的同义改写而非原句。训练识别改写，细节题推理题正确率双升。",
+    steps: [
+      "细节题：选项方向一致→出处只有一个；方向不一→四出处都看。",
+      "识别同义改写：原文动词→选项名词，原文肯定→选项否定。",
+      "推理题：立足原文推断，不直接选原文陈述。",
+      "词义猜测：用因果/同反义/构词法猜。",
+      "每天做 2–3 篇真题，分析错因和出题套路。"
+    ],
+    tips: [
+      "正确选项常含更多原文关键词。",
+      "态度题一般选客观积极。"
+    ],
+    videos: [
+      { title: "B 站：高考阅读同义改写", url: "https://search.bilibili.com/all?keyword=高考%20阅读%20同义%20改写%20识别" }
+    ],
+    source: "来源：高中题型技巧 / 合肥八中高分笔记"
+  },
+  {
+    id: "s-cloze-senior",
+    grade: "senior", gradeLabel: "高中",
+    dim: "reading", dimLabel: "完形",
+    icon: "🧩",
+    title: "完形顺读 + 排除法",
+    summary: "顺读抓情感逻辑，排除法稳拿分",
+    why: "高中完形重上下文逻辑和情感走向。顺读法 + 排除法，不确定也能缩到二选一。",
+    steps: [
+      "顺读全文，把握情感与逻辑走向。",
+      "第一遍不急填，联系上下文二遍做。",
+      "填词先判成分：名/动/形/副/介/冠。",
+      "固定搭配 + 逻辑连接词辅助。",
+      "用排除法去掉明显错误，剩余结合语境分析。"
+    ],
+    tips: [
+      "完形立足上下文，不孤立看空。",
+      "情感走向题看首尾段和重复词。"
+    ],
+    videos: [
+      { title: "B 站：高考完形填空顺读法", url: "https://search.bilibili.com/all?keyword=高考%20完形填空%20顺读%20排除法" }
+    ],
+    source: "来源：唐新妍老师 / 高中知识库"
+  },
+  {
+    id: "s-timed",
+    grade: "senior", gradeLabel: "高中",
+    dim: "habit", dimLabel: "限时",
+    icon: "⏱️",
+    title: "限时训练 + 手感",
+    summary: "贴合模考节奏，答题状态不掉线",
+    why: "最后阶段手感和心态同样重要。限时训练保持答题状态，合理分配时间，把每次练习当实战。",
+    steps: [
+      "坚持限时训练，贴合模考节奏。",
+      "合理分配答题时间（阅读/完形/七选五/写作）。",
+      "紧盯错题补齐短板，不钻偏题怪题。",
+      "每日积累复盘，把练习当实战。",
+      "考前放平心态，正视自身优劣。"
+    ],
+    tips: [
+      "词汇 20 分 + 语法 20 分 + 真题 30 分 + 复习 2 分，每日 1.2 小时配比。",
+      "优先第一、二梯队（词汇/语法/阅读），再攻写作听力。"
+    ],
+    videos: [
+      { title: "B 站：高考英语限时训练安排", url: "https://search.bilibili.com/all?keyword=高考%20英语%20限时%20训练%20时间%20分配" }
+    ],
+    source: "来源：中华教育时报网 / 唐新妍老师"
+  }
+];
+
+/* 维度元数据：用于筛选标签与配色 */
+window.DIMENSIONS = [
+  { key: "phonics",     label: "自然拼读" },
+  { key: "vocabulary",  label: "词汇" },
+  { key: "listening",   label: "听力" },
+  { key: "speaking",    label: "口语" },
+  { key: "reading",     label: "阅读" },
+  { key: "writing",     label: "写作" },
+  { key: "grammar",     label: "语法" },
+  { key: "habit",       label: "习惯/方法" }
+];
+
+window.GRADES = [
+  { key: "primary", label: "小学",  color: "#2bb673" },
+  { key: "junior",  label: "初中",  color: "#2f80ed" },
+  { key: "senior",  label: "高中",  color: "#eb5757" }
+];
+
+</script>
+  <script>
+/*
+ * english-mastery · 跟读练习句库
+ * 按方法 id 映射适龄、地道的英文跟读句（en + 中文释义 zh）。
+ * 由 app.js 的「🎤 跟读练习」区驱动，使用浏览器 Web Speech API 朗读+识别打分。
+ * 与 window.METHODS 解耦：方法数据不动，这里只补充跟读素材。
+ */
+window.READ_SENTENCES = {
+
+  /* ===================== 小学 primary ===================== */
+  "p-phonics": [
+    { en: "The cat sat on the mat.", zh: "猫坐在垫子上。" },
+    { en: "A big red dog runs fast.", zh: "一只大红狗跑得很快。" },
+    { en: "I see a sun and a pen.", zh: "我看见太阳和一支钢笔。" }
+  ],
+  "p-topic-words": [
+    { en: "I like apples, bananas and oranges.", zh: "我喜欢苹果、香蕉和橙子。" },
+    { en: "We have red, blue and green books.", zh: "我们有红色、蓝色和绿色的书。" },
+    { en: "The dog is under the table.", zh: "狗在桌子下面。" }
+  ],
+  "p-listen": [
+    { en: "Twinkle, twinkle, little star.", zh: "一闪一闪小星星。" },
+    { en: "The wheels on the bus go round and round.", zh: "公共汽车轮子转啊转。" },
+    { en: "Old MacDonald had a farm.", zh: "老麦克唐纳有个农场。" }
+  ],
+  "p-reading": [
+    { en: "I can read a small book.", zh: "我能读一本小书。" },
+    { en: "The frog is in the pond.", zh: "青蛙在池塘里。" },
+    { en: "We go to school every day.", zh: "我们每天去上学。" }
+  ],
+  "p-speaking": [
+    { en: "Please touch your nose.", zh: "请摸摸你的鼻子。" },
+    { en: "Can I have some water, please?", zh: "请给我一点水好吗？" },
+    { en: "Let us clap our hands together.", zh: "我们一起拍手吧。" }
+  ],
+  "p-writing": [
+    { en: "I write the letter A on the line.", zh: "我在线上写字母 A。" },
+    { en: "My name is on the paper.", zh: "我的名字写在了纸上。" },
+    { en: "Please write neatly and slowly.", zh: "请写得整齐又慢一些。" }
+  ],
+  "p-sightwords": [
+    { en: "I can see the big red ball.", zh: "我能看见那个大红球。" },
+    { en: "We go to the park with you.", zh: "我们和你一起去公园。" },
+    { en: "He said he would come for me.", zh: "他说他会来接我。" }
+  ],
+  "p-sentence": [
+    { en: "I like apples because they are sweet.", zh: "我喜欢苹果因为它们甜。" },
+    { en: "She goes to school by bus.", zh: "她坐公共汽车去上学。" },
+    { en: "They are playing in the garden.", zh: "他们正在花园里玩。" }
+  ],
+  "p-cartoon": [
+    { en: "Peppa likes jumping in muddy puddles.", zh: "佩奇喜欢在泥坑里跳。" },
+    { en: "Bluey plays with her little sister.", zh: "布鲁伊和她的妹妹玩耍。" },
+    { en: "The monkey is very funny and clever.", zh: "这只猴子又滑稽又聪明。" }
+  ],
+  "p-wordgame": [
+    { en: "Find the word that means apple.", zh: "找出意思是“苹果”的那个词。" },
+    { en: "Spell the word: c-a-t, cat.", zh: "拼出这个词：c-a-t，猫。" },
+    { en: "Match the picture with the word.", zh: "把图片和单词连起来。" }
+  ],
+  "p-mistake": [
+    { en: "I made a mistake, but I can fix it.", zh: "我犯了个错，但我能改正。" },
+    { en: "Let us write the wrong word five times.", zh: "我们把写错的词写五遍。" },
+    { en: "Check your homework before you rest.", zh: "休息前检查一下你的作业。" }
+  ],
+  "p-routine": [
+    { en: "I read English aloud every morning.", zh: "我每天早晨大声朗读英语。" },
+    { en: "Ten minutes a day keeps English strong.", zh: "每天十分钟，英语更扎实。" },
+    { en: "Practice makes my English better.", zh: "练习让我的英语更好。" }
+  ],
+
+  /* ===================== 初中 junior ===================== */
+  "j-cornell": [
+    { en: "We should review new words every evening.", zh: "我们该每晚复习生词。" },
+    { en: "A good note helps me remember faster.", zh: "好笔记帮我记得更快。" },
+    { en: "I write the key point on the right side.", zh: "我把要点写在右边。" }
+  ],
+  "j-tense-axis": [
+    { en: "I am reading a book now.", zh: "我现在正在读一本书。" },
+    { en: "She finished her homework yesterday.", zh: "她昨天完成了作业。" },
+    { en: "We will visit the museum next week.", zh: "我们下周将去参观博物馆。" }
+  ],
+  "j-cloze": [
+    { en: "He was so tired that he fell asleep.", zh: "他太累了，就睡着了。" },
+    { en: "Although it rained, we went out.", zh: "尽管下雨，我们还是出门了。" },
+    { en: "The boy who won the prize is my friend.", zh: "那个获奖的男孩是我的朋友。" }
+  ],
+  "j-reading": [
+    { en: "Read the question before the passage.", zh: "读文章前先读问题。" },
+    { en: "The answer is in the second paragraph.", zh: "答案在第二段里。" },
+    { en: "Skim the text to find the main idea.", zh: "略读文章找出主旨。" }
+  ],
+  "j-listen3": [
+    { en: "The speaker gave three reasons for his idea.", zh: "说话人给了三个支持他的理由。" },
+    { en: "Listen carefully and write down the number.", zh: "仔细听并写下那个数字。" },
+    { en: "What does the girl want to do next?", zh: "女孩接下来想做什么？" }
+  ],
+  "j-grammar-example": [
+    { en: "If it rains, we will stay at home.", zh: "如果下雨，我们就待在家里。" },
+    { en: "The book which you lent me is great.", zh: "你借我的那本书很棒。" },
+    { en: "He has lived here for five years.", zh: "他在这里已经住了五年。" }
+  ],
+  "j-writing3": [
+    { en: "First, we should protect the environment.", zh: "首先，我们应该保护环境。" },
+    { en: "In my opinion, reading is very helpful.", zh: "在我看来，阅读非常有帮助。" },
+    { en: "All in all, we must take action now.", zh: "总之，我们现在必须行动起来。" }
+  ],
+  "j-affix": [
+    { en: "Happy becomes unhappy with the prefix un.", zh: "happy 加上前缀 un 变成 unhappy。" },
+    { en: "Teach plus er makes teacher.", zh: "teach 加上 er 变成 teacher。" },
+    { en: "Careful means full of care.", zh: "careful 意思是充满关心。" }
+  ],
+  "j-mistake": [
+    { en: "I collected my mistakes in a red book.", zh: "我把错题收进一个红本子里。" },
+    { en: "Why did I get this question wrong?", zh: "我为什么这道题做错了？" },
+    { en: "Same mistake, never twice.", zh: "同样的错误，绝不再犯。" }
+  ],
+  "j-preread": [
+    { en: "Guess the answer before you listen.", zh: "听之前先猜一猜答案。" },
+    { en: "The question is about a place.", zh: "这道题问的是一个地点。" },
+    { en: "Look at the options and predict the talk.", zh: "看选项，预测一下对话内容。" }
+  ],
+  "j-recite": [
+    { en: "Reciting texts builds a good sense of English.", zh: "背诵课文能培养好的语感。" },
+    { en: "I read it aloud three times to remember.", zh: "我大声读了三遍来记住它。" },
+    { en: "Good sentences are worth reciting.", zh: "好的句子值得背诵。" }
+  ],
+  "j-synonym": [
+    { en: "Big and large mean almost the same.", zh: "big 和 large 意思几乎一样。" },
+    { en: "We can replace happy with glad.", zh: "我们可以用 glad 替换 happy。" },
+    { en: "Find a synonym for the word quick.", zh: "找出 quick 这个词的一个同义词。" }
+  ],
+
+  /* ===================== 高中 senior ===================== */
+  "s-3500": [
+    { en: "The experiment confirmed our hypothesis.", zh: "实验证实了我们的假设。" },
+    { en: "He analyzed the data with great care.", zh: "他极其仔细地分析了数据。" },
+    { en: "A responsible person keeps his promises.", zh: "一个负责任的人信守诺言。" }
+  ],
+  "s-seven": [
+    { en: "However, the result was quite different.", zh: "然而，结果大不相同。" },
+    { en: "For example, recycling helps the earth.", zh: "例如，回收有益于地球。" },
+    { en: "In addition, we should save energy.", zh: "此外，我们应该节约能源。" }
+  ],
+  "s-continue": [
+    { en: "Tears rolled down her pale face.", zh: "泪水滑下她苍白的脸颊。" },
+    { en: "The wind whispered through the trees.", zh: "风穿过树林低语。" },
+    { en: "He breathed a sigh of relief at last.", zh: "他终于松了一口气。" }
+  ],
+  "s-grammar-fill": [
+    { en: "It is widely believed that practice matters.", zh: "人们普遍认为练习很重要。" },
+    { en: "The bridge built last year is safe.", zh: "去年建的那座桥很安全。" },
+    { en: "Given more time, we could do better.", zh: "如果给更多时间，我们能做得更好。" }
+  ],
+  "s-listen-focus": [
+    { en: "The woman is worried about the meeting.", zh: "那位女士在担心会议。" },
+    { en: "What is the man's suggestion?", zh: "那位男士的建议是什么？" },
+    { en: "The number you heard was seven forty.", zh: "你听到的数字是七点四十。" }
+  ],
+  "s-application": [
+    { en: "I am writing to apply for the job.", zh: "我写信申请这份工作。" },
+    { en: "I would appreciate your early reply.", zh: "如能早日回复，我将不胜感激。" },
+    { en: "Thank you for your time and consideration.", zh: "感谢您抽出时间并予考虑。" }
+  ],
+  "s-past-paper": [
+    { en: "Past papers show the real exam style.", zh: "真题展现了真实的考试风格。" },
+    { en: "We should learn from every mistake.", zh: "我们应该从每个错误中学习。" },
+    { en: "Time management is the key to success.", zh: "时间管理是成功的关键。" }
+  ],
+  "s-long-sentence": [
+    { en: "The book that the teacher recommended was sold out.", zh: "老师推荐的那本书卖光了。" },
+    { en: "What we need is more practice, not advice.", zh: "我们需要的是更多练习，而不是建议。" },
+    { en: "It is a fact that hard work pays off.", zh: "努力会有回报，这是事实。" }
+  ],
+  "s-handwriting": [
+    { en: "Clear handwriting wins more points.", zh: "工整的书写能多得分数。" },
+    { en: "Write each letter the same height.", zh: "每个字母写得一样高。" },
+    { en: "Practice one sentence ten times a day.", zh: "每天把一句话练十遍。" }
+  ],
+  "s-synonym-senior": [
+    { en: "The word obtain equals get here.", zh: "在这里 obtain 等于 get。" },
+    { en: "They replaced the old with the new.", zh: "他们以新换旧。" },
+    { en: "In short, the plan was accepted.", zh: "简言之，这个计划被采纳了。" }
+  ],
+  "s-cloze-senior": [
+    { en: "He smiled, which made us relaxed.", zh: "他笑了，这让我们放松下来。" },
+    { en: "Even though tired, she kept working.", zh: "尽管很累，她仍继续工作。" },
+    { en: "The story tells of a boy's growth.", zh: "这个故事讲述一个男孩的成长。" }
+  ],
+  "s-timed": [
+    { en: "Finish the reading in eight minutes.", zh: "八分钟内完成这篇阅读。" },
+    { en: "Keep calm when the clock is running.", zh: "计时的时候保持冷静。" },
+    { en: "Speed comes from daily training.", zh: "速度来自日常的训练。" }
+  ]
+};
+
+</script>
+  <script>
+/*
+ * english-mastery · 单词词库（WORD_BANK）
+ * 按 学段(grade) + 单元/主题(unit) 组织，每个词 {en, zh}。
+ *
+ * ⚠️ 数据性质说明（重要）：
+ * 本文件当前是「核心种子词」——基于《义务教育英语课程标准》《高中英语课程标准》
+ * 的分级框架，由高置信度基础/核心词整理而成，用于打通「单词」模块的练习链路
+ * （闪卡 / 拼写 / 听写 / 跟读）。它并非完整的 6000+ 课标/教材词表。
+ *
+ * 要补全为「新课标课标词表 + 人教版/外研社单元词表」全量：
+ *   - 把教材单元词表整理成 {en, zh} 数组，按册/单元挂到对应 grade.units 下即可；
+ *   - 结构与本文件完全一致，直接追加 unit 对象，无需改前端代码。
+ *   - 若有官方词表电子文件（xlsx/txt/csv），交给助手转成此结构合并，保证 100% 准确。
+ *
+ * 字段：
+ *   grade: primary(小学) / junior(初中) / senior(高中)
+ *   unit:  { id, title, words:[{en, zh}] }
+ */
+window.WORD_BANK = {
+
+  /* ===================== 小学 primary ===================== */
+  primary: {
+    label: "小学",
+    note: "核心种子词（基于新课标一级/二级词汇框架）",
+    units: [
+      {
+        id: "p-core",
+        title: "基础核心词",
+        words: [
+          { en: "I", zh: "我" }, { en: "you", zh: "你；你们" }, { en: "he", zh: "他" },
+          { en: "she", zh: "她" }, { en: "we", zh: "我们" }, { en: "they", zh: "他们" },
+          { en: "am", zh: "是(我)" }, { en: "is", zh: "是" }, { en: "are", zh: "是(复数)" },
+          { en: "have", zh: "有" }, { en: "has", zh: "有(三单)" }, { en: "a", zh: "一个" },
+          { en: "an", zh: "一个(元音前)" }, { en: "the", zh: "这；那" }, { en: "and", zh: "和" },
+          { en: "red", zh: "红色" }, { en: "blue", zh: "蓝色" }, { en: "yellow", zh: "黄色" },
+          { en: "green", zh: "绿色" }, { en: "one", zh: "一" }, { en: "two", zh: "二" },
+          { en: "three", zh: "三" }, { en: "four", zh: "四" }, { en: "five", zh: "五" },
+          { en: "six", zh: "六" }, { en: "seven", zh: "七" }, { en: "eight", zh: "八" },
+          { en: "nine", zh: "九" }, { en: "ten", zh: "十" }, { en: "apple", zh: "苹果" },
+          { en: "book", zh: "书" }, { en: "cat", zh: "猫" }, { en: "dog", zh: "狗" }
+        ]
+      },
+      {
+        id: "p-animals",
+        title: "动物",
+        words: [
+          { en: "bird", zh: "鸟" }, { en: "fish", zh: "鱼" }, { en: "pig", zh: "猪" },
+          { en: "cow", zh: "牛" }, { en: "duck", zh: "鸭子" }, { en: "panda", zh: "熊猫" },
+          { en: "tiger", zh: "老虎" }, { en: "lion", zh: "狮子" }, { en: "rabbit", zh: "兔子" },
+          { en: "monkey", zh: "猴子" }, { en: "elephant", zh: "大象" }, { en: "bear", zh: "熊" },
+          { en: "chicken", zh: "鸡" }, { en: "horse", zh: "马" }, { en: "sheep", zh: "绵羊" },
+          { en: "mouse", zh: "老鼠" }, { en: "snake", zh: "蛇" }, { en: "zoo", zh: "动物园" }
+        ]
+      },
+      {
+        id: "p-food",
+        title: "食物",
+        words: [
+          { en: "egg", zh: "蛋" }, { en: "rice", zh: "米饭" }, { en: "milk", zh: "牛奶" },
+          { en: "bread", zh: "面包" }, { en: "water", zh: "水" }, { en: "banana", zh: "香蕉" },
+          { en: "orange", zh: "橙子" }, { en: "pear", zh: "梨" }, { en: "cake", zh: "蛋糕" },
+          { en: "meat", zh: "肉" }, { en: "noodle", zh: "面条" }, { en: "tea", zh: "茶" },
+          { en: "juice", zh: "果汁" }, { en: "candy", zh: "糖果" }, { en: "hamburger", zh: "汉堡" }
+        ]
+      },
+      {
+        id: "p-school",
+        title: "学校",
+        words: [
+          { en: "pen", zh: "钢笔" }, { en: "pencil", zh: "铅笔" }, { en: "bag", zh: "书包" },
+          { en: "ruler", zh: "尺子" }, { en: "teacher", zh: "老师" }, { en: "student", zh: "学生" },
+          { en: "school", zh: "学校" }, { en: "classroom", zh: "教室" }, { en: "desk", zh: "课桌" },
+          { en: "chair", zh: "椅子" }, { en: "blackboard", zh: "黑板" }, { en: "read", zh: "读" },
+          { en: "write", zh: "写" }, { en: "learn", zh: "学习" }
+        ]
+      },
+      {
+        id: "p-family",
+        title: "家庭",
+        words: [
+          { en: "father", zh: "父亲" }, { en: "mother", zh: "母亲" }, { en: "brother", zh: "兄弟" },
+          { en: "sister", zh: "姐妹" }, { en: "grandpa", zh: "爷爷；外公" }, { en: "grandma", zh: "奶奶；外婆" },
+          { en: "family", zh: "家庭" }, { en: "baby", zh: "婴儿" }, { en: "son", zh: "儿子" },
+          { en: "daughter", zh: "女儿" }, { en: "uncle", zh: "叔叔；舅舅" }, { en: "aunt", zh: "阿姨；姑姑" }
+        ]
+      },
+      {
+        id: "p-action",
+        title: "动作",
+        words: [
+          { en: "run", zh: "跑" }, { en: "jump", zh: "跳" }, { en: "eat", zh: "吃" },
+          { en: "drink", zh: "喝" }, { en: "sleep", zh: "睡觉" }, { en: "sing", zh: "唱" },
+          { en: "dance", zh: "跳舞" }, { en: "play", zh: "玩" }, { en: "swim", zh: "游泳" },
+          { en: "fly", zh: "飞" }, { en: "walk", zh: "走" }, { en: "sit", zh: "坐" },
+          { en: "stand", zh: "站" }, { en: "open", zh: "打开" }, { en: "close", zh: "关上" },
+          { en: "look", zh: "看" }, { en: "listen", zh: "听" }, { en: "speak", zh: "说" }
+        ]
+      },
+      {
+        id: "p-nature",
+        title: "自然",
+        words: [
+          { en: "sun", zh: "太阳" }, { en: "moon", zh: "月亮" }, { en: "star", zh: "星星" },
+          { en: "tree", zh: "树" }, { en: "flower", zh: "花" }, { en: "grass", zh: "草" },
+          { en: "sky", zh: "天空" }, { en: "cloud", zh: "云" }, { en: "rain", zh: "雨" },
+          { en: "wind", zh: "风" }, { en: "fire", zh: "火" }
+        ]
+      }
+    ]
+  },
+
+  /* ===================== 初中 junior ===================== */
+  junior: {
+    label: "初中",
+    note: "核心种子词（基于新课标三级/四级词汇框架）",
+    units: [
+      {
+        id: "j-core",
+        title: "核心词汇",
+        words: [
+          { en: "dictionary", zh: "词典" }, { en: "weather", zh: "天气" }, { en: "hospital", zh: "医院" },
+          { en: "vacation", zh: "假期" }, { en: "computer", zh: "电脑" }, { en: "internet", zh: "互联网" },
+          { en: "friend", zh: "朋友" }, { en: "happy", zh: "开心的" }, { en: "healthy", zh: "健康的" },
+          { en: "exercise", zh: "锻炼；练习" }, { en: "week", zh: "周" }, { en: "month", zh: "月" },
+          { en: "year", zh: "年" }, { en: "morning", zh: "早晨" }, { en: "evening", zh: "晚上" },
+          { en: "question", zh: "问题" }, { en: "answer", zh: "回答" }, { en: "problem", zh: "难题" },
+          { en: "example", zh: "例子" }, { en: "important", zh: "重要的" }, { en: "different", zh: "不同的" },
+          { en: "together", zh: "一起" }, { en: "beautiful", zh: "美丽的" }, { en: "favorite", zh: "最喜爱的" },
+          { en: "because", zh: "因为" }, { en: "before", zh: "在…之前" }, { en: "after", zh: "在…之后" },
+          { en: "always", zh: "总是" }, { en: "never", zh: "从不" }
+        ]
+      },
+      {
+        id: "j-school",
+        title: "学科与学习",
+        words: [
+          { en: "subject", zh: "科目" }, { en: "math", zh: "数学" }, { en: "Chinese", zh: "语文" },
+          { en: "English", zh: "英语" }, { en: "science", zh: "科学" }, { en: "history", zh: "历史" },
+          { en: "geography", zh: "地理" }, { en: "PE", zh: "体育" }, { en: "music", zh: "音乐" },
+          { en: "art", zh: "美术" }, { en: "exam", zh: "考试" }, { en: "homework", zh: "家庭作业" },
+          { en: "lesson", zh: "课" }, { en: "classmate", zh: "同学" }, { en: "grade", zh: "年级；成绩" },
+          { en: "study", zh: "学习" }, { en: "practice", zh: "练习" }, { en: "knowledge", zh: "知识" }
+        ]
+      },
+      {
+        id: "j-life",
+        title: "生活家庭",
+        words: [
+          { en: "parent", zh: "父/母亲" }, { en: "child", zh: "孩子" }, { en: "children", zh: "孩子们" },
+          { en: "people", zh: "人们" }, { en: "neighbor", zh: "邻居" }, { en: "gift", zh: "礼物" },
+          { en: "party", zh: "聚会" }, { en: "kitchen", zh: "厨房" }, { en: "bedroom", zh: "卧室" },
+          { en: "bathroom", zh: "浴室" }, { en: "garden", zh: "花园" }, { en: "clean", zh: "打扫；干净的" },
+          { en: "cook", zh: "做饭" }, { en: "wash", zh: "洗" }, { en: "help", zh: "帮助" }
+        ]
+      },
+      {
+        id: "j-shopping",
+        title: "购物",
+        words: [
+          { en: "shop", zh: "商店" }, { en: "store", zh: "商店" }, { en: "money", zh: "钱" },
+          { en: "price", zh: "价格" }, { en: "cheap", zh: "便宜的" }, { en: "expensive", zh: "昂贵的" },
+          { en: "buy", zh: "买" }, { en: "sell", zh: "卖" }, { en: "pay", zh: "付款" },
+          { en: "market", zh: "市场" }, { en: "clothes", zh: "衣服" }, { en: "shoe", zh: "鞋" }
+        ]
+      },
+      {
+        id: "j-travel",
+        title: "出行旅行",
+        words: [
+          { en: "train", zh: "火车" }, { en: "bus", zh: "公交车" }, { en: "plane", zh: "飞机" },
+          { en: "station", zh: "车站" }, { en: "airport", zh: "机场" }, { en: "hotel", zh: "酒店" },
+          { en: "trip", zh: "旅行" }, { en: "visit", zh: "参观；拜访" }, { en: "country", zh: "国家" },
+          { en: "city", zh: "城市" }, { en: "map", zh: "地图" }, { en: "ticket", zh: "票" },
+          { en: "travel", zh: "旅行" }, { en: "luggage", zh: "行李" }, { en: "tourist", zh: "游客" }
+        ]
+      },
+      {
+        id: "j-health",
+        title: "健康",
+        words: [
+          { en: "doctor", zh: "医生" }, { en: "nurse", zh: "护士" }, { en: "sick", zh: "生病的" },
+          { en: "cold", zh: "感冒" }, { en: "fever", zh: "发烧" }, { en: "medicine", zh: "药" },
+          { en: "rest", zh: "休息" }, { en: "tooth", zh: "牙齿" }, { en: "eye", zh: "眼睛" },
+          { en: "hand", zh: "手" }, { en: "body", zh: "身体" }, { en: "sport", zh: "运动" }
+        ]
+      },
+      {
+        id: "j-nature",
+        title: "自然与社会",
+        words: [
+          { en: "mountain", zh: "山" }, { en: "river", zh: "河" }, { en: "lake", zh: "湖" },
+          { en: "sea", zh: "海" }, { en: "island", zh: "岛" }, { en: "forest", zh: "森林" },
+          { en: "animal", zh: "动物" }, { en: "plant", zh: "植物" }, { en: "earth", zh: "地球" },
+          { en: "world", zh: "世界" }, { en: "environment", zh: "环境" }, { en: "air", zh: "空气" },
+          { en: "pollution", zh: "污染" }, { en: "protect", zh: "保护" }, { en: "recycle", zh: "回收" }
+        ]
+      }
+    ]
+  },
+
+  /* ===================== 高中 senior ===================== */
+  senior: {
+    label: "高中",
+    note: "核心种子词（基于新课标五级/六级及高考核心词汇框架）",
+    units: [
+      {
+        id: "s-core",
+        title: "核心词汇",
+        words: [
+          { en: "analyze", zh: "分析" }, { en: "approach", zh: "方法；接近" }, { en: "attitude", zh: "态度" },
+          { en: "benefit", zh: "益处；有益于" }, { en: "challenge", zh: "挑战" }, { en: "community", zh: "社区；群体" },
+          { en: "consider", zh: "考虑" }, { en: "consist", zh: "由…组成" }, { en: "contribute", zh: "贡献" },
+          { en: "culture", zh: "文化" }, { en: "decision", zh: "决定" }, { en: "develop", zh: "发展；开发" },
+          { en: "economic", zh: "经济的" }, { en: "effect", zh: "影响；效果" }, { en: "environment", zh: "环境" },
+          { en: "establish", zh: "建立" }, { en: "evidence", zh: "证据" }, { en: "experience", zh: "经验；经历" },
+          { en: "feature", zh: "特征" }, { en: "focus", zh: "集中" }, { en: "function", zh: "功能；起作用" },
+          { en: "global", zh: "全球的" }, { en: "identify", zh: "识别；确认" }, { en: "increase", zh: "增加" },
+          { en: "individual", zh: "个人；个体的" }, { en: "influence", zh: "影响" }, { en: "instance", zh: "例子" },
+          { en: "issue", zh: "问题；议题" }, { en: "majority", zh: "大多数" }, { en: "occur", zh: "发生" }
+        ]
+      },
+      {
+        id: "s-academic",
+        title: "学术写作",
+        words: [
+          { en: "achievement", zh: "成就" }, { en: "acquire", zh: "获得" }, { en: "adapt", zh: "适应；改编" },
+          { en: "adequate", zh: "充足的" }, { en: "apparent", zh: "明显的" }, { en: "appreciate", zh: "欣赏；感激" },
+          { en: "aspect", zh: "方面" }, { en: "assume", zh: "假定" }, { en: "available", zh: "可获得的" },
+          { en: "circumstance", zh: "情况" }, { en: "complex", zh: "复杂的" }, { en: "concept", zh: "概念" },
+          { en: "conclude", zh: "总结；得出结论" }, { en: "consequence", zh: "后果" }, { en: "constant", zh: "持续的" },
+          { en: "contrast", zh: "对比" }, { en: "create", zh: "创造" }, { en: "critical", zh: "关键的；批判的" },
+          { en: "demonstrate", zh: "证明；展示" }
+        ]
+      },
+      {
+        id: "s-abstract",
+        title: "抽象概念",
+        words: [
+          { en: "significant", zh: "重要的；显著的" }, { en: "potential", zh: "潜力；潜在的" },
+          { en: "reveal", zh: "揭示" }, { en: "shift", zh: "转变" }, { en: "source", zh: "来源" },
+          { en: "specific", zh: "具体的" }, { en: "structure", zh: "结构" }, { en: "theory", zh: "理论" },
+          { en: "threaten", zh: "威胁" }, { en: "traditional", zh: "传统的" }, { en: "transform", zh: "转变" },
+          { en: "unique", zh: "独特的" }, { en: "valid", zh: "有效的；合理的" }, { en: "value", zh: "价值" },
+          { en: "vary", zh: "变化" }, { en: "view", zh: "观点；看法" }, { en: "volume", zh: "量；体积" },
+          { en: "welfare", zh: "福利" }, { en: "whereas", zh: "然而" }, { en: "witness", zh: "见证" }
+        ]
+      },
+      {
+        id: "s-science",
+        title: "科学技术",
+        words: [
+          { en: "experiment", zh: "实验" }, { en: "hypothesis", zh: "假设" }, { en: "observation", zh: "观察" },
+          { en: "phenomenon", zh: "现象" }, { en: "principle", zh: "原则；原理" }, { en: "process", zh: "过程" },
+          { en: "result", zh: "结果" }, { en: "sample", zh: "样本" }, { en: "signal", zh: "信号" },
+          { en: "substance", zh: "物质" }, { en: "system", zh: "系统" }, { en: "technical", zh: "技术的" },
+          { en: "technology", zh: "技术" }, { en: "variable", zh: "变量" }
+        ]
+      },
+      {
+        id: "s-society",
+        title: "社会话题",
+        words: [
+          { en: "society", zh: "社会" }, { en: "economy", zh: "经济" }, { en: "education", zh: "教育" },
+          { en: "government", zh: "政府" }, { en: "industry", zh: "工业" }, { en: "institution", zh: "机构" },
+          { en: "law", zh: "法律" }, { en: "media", zh: "媒体" }, { en: "policy", zh: "政策" },
+          { en: "population", zh: "人口" }, { en: "poverty", zh: "贫困" }, { en: "progress", zh: "进步" },
+          { en: "region", zh: "地区" }, { en: "resource", zh: "资源" }, { en: "responsibility", zh: "责任" }
+        ]
+      }
+    ]
+  }
+};
+
+</script>
+  <script>
+/* english-mastery · 应用主逻辑
+ * 路由 / 渲染 / 状态 / 互动练习 / localStorage 进度
+ * 对齐 math-mastery：纯前端、hash 路由、数据驱动、离线可用
+ */
+(function () {
+  "use strict";
+
+  var METHODS = window.METHODS || [];
+  var DIMENSIONS = window.DIMENSIONS || [];
+  var GRADES = window.GRADES || [];
+  var READ = window.READ_SENTENCES || [];
+  var WORDS = window.WORD_BANK || {};
+
+  var LS_PROGRESS = "em_progress_v1";
+  var LS_STREAK = "em_streak_v1";
+
+  var state = { grade: "all", dim: null, q: "", wordGrade: "primary" };
+
+  /* ---------- 存储 ---------- */
+  function loadProgress() {
+    try { return JSON.parse(localStorage.getItem(LS_PROGRESS)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveProgress(p) { localStorage.setItem(LS_PROGRESS, JSON.stringify(p)); }
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  }
+  function loadStreak() {
+    try { return JSON.parse(localStorage.getItem(LS_STREAK)) || {}; }
+    catch (e) { return {}; }
+  }
+  function bumpStreak() {
+    var s = loadStreak();
+    var t = todayStr();
+    if (s.date === t) { s.count = (s.count || 0) + 1; }
+    else {
+      // 连续天数：昨天则 +1，否则重置为 1
+      var y = new Date(Date.now() - 86400000);
+      var yt = y.getFullYear() + "-" + (y.getMonth() + 1) + "-" + y.getDate();
+      s.days = (s.date === yt) ? ((s.days || 0) + 1) : 1;
+      s.count = 1; s.date = t;
+    }
+    localStorage.setItem(LS_STREAK, JSON.stringify(s));
+    return s;
+  }
+
+  function gradeColor(g) {
+    for (var i = 0; i < GRADES.length; i++) if (GRADES[i].key === g) return GRADES[i].color;
+    return "#1f2733";
+  }
+  function gradeLabel(g) {
+    for (var i = 0; i < GRADES.length; i++) if (GRADES[i].key === g) return GRADES[i].label;
+    return g;
+  }
+  function dimLabel(k) {
+    for (var i = 0; i < DIMENSIONS.length; i++) if (DIMENSIONS[i].key === k) return DIMENSIONS[i].label;
+    return k;
+  }
+
+  /* ---------- 工具 ---------- */
+  function el(html) {
+    var t = document.createElement("template");
+    t.innerHTML = html.trim();
+    return t.content.firstChild;
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  /* ---------- 顶部统计 + 打卡 ---------- */
+  function renderTopbar() {
+    var p = loadProgress();
+    var total = METHODS.length;
+    var done = 0; for (var k in p) if (p[k] && p[k].done) done++;
+    var s = loadStreak();
+    var streakDays = s.days || 0;
+    var bar = document.getElementById("topbar");
+    bar.innerHTML =
+      '<div class="inner">' +
+      '<div class="logo"><span class="fox">🦊</span>English-Mastery</div>' +
+      '<span class="tagline">中小学英语学习技巧 · 不枯燥地学</span>' +
+      '<span class="spacer"></span>' +
+      '<span class="streak" title="连续学习天数">🔥 连续 <b>' + streakDays + '</b> 天</span>' +
+      "</div>";
+    var stats = document.getElementById("stats");
+    if (stats) {
+      stats.innerHTML =
+        '<div class="stat">技巧总数 <b>' + total + '</b></div>' +
+        '<div class="stat">已掌握 <b>' + done + '</b></div>' +
+        '<div class="stat">完成率 <b>' + (total ? Math.round(done / total * 100) : 0) + '% </b></div>' +
+        '<div class="stat">小学 <b>' + METHODS.filter(function (m) { return m.grade === "primary"; }).length + '</b></div>' +
+        '<div class="stat">初中 <b>' + METHODS.filter(function (m) { return m.grade === "junior"; }).length + '</b></div>' +
+        '<div class="stat">高中 <b>' + METHODS.filter(function (m) { return m.grade === "senior"; }).length + '</b></div>';
+    }
+  }
+
+  /* ---------- 顶部「学习技巧 / 单词练习」切换 Tab（所有页面共用，保证能来回切） ---------- */
+  function topTabsHtml(activeView) {
+    return '<div class="top-tabs">' +
+      '<span class="top-tab ' + (activeView === "words" ? "" : "active") + '" data-view="methods">📚 学习技巧</span>' +
+      '<span class="top-tab ' + (activeView === "words" ? "active" : "") + '" data-view="words">🔤 单词练习</span>' +
+      '</div>';
+  }
+  function bindTopTabs() {
+    var root = document.getElementById("app");
+    Array.prototype.forEach.call(root.querySelectorAll(".top-tab"), function (t) {
+      t.onclick = function () {
+        if (t.getAttribute("data-view") === "words") location.hash = "#/words";
+        else location.hash = "#/";
+      };
+    });
+  }
+
+  /* ---------- 首页 ---------- */
+  function renderHome() {
+    var root = document.getElementById("app");
+    var p = loadProgress();
+
+    var gradeTabs = '<div class="grade-tabs">';
+    gradeTabs += tabHtml("all", "全部");
+    GRADES.forEach(function (g) { gradeTabs += tabHtml(g.key, g.label); });
+    gradeTabs += "</div>";
+
+    var dimChips = '<div class="dim-chips">';
+    dimChips += '<span class="chip ' + (state.dim === null ? "active" : "") + '" data-dim="">全部维度</span>';
+    DIMENSIONS.forEach(function (d) {
+      dimChips += '<span class="chip ' + (state.dim === d.key ? "active" : "") + '" data-dim="' + d.key + '">' + d.label + "</span>";
+    });
+    dimChips += "</div>";
+
+    var filters =
+      '<div class="filters">' + gradeTabs + dimChips +
+      '<input class="search" id="search" placeholder="🔍 搜技巧 / 方法 / 关键词…" value="' + esc(state.q) + '">' +
+      "</div>";
+
+    var list = METHODS.filter(function (m) {
+      if (state.grade !== "all" && m.grade !== state.grade) return false;
+      if (state.dim && m.dim !== state.dim) return false;
+      if (state.q) {
+        var q = state.q.toLowerCase();
+        var hay = (m.title + m.summary + m.dimLabel + m.gradeLabel + (m.steps || []).join("") + (m.tips || []).join("")).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+
+    var grid = '<div class="grid">';
+    if (list.length === 0) {
+      grid += '<div class="empty">没有匹配的技巧，换个关键词或维度试试 🐾</div>';
+    } else {
+      list.forEach(function (m) {
+        var isDone = p[m.id] && p[m.id].done;
+        var hasPractice = m.practice ? true : false;
+        grid +=
+          '<div class="card ' + (isDone ? "done" : "") + '" data-id="' + m.id + '">' +
+          '<span class="done-flag">✅</span>' +
+          '<div class="top"><span class="icon">' + m.icon + '</span>' +
+          '<span class="badge-grade" style="background:' + gradeColor(m.grade) + '">' + m.gradeLabel + "</span></div>" +
+          "<h3>" + esc(m.title) + "</h3>" +
+          '<p class="summary">' + esc(m.summary) + "</p>" +
+          '<div class="meta"><span class="tag">📚 ' + esc(m.dimLabel) + "</span>" +
+          (hasPractice ? '<span class="tag">🎮 可练习</span>' : "") + "</div>" +
+          '<div class="progress-mini"><i style="width:' + (isDone ? 100 : 0) + '%"></i></div>' +
+          "</div>";
+      });
+    }
+    grid += "</div>";
+
+    var isWords = (location.hash || "").indexOf("#/words") === 0;
+    var tabsHtml =
+      '<div class="top-tabs">' +
+      '<span class="top-tab ' + (isWords ? "" : "active") + '" data-view="methods">📚 学习技巧</span>' +
+      '<span class="top-tab ' + (isWords ? "active" : "") + '" data-view="words">🔤 单词练习</span>' +
+      "</div>";
+    root.innerHTML = topTabsHtml("methods") + filters + grid;
+
+    // 事件
+    Array.prototype.forEach.call(root.querySelectorAll(".grade-tab"), function (t) {
+      t.onclick = function () { state.grade = t.getAttribute("data-grade"); renderHome(); window.scrollTo(0, 0); };
+    });
+    Array.prototype.forEach.call(root.querySelectorAll(".chip"), function (c) {
+      c.onclick = function () {
+        var d = c.getAttribute("data-dim");
+        state.dim = d === "" ? null : d; renderHome(); window.scrollTo(0, 0);
+      };
+    });
+    bindTopTabs();
+    var search = document.getElementById("search");
+    if (search) search.oninput = function () { state.q = search.value; renderHomeLight(); };
+
+    Array.prototype.forEach.call(root.querySelectorAll(".card[data-id]"), function (c) {
+      c.onclick = function () { location.hash = "#/m/" + c.getAttribute("data-id"); };
+    });
+  }
+
+  function tabHtml(key, label) {
+    return '<span class="grade-tab ' + (state.grade === key ? "active" : "") + '" data-grade="' + key + '">' + label + "</span>";
+  }
+
+  // 搜索时只重渲染滤网下方，避免输入框失焦
+  function renderHomeLight() {
+    var root = document.getElementById("app");
+    var old = root.innerHTML;
+    renderHome();
+  }
+
+  /* ---------- 详情 ---------- */
+  function renderDetail(id) {
+    var m = null;
+    for (var i = 0; i < METHODS.length; i++) if (METHODS[i].id === id) m = METHODS[i];
+    var root = document.getElementById("app");
+    if (!m) { root.innerHTML = '<div class="empty">找不到该技巧 😢</div>'; return; }
+    var p = loadProgress();
+    var isDone = p[m.id] && p[m.id].done;
+
+    var stepsHtml = (m.steps || []).map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("");
+    var tipsHtml = (m.tips || []).map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("");
+
+    var videosHtml = "";
+    if (m.videos && m.videos.length) {
+      videosHtml = m.videos.map(function (v) {
+        return '<a class="video-item" href="' + esc(v.url) + '" target="_blank" rel="noopener">' +
+          '<span class="play">▶️</span><span><span class="vt">' + esc(v.title) + '</span><br>' +
+          '<span class="vu">' + esc(v.url) + "</span></span></a>";
+      }).join("");
+    }
+    if (m.bv) {
+      videosHtml += '<iframe class="video-embed" src="https://player.bilibili.com/player.html?bvid=' + esc(m.bv) +
+        '&autoplay=0" allowfullscreen scrolling="no"></iframe>';
+    }
+
+    var practiceHtml = m.practice ? renderPractice(m.practice) : "";
+    var readHtml = renderReadSection(m);
+
+    root.innerHTML =
+      '<div class="detail">' +
+      '<button class="back" id="back">← 返回技巧列表</button>' +
+      '<div class="head"><span class="icon">' + m.icon + "</span>" +
+      "<div><h2>" + esc(m.title) + "</h2>" +
+      '<p class="sub">' + esc(m.summary) + "</p></div></div>" +
+      '<div class="meta"><span class="tag" style="background:' + gradeColor(m.grade) + ';color:#fff">🎓 ' + m.gradeLabel + "</span>" +
+      '<span class="tag">📚 ' + esc(m.dimLabel) + "</span></div>" +
+      '<div class="why">🐾 <b>为什么要学这个？</b> ' + esc(m.why) + "</div>" +
+
+      '<div class="section-title"><span class="bar"></span>核心步骤</div>' +
+      '<ol class="steps">' + stepsHtml + "</ol>" +
+
+      (tipsHtml ? '<div class="section-title"><span class="bar" style="background:var(--gold)"></span>实战窍门</div><ul class="tips">' + tipsHtml + "</ul>" : "") +
+
+      (videosHtml ? '<div class="section-title"><span class="bar" style="background:var(--senior)"></span>📺 推荐视频 / 资源</div><div class="video-list">' + videosHtml + "</div>" : "") +
+
+      (practiceHtml ? '<div class="section-title"><span class="bar" style="background:var(--primary)"></span>🎮 互动小练习</div>' + practiceHtml : "") +
+
+      '<button class="mark-done ' + (isDone ? "done" : "") + '" id="markDone">' +
+      (isDone ? "✅ 已掌握（点击取消）" : "🏆 我学会啦，标记为已掌握") + "</button>" +
+
+      (m.source ? '<div class="source">📎 ' + esc(m.source) + "</div>" : "") +
+      "</div>";
+
+    var back = document.getElementById("back");
+    if (back) back.onclick = function () { history.back(); };
+
+    bindPractice(m);
+
+    var md = document.getElementById("markDone");
+    if (md) md.onclick = function () { toggleDone(m.id); };
+  }
+
+  function toggleDone(id) {
+    var p = loadProgress();
+    if (!p[id]) p[id] = {};
+    p[id].done = !p[id].done;
+    if (p[id].done) { p[id].practiced = true; bumpStreak(); if (typeof confetti === "function") confetti(); }
+    saveProgress(p);
+    renderTopbar();
+    renderDetail(id);
+  }
+
+  /* ---------- 互动练习 ---------- */
+  function renderPractice(pr) {
+    if (pr.type === "flashcard") return renderFlashcard(pr);
+    if (pr.type === "choice") return renderChoice(pr);
+    if (pr.type === "fill") return renderFill(pr);
+    if (pr.type === "checklist") return renderChecklist(pr);
+    return "";
+  }
+
+  function renderFlashcard(pr) {
+    var cards = pr.items.map(function (it, i) {
+      return '<div class="flip" data-i="' + i + '"><div class="inner">' +
+        '<div class="face front">' + esc(it.word) + '<div class="rate"><button class="no" data-r="0">不认识</button><button class="yes" data-r="1">认识</button></div></div>' +
+        '<div class="face back">' + esc(it.meaning) + "</div></div></div>";
+    }).join("");
+    return '<div class="practice"><div class="p-type">🃏 单词闪卡：点卡片翻面，再选「认识 / 不认识」自评</div>' +
+      '<div class="flashcard-deck">' + cards + "</div></div>";
+  }
+
+  function renderChoice(pr) {
+    var qs = pr.items.map(function (it, i) {
+      var opts = it.options.map(function (o, j) {
+        return '<button class="opt" data-q="' + i + '" data-o="' + j + '" data-ans="' + esc(it.answer) + '">' + esc(o) + "</button>";
+      }).join("");
+      return '<div class="q" data-q="' + i + '"><div class="qt">' + (i + 1) + ". " + esc(it.q) + '</div><div class="opts">' + opts + '</div><div class="feedback"></div></div>';
+    }).join("");
+    return '<div class="practice"><div class="p-type">✅ 选择题：选出正确答案，立刻看反馈</div>' + qs + "</div>";
+  }
+
+  function renderFill(pr) {
+    var qs = pr.items.map(function (it, i) {
+      return '<div class="fill-q" data-q="' + i + '" data-ans="' + esc(it.answer) + '">' +
+        '<div class="sentence">' + esc(it.sentence) + "</div>" +
+        '<input placeholder="填这里"><button class="check">核对</button><span class="res"></span></div>';
+    }).join("");
+    return '<div class="practice"><div class="p-type">✍️ 填空：根据句意填入正确形式</div>' + qs + "</div>";
+  }
+
+  function renderChecklist(pr) {
+    var items = pr.items.map(function (t) {
+      return "<li><input type='checkbox'> <span>" + esc(t) + "</span></li>";
+    }).join("");
+    return '<div class="practice"><div class="p-type">✅ 今日打卡清单：完成一项勾一项</div><ul class="checklist">' + items + "</ul></div>";
+  }
+
+  /* ---------- 跟读练习（Web Speech API：语音合成 + 语音识别 + 录音） ---------- */
+  function loadRead() {
+    try { return JSON.parse(localStorage.getItem(LS_READ)) || {}; } catch (e) { return {}; }
+  }
+  function saveRead(o) { localStorage.setItem(LS_READ, JSON.stringify(o)); }
+  function normWords(s) {
+    return String(s || "").toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(Boolean);
+  }
+  // 词级匹配相似度 0..1：识别词中命中原文词（按频次）的比例
+  function speechScore(recognized, target) {
+    var t = normWords(target), r = normWords(recognized);
+    if (!t.length) return 0;
+    var setT = {}, setR = {};
+    t.forEach(function (w) { setT[w] = (setT[w] || 0) + 1; });
+    r.forEach(function (w) { setR[w] = (setR[w] || 0) + 1; });
+    var hit = 0;
+    Object.keys(setR).forEach(function (w) { if (setT[w]) hit += Math.min(setT[w], setR[w]); });
+    return hit / t.length;
+  }
+  function speak(text, opts) {
+    opts = opts || {};
+    var synth = window.speechSynthesis;
+    if (!synth) { alert("当前浏览器不支持语音朗读，请换 Chrome / Edge"); return; }
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = opts.lang || "en-US";
+    u.rate = opts.rate || 1;
+    synth.speak(u);
+  }
+  function updateReadSummary(id, total) {
+    var sum = document.getElementById("readSummary");
+    if (!sum) return;
+    var o = loadRead();
+    var done = (o[id] || []).length;
+    if (total && done >= total) sum.innerHTML = "🎉 跟读通关！" + done + "/" + total + " 句都达标啦";
+    else sum.textContent = "已完成 " + done + "/" + total + " 句跟读（识别匹配度 ≥ 60% 算达标）";
+  }
+  function markReadDone(id, i, ok) {
+    if (!ok) return;
+    var o = loadRead();
+    if (!o[id]) o[id] = [];
+    if (o[id].indexOf(i) < 0) { o[id].push(i); saveRead(o); }
+    updateReadSummary(id, (READ[id] || []).length);
+  }
+  function renderReadSection(m) {
+    var list = READ[m.id] || [];
+    if (!list.length) return "";
+    var rows = list.map(function (s, i) {
+      return '<div class="read-row" data-i="' + i + '">' +
+        '<div class="read-en">' + esc(s.en) + '</div>' +
+        '<div class="read-zh">' + (s.zh ? esc(s.zh) : "") + '</div>' +
+        '<div class="read-btns">' +
+          '<button class="rb-play" data-i="' + i + '">▶ 听示范</button>' +
+          '<button class="rb-record" data-i="' + i + '">🎤 跟我读</button>' +
+          '<button class="rb-tape" data-i="' + i + '">🔴 录我的声音</button>' +
+        '</div>' +
+        '<div class="read-fb" data-i="' + i + '"></div>' +
+      '</div>';
+    }).join("");
+    return '<div class="section-title"><span class="bar" style="background:var(--primary)"></span>🎤 跟读练习</div>' +
+      '<div class="read-box">' +
+        '<div class="read-toolbar">口音：' +
+          '<select id="readAccent"><option value="en-US">美音</option><option value="en-GB">英音</option></select>' +
+          '<label class="read-slow"><input type="checkbox" id="readSlow"> 慢速</label>' +
+          '<span class="read-hint">跟着读，语音识别会给你打分（推荐 Chrome / Edge）</span>' +
+        '</div>' + rows +
+        '<div class="read-summary" id="readSummary"></div>' +
+      '</div>';
+  }
+  function bindRead(m) {
+    var list = READ[m.id] || [];
+    if (!list.length) return;
+    var synth = window.speechSynthesis;
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var MR = (window.MediaRecorder && navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+    var accentSel = document.getElementById("readAccent");
+    var slowChk = document.getElementById("readSlow");
+
+    Array.prototype.forEach.call(document.querySelectorAll(".rb-play"), function (b) {
+      b.onclick = function () { speak(list[+b.getAttribute("data-i")].en, { lang: accentSel ? accentSel.value : "en-US", rate: (slowChk && slowChk.checked) ? 0.7 : 1 }); };
+    });
+
+    // 录音回放（MediaRecorder）
+    if (!MR) {
+      Array.prototype.forEach.call(document.querySelectorAll(".rb-tape"), function (b) {
+        b.disabled = true; b.style.opacity = ".5"; b.title = "当前浏览器不支持录音";
+      });
+    } else {
+      Array.prototype.forEach.call(document.querySelectorAll(".rb-tape"), function (b) {
+        b.onclick = function () {
+          var i = +b.getAttribute("data-i");
+          var fb = document.querySelector('.read-fb[data-i="' + i + '"]');
+          if (b.getAttribute("data-rec") === "1") {
+            if (window._emRec && window._emRec.state === "recording") window._emRec.stop();
+            b.setAttribute("data-rec", "0"); b.textContent = "🔴 录我的声音";
+            return;
+          }
+          navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+            var chunks = [];
+            var mr = new MediaRecorder(stream);
+            window._emRec = mr;
+            mr.ondataavailable = function (e) { if (e.data.size) chunks.push(e.data); };
+            mr.onstop = function () {
+              stream.getTracks().forEach(function (t) { t.stop(); });
+              var blob = new Blob(chunks, { type: mr.mimeType || "audio/webm" });
+              var url = URL.createObjectURL(blob);
+              fb.innerHTML = "";
+              fb.appendChild(document.createTextNode("我的录音："));
+              var au = document.createElement("audio"); au.controls = true; au.src = url;
+              fb.appendChild(au); fb.className = "read-fb ok";
+            };
+            mr.start();
+            b.setAttribute("data-rec", "1"); b.textContent = "⏹ 停止录制";
+          }).catch(function (err) {
+            fb.textContent = "麦克风打不开：" + err.message; fb.className = "read-fb low";
+          });
+        };
+      });
+    }
+
+    // 语音识别打分
+    if (!SR) {
+      Array.prototype.forEach.call(document.querySelectorAll(".rb-record"), function (b) {
+        b.disabled = true; b.style.opacity = ".5";
+        b.title = "当前浏览器不支持语音识别，请用 Chrome / Edge，并在本机(localhost)或 https 下打开";
+      });
+    } else {
+      Array.prototype.forEach.call(document.querySelectorAll(".rb-record"), function (b) {
+        b.onclick = function () {
+          var i = +b.getAttribute("data-i");
+          var fb = document.querySelector('.read-fb[data-i="' + i + '"]');
+          var rec = new SR();
+          rec.lang = accentSel ? accentSel.value : "en-US";
+          rec.interimResults = false; rec.maxAlternatives = 1;
+          b.textContent = "🎙 听…"; b.disabled = true;
+          rec.onresult = function (e) {
+            var txt = e.results[0][0].transcript;
+            var sc = speechScore(txt, list[i].en);
+            var stars = Math.max(1, Math.round(sc * 5));
+            var starStr = ""; for (var k = 0; k < 5; k++) starStr += (k < stars ? "⭐" : "☆");
+            fb.innerHTML = "你说：<b>" + esc(txt) + "</b><br>匹配度 " + Math.round(sc * 100) + "%　" + starStr;
+            fb.className = "read-fb " + (sc >= 0.6 ? "ok" : "low");
+            markReadDone(m.id, i, sc >= 0.6);
+          };
+          rec.onerror = function (e) { fb.textContent = "识别失败：" + e.error; fb.className = "read-fb low"; };
+          rec.onend = function () { b.textContent = "🎤 跟我读"; b.disabled = false; };
+          try { rec.start(); } catch (err) { fb.textContent = "无法启动麦克风：" + err.message; b.textContent = "🎤 跟我读"; b.disabled = false; }
+        };
+      });
+    }
+    updateReadSummary(m.id, list.length);
+  }
+
+  function bindPractice(m) {
+    var root = document.getElementById("app");
+    // flashcard
+    Array.prototype.forEach.call(root.querySelectorAll(".flip"), function (f) {
+      f.onclick = function (e) {
+        if (e.target.tagName === "BUTTON") return;
+        f.classList.toggle("flipped");
+      };
+      Array.prototype.forEach.call(f.querySelectorAll(".rate button"), function (b) {
+        b.onclick = function (e) {
+          e.stopPropagation();
+          f.style.opacity = b.getAttribute("data-r") === "1" ? ".55" : "1";
+          f.classList.add("flipped");
+        };
+      });
+    });
+    // choice
+    Array.prototype.forEach.call(root.querySelectorAll(".q .opt"), function (o) {
+      o.onclick = function () {
+        var q = o.parentNode.parentNode;
+        if (q.querySelector(".feedback").textContent) return;
+        var ans = o.getAttribute("data-ans");
+        var picked = o.textContent;
+        Array.prototype.forEach.call(q.querySelectorAll(".opt"), function (x) {
+          if (x.textContent === ans) x.classList.add("right");
+          else x.classList.add("wrong");
+        });
+        var fb = q.querySelector(".feedback");
+        fb.textContent = (picked === ans) ? "🎉 答对了！" : "💡 正确答案：" + ans;
+        fb.style.color = (picked === ans) ? "#1c7a4d" : "#b23b3b";
+      };
+    });
+    // fill
+    Array.prototype.forEach.call(root.querySelectorAll(".fill-q .check"), function (b) {
+      b.onclick = function () {
+        var q = b.parentNode;
+        var inp = q.querySelector("input");
+        var ans = q.getAttribute("data-ans").trim().toLowerCase();
+        var val = inp.value.trim().toLowerCase();
+        var res = q.querySelector(".res");
+        if (val === ans) { res.textContent = "✅ 正确"; res.style.color = "#1c7a4d"; }
+        else { res.textContent = "✏️ 应为 " + ans; res.style.color = "#b23b3b"; }
+      };
+    });
+  }
+
+  /* ---------- 撒花 ---------- */
+  function confetti() {
+    var c = el('<div class="confetti"></div>');
+    var colors = ["#2bb673", "#2f80ed", "#eb5757", "#f2b705", "#9b51e0", "#00bcd4"];
+    for (var i = 0; i < 60; i++) {
+      var p = el("<i></i>");
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.background = colors[i % colors.length];
+      p.style.animationDelay = (Math.random() * 0.4) + "s";
+      p.style.transform = "rotate(" + (Math.random() * 360) + "deg)";
+      c.appendChild(p);
+    }
+    document.body.appendChild(c);
+    setTimeout(function () { if (c.parentNode) c.parentNode.removeChild(c); }, 2200);
+  }
+
+  /* ---------- 单词词库 ---------- */
+  function gradeTabsHtml(cur) {
+    var html = '<div class="grade-tabs">';
+    html += '<span class="grade-tab ' + (cur === "primary" ? "active" : "") + '" data-grade="primary">小学</span>';
+    html += '<span class="grade-tab ' + (cur === "junior" ? "active" : "") + '" data-grade="junior">初中</span>';
+    html += '<span class="grade-tab ' + (cur === "senior" ? "active" : "") + '" data-grade="senior">高中</span>';
+    html += "</div>";
+    return html;
+  }
+  function renderWordsHome(grade) {
+    var root = document.getElementById("app");
+    var g = WORDS[grade] || WORDS.primary;
+    var cards = (g.units || []).map(function (u) {
+      return '<div class="card unit-card" data-grade="' + grade + '" data-unit="' + u.id + '">' +
+        '<div class="top"><span class="icon">📘</span>' +
+        '<span class="badge-grade" style="background:' + gradeColor(grade) + '">' + g.label + "</span></div>" +
+        "<h3>" + esc(u.title) + "</h3>" +
+        '<p class="summary">共 ' + u.words.length + " 个词</p>" +
+        (g.note ? '<div class="meta"><span class="tag">📎 ' + esc(g.note) + "</span></div>" : "") +
+        "</div>";
+    }).join("");
+    root.innerHTML =
+      topTabsHtml("words") +
+      gradeTabsHtml(grade) +
+      '<div class="words-intro">选一个单元开始练：闪卡记词义、拼写自测、跟读练发音。</div>' +
+      '<div class="grid">' + (cards || '<div class="empty">该年级暂无词库</div>') + "</div>";
+    bindTopTabs();
+    Array.prototype.forEach.call(root.querySelectorAll(".grade-tab"), function (t) {
+      t.onclick = function () { state.wordGrade = t.getAttribute("data-grade"); location.hash = "#/words/" + state.wordGrade; };
+    });
+    Array.prototype.forEach.call(root.querySelectorAll(".unit-card"), function (c) {
+      c.onclick = function () { location.hash = "#/words/" + c.getAttribute("data-grade") + "/" + c.getAttribute("data-unit"); };
+    });
+  }
+  function renderWordUnit(grade, unitId) {
+    var root = document.getElementById("app");
+    var g = WORDS[grade] || WORDS.primary;
+    var unit = null;
+    (g.units || []).forEach(function (u) { if (u.id === unitId) unit = u; });
+    if (!unit) { root.innerHTML = '<div class="empty">找不到该单元 😢</div>'; return; }
+    var words = unit.words || [];
+
+    var flash = words.map(function (w, i) {
+      return '<div class="flip" data-i="' + i + '"><div class="inner">' +
+        '<div class="face front">' + esc(w.en) + '<div class="rate"><button class="show-zh" data-i="' + i + '">看中文</button></div></div>' +
+        '<div class="face back">' + esc(w.zh) + "</div></div></div>";
+    }).join("");
+
+    root.innerHTML =
+      topTabsHtml("words") +
+      '<div class="detail words-detail">' +
+      '<button class="back" id="back">← 返回单元列表</button>' +
+      '<div class="head"><span class="icon">📘</span><div><h2>' + esc(unit.title) + '</h2>' +
+      '<p class="sub">' + g.label + " · 共 " + words.length + " 个词</p></div></div>" +
+      (g.note ? '<div class="why">📎 ' + esc(g.note) + "</div>" : "") +
+
+      '<div class="read-toolbar">口音：' +
+        '<select id="wordAccent"><option value="en-US">美音</option><option value="en-GB">英音</option></select>' +
+        '<label class="read-slow"><input type="checkbox" id="wordSlow"> 慢速</label>' +
+        '<span class="read-hint">听+跟读可练发音（推荐 Chrome / Edge，localhost 或 https 下可用）</span>' +
+      "</div>" +
+
+      '<div class="mode-tabs">' +
+        '<span class="mode-tab active" data-mode="flash">🃏 闪卡</span>' +
+        '<span class="mode-tab" data-mode="spell">✍️ 拼写自测</span>' +
+        '<span class="mode-tab" data-mode="read">🎤 跟读</span>' +
+      '</div>' +
+
+      '<div class="mode-pane" id="pane-flash" data-mode="flash">' +
+        '<div class="section-title"><span class="bar"></span>🃏 闪卡：点卡片翻面看中文</div>' +
+        '<div class="flashcard-deck">' + flash + "</div>" +
+      '</div>' +
+
+      '<div class="mode-pane" id="pane-spell" data-mode="spell" style="display:none">' +
+        '<div class="section-title"><span class="bar" style="background:var(--gold)"></span>✍️ 拼写自测：看中文写英文</div>' +
+        '<div class="run-box" id="spellRun"></div>' +
+      '</div>' +
+
+      '<div class="mode-pane" id="pane-read" data-mode="read" style="display:none">' +
+        '<div class="section-title"><span class="bar" style="background:var(--primary)"></span>🎤 跟读：听示范后跟读打分</div>' +
+        '<div class="run-box" id="readRun"></div>' +
+      '</div>' +
+      "</div>";
+
+    var back = document.getElementById("back");
+    if (back) back.onclick = function () { location.hash = "#/words/" + grade; };
+
+    bindTopTabs();
+    bindWordUnit(grade, unit);
+  }
+  function bindWordUnit(grade, unit) {
+    var words = unit.words || [];
+    var accentSel = document.getElementById("wordAccent");
+    var slowChk = document.getElementById("wordSlow");
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    function opt() { return { lang: accentSel ? accentSel.value : "en-US", rate: (slowChk && slowChk.checked) ? 0.7 : 1 }; }
+
+    // 模式（闪卡 / 拼写 / 跟读）切换：一次只显示一个，页面不再被长列表撑爆
+    Array.prototype.forEach.call(document.querySelectorAll(".mode-tab"), function (t) {
+      t.onclick = function () {
+        var mode = t.getAttribute("data-mode");
+        Array.prototype.forEach.call(document.querySelectorAll(".mode-tab"), function (x) { x.classList.toggle("active", x === t); });
+        Array.prototype.forEach.call(document.querySelectorAll(".mode-pane"), function (p) {
+          p.style.display = (p.getAttribute("data-mode") === mode) ? "" : "none";
+        });
+        if (mode === "spell") renderSpellGroup(0);
+        if (mode === "read") renderReadGroup(0);
+      };
+    });
+
+    // 闪卡翻面
+    Array.prototype.forEach.call(document.querySelectorAll(".flip"), function (f) {
+      f.onclick = function (e) {
+        if (e.target.tagName === "BUTTON") return;
+        f.classList.toggle("flipped");
+      };
+      Array.prototype.forEach.call(f.querySelectorAll(".show-zh"), function (b) {
+        b.onclick = function (e) { e.stopPropagation(); f.classList.add("flipped"); };
+      });
+    });
+
+    // 拼写自测：一组一组（每页 GROUP 个），可逐题核对或一键核对本组
+    var spellRun = document.getElementById("spellRun");
+    var GROUP = 5;
+    var spellPage = 0;
+    function renderSpellGroup(page) {
+      if (!spellRun || !words.length) return;
+      var total = Math.ceil(words.length / GROUP);
+      spellPage = Math.max(0, Math.min(total - 1, page));
+      var start = spellPage * GROUP;
+      var slice = words.slice(start, start + GROUP);
+      var rows = slice.map(function (w, k) {
+        var gi = start + k;
+        return '<div class="spell-row" data-ans="' + esc(w.en) + '">' +
+          '<span class="sp-no">' + (gi + 1) + '</span>' +
+          '<span class="sp-zh">' + esc(w.zh) + "</span>" +
+          '<input class="sp-in" placeholder="拼写出英文" autocomplete="off">' +
+          '<button class="check sp-check">核对</button>' +
+          '<span class="res sp-res"></span>' +
+        "</div>";
+      }).join("");
+      spellRun.innerHTML =
+        '<div class="run-head">第 <span class="run-idx">' + (spellPage + 1) + "</span> / " + total + " 组 · 本组 " + slice.length + " 个</div>" +
+        '<div class="spell-group">' + rows + "</div>" +
+        '<div class="run-nav">' +
+        '<button class="ghost" id="spellPrev"' + (spellPage === 0 ? " disabled" : "") + ">← 上一组</button>" +
+        '<button class="check-all" id="spellAll">核对本组</button>' +
+        '<button class="ghost" id="spellNext"' + (spellPage >= total - 1 ? " disabled" : "") + ">下一组 →</button>" +
+        "</div>";
+      Array.prototype.forEach.call(spellRun.querySelectorAll(".spell-row"), function (row) {
+        var btn = row.querySelector(".sp-check");
+        var inp = row.querySelector(".sp-in");
+        var res = row.querySelector(".sp-res");
+        if (inp) inp.onkeydown = function (e) { if (e.key === "Enter") btn.click(); };
+        if (btn) btn.onclick = function () {
+          var ans = row.getAttribute("data-ans").trim().toLowerCase();
+          var val = inp.value.trim().toLowerCase();
+          if (val === ans) { res.textContent = "✅ 正确"; res.style.color = "#1c7a4d"; }
+          else { res.textContent = "✏️ 应为 " + row.getAttribute("data-ans"); res.style.color = "#b23b3b"; }
+        };
+      });
+      var all = document.getElementById("spellAll");
+      if (all) all.onclick = function () {
+        Array.prototype.forEach.call(spellRun.querySelectorAll(".spell-row"), function (row) {
+          var b = row.querySelector(".sp-check"); if (b) b.click();
+        });
+      };
+      var prev = document.getElementById("spellPrev");
+      var next = document.getElementById("spellNext");
+      if (prev && spellPage > 0) prev.onclick = function () { renderSpellGroup(spellPage - 1); };
+      if (next && spellPage < total - 1) next.onclick = function () { renderSpellGroup(spellPage + 1); };
+    }
+
+    // 跟读：一组一组（每页 GROUP 个），每行独立听示范 + 跟读打分
+    var readRun = document.getElementById("readRun");
+    var readPage = 0;
+    function renderReadGroup(page) {
+      if (!readRun || !words.length) return;
+      var total = Math.ceil(words.length / GROUP);
+      readPage = Math.max(0, Math.min(total - 1, page));
+      var start = readPage * GROUP;
+      var slice = words.slice(start, start + GROUP);
+      var rows = slice.map(function (w, k) {
+        var gi = start + k;
+        return '<div class="read-row-word" data-i="' + gi + '">' +
+          '<span class="rw-no">' + (gi + 1) + '</span>' +
+          '<div class="rw-text"><span class="rw-en">' + esc(w.en) + '</span> <span class="rw-zh">(' + esc(w.zh) + ")</span></div>" +
+          '<div class="rw-btns">' +
+            '<button class="rb-play" data-i="' + gi + '">🔊 听</button>' +
+            '<button class="rb-record" data-i="' + gi + '">🎤 跟读</button>' +
+          "</div>" +
+          '<div class="read-fb" data-i="' + gi + '"></div>' +
+        "</div>";
+      }).join("");
+      readRun.innerHTML =
+        '<div class="run-head">第 <span class="run-idx">' + (readPage + 1) + "</span> / " + total + " 组 · 本组 " + slice.length + " 个</div>" +
+        '<div class="read-group">' + rows + "</div>" +
+        '<div class="run-nav">' +
+        '<button class="ghost" id="readPrev"' + (readPage === 0 ? " disabled" : "") + ">← 上一组</button>" +
+        '<button class="ghost" id="readNext"' + (readPage >= total - 1 ? " disabled" : "") + ">下一组 →</button>" +
+        "</div>";
+      Array.prototype.forEach.call(readRun.querySelectorAll(".rb-play"), function (b) {
+        b.onclick = function () { speak(words[+b.getAttribute("data-i")].en, opt()); };
+      });
+      Array.prototype.forEach.call(readRun.querySelectorAll(".rb-record"), function (b) {
+        var i = +b.getAttribute("data-i");
+        var fb = readRun.querySelector('.read-fb[data-i="' + i + '"]');
+        if (!SR) { b.disabled = true; b.style.opacity = ".5"; b.title = "当前浏览器不支持语音识别，请用 Chrome / Edge，并在本机(localhost)或 https 下打开"; }
+        else {
+          b.onclick = function () {
+            var rec = new SR();
+            rec.lang = accentSel ? accentSel.value : "en-US";
+            rec.interimResults = false; rec.maxAlternatives = 1;
+            b.textContent = "🎙 听…"; b.disabled = true;
+            rec.onresult = function (e) {
+              var txt = e.results[0][0].transcript;
+              var sc = speechScore(txt, words[i].en);
+              var stars = Math.max(1, Math.round(sc * 5));
+              var starStr = ""; for (var k = 0; k < 5; k++) starStr += (k < stars ? "⭐" : "☆");
+              fb.innerHTML = "你说：<b>" + esc(txt) + "</b><br>匹配度 " + Math.round(sc * 100) + "%　" + starStr;
+              fb.className = "read-fb " + (sc >= 0.6 ? "ok" : "low");
+            };
+            rec.onerror = function (e) { fb.textContent = "识别失败：" + e.error; fb.className = "read-fb low"; };
+            rec.onend = function () { b.textContent = "🎤 跟读"; b.disabled = false; };
+            try { rec.start(); } catch (err) { fb.textContent = "无法启动麦克风：" + err.message; b.textContent = "🎤 跟读"; b.disabled = false; }
+          };
+        }
+      });
+      var prev = document.getElementById("readPrev");
+      var next = document.getElementById("readNext");
+      if (prev && readPage > 0) prev.onclick = function () { renderReadGroup(readPage - 1); };
+      if (next && readPage < total - 1) next.onclick = function () { renderReadGroup(readPage + 1); };
+    }
+  }
+
+  /* ---------- 路由 ---------- */
+  function route() {
+    var h = location.hash || "#/";
+    if (h.indexOf("#/m/") === 0) {
+      renderDetail(h.slice(4));
+    } else if (h.indexOf("#/words") === 0) {
+      renderWords(h);
+    } else {
+      renderHome();
+    }
+    renderTopbar();
+  }
+  function renderWords(hashStr) {
+    var h = hashStr || "#/words";
+    var parts = h.replace(/^#\/words\/?/, "").split("/").filter(Boolean);
+    var grade = parts[0] || state.wordGrade || "primary";
+    state.wordGrade = grade;
+    if (parts[1]) renderWordUnit(grade, parts[1]);
+    else renderWordsHome(grade);
+  }
+
+  window.addEventListener("hashchange", route);
+  document.addEventListener("DOMContentLoaded", function () {
+    // 注入顶栏与统计容器
+    var top = el('<div class="topbar" id="topbar"></div>');
+    document.body.insertBefore(top, document.body.firstChild);
+    var wrap = el('<div class="wrap"><div class="hero"><h1>🦊 中小学英语学习技巧归档</h1>' +
+      '<p>把全网各平台的学习方法技巧，按 小学 / 初中 / 高中 + 能力维度 归档分类，配视频、配互动练习，让孩子学英语不那么枯燥。</p>' +
+      '<div class="stat-row" id="stats"></div></div><div id="app"></div>' +
+      '<div class="foot">English-Mastery · 数据驱动 · 纯前端离线可用 · 参考 math-mastery 架构 · MIT</div></div>');
+    document.body.appendChild(wrap);
+    route();
+  });
+})();
+
+</script>
+</body>
+</html>
