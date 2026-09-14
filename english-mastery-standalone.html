@@ -331,6 +331,56 @@ a:hover { text-decoration: underline; }
 .rw-btns .rb-record { border: none; background: var(--primary); color: #fff; border-radius: 8px; padding: 7px 12px; cursor: pointer; font-weight: 700; font-size: 13px; }
 .rw-btns button:disabled { opacity: .5; cursor: not-allowed; }
 .read-row-word .read-fb { grid-column: 1 / -1; margin-top: 2px; }
+/* ---------- 拼读拆解（6 步） ---------- */
+.ph-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.ph-word { font-size: 26px; font-weight: 800; color: var(--ink); }
+.ph-zh { font-size: 14px; color: var(--muted); font-weight: 600; }
+.ph-badge { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.ph-badge.ok { background: #e6f7ee; color: #1c7a4d; border: 1px solid #9fe0c0; }
+.ph-badge.rule { background: #fff5e0; color: #8a6d00; border: 1px solid #f3e2b3; }
+.ph-stepbar { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 12px; }
+.ph-step { font-size: 13px; font-weight: 700; padding: 6px 10px; border-radius: 999px; background: #eef1f5; color: #556; cursor: pointer; user-select: none; transition: all .15s; }
+.ph-step.done { background: #e6f0ff; color: #2f80ed; }
+.ph-step.active { background: var(--senior); color: #fff; }
+.ph-body { min-height: 120px; }
+.ph-learn-word, .ph-big { font-size: 30px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+.ph-syl { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 4px; letter-spacing: .5px; }
+.ph-syl .dot { color: var(--muted); margin: 0 2px; }
+.ph-ipa { font-size: 18px; color: var(--junior); font-weight: 700; margin-bottom: 10px; font-family: "Lucida Sans Unicode", "Segoe UI", sans-serif; }
+.ph-play { border: none; background: var(--junior); color: #fff; border-radius: 10px; padding: 9px 16px; cursor: pointer; font-weight: 700; font-size: 14px; margin-top: 4px; transition: filter .12s; }
+.ph-play:hover { filter: brightness(1.05); }
+.ph-rec { border: none; background: var(--primary); color: #fff; border-radius: 10px; padding: 9px 16px; cursor: pointer; font-weight: 700; font-size: 14px; margin-top: 4px; }
+.ph-rec:disabled { opacity: .5; cursor: not-allowed; }
+.ph-read-btns { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.ph-map { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 10px; }
+.ph-grapheme { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px; padding: 8px 6px; background: #f7f9fb; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; transition: all .12s; }
+.ph-grapheme:hover { border-color: #c9ddff; background: #eef4ff; }
+.ph-grapheme.silent { opacity: .6; cursor: default; }
+.ph-g { font-size: 18px; font-weight: 800; color: var(--ink); }
+.ph-s { font-size: 14px; color: var(--junior); font-weight: 700; }
+.ph-a { font-size: 11px; color: var(--muted); }
+.ph-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+.ph-q { font-size: 15px; font-weight: 700; color: var(--ink); margin: 6px 0 10px; }
+.ph-choices { display: flex; flex-direction: column; gap: 8px; }
+.ph-choice { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px; cursor: pointer; font-size: 16px; font-weight: 700; background: var(--bg); text-align: left; transition: all .12s; }
+.ph-choice:hover:not(:disabled) { border-color: #c9ddff; }
+.ph-choice.right { background: #e6f7ee; border-color: #9fe0c0; color: #1c7a4d; }
+.ph-choice.wrong { background: #fdeaea; border-color: #f3b5b5; color: #b23b3b; }
+.ph-choice:disabled { cursor: default; }
+.ph-split { display: flex; flex-wrap: wrap; align-items: center; gap: 0; font-size: 22px; font-weight: 800; margin: 8px 0; }
+.ph-tile { padding: 6px 4px; background: #eef4ff; border: 1px solid #c9ddff; border-radius: 8px; margin: 0 1px; color: var(--ink); }
+.ph-gap { padding: 6px 6px; color: var(--muted); cursor: pointer; user-select: none; border-radius: 8px; transition: all .12s; }
+.ph-gap.on { color: #fff; background: var(--senior); }
+.ph-split-preview { font-size: 15px; font-weight: 700; color: var(--ink); min-height: 22px; margin: 4px 0 8px; }
+.ph-syl-blocks { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0; }
+.ph-syl-block { font-size: 22px; font-weight: 800; color: var(--primary); background: #eef4ff; border: 1px solid #c9ddff; border-radius: 10px; padding: 8px 14px; }
+.ph-arrow { color: var(--muted); font-weight: 800; }
+.ph-spell-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ph-spell-in { flex: 1; min-width: 180px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 15px; outline: none; }
+.ph-spell-in:focus { border-color: var(--junior); }
+.ph-spell-row .check { border: none; background: var(--junior); color: #fff; border-radius: 10px; padding: 10px 18px; cursor: pointer; font-weight: 700; }
+.ph-spell-row .res { font-weight: 700; }
+.ph-counter { font-size: 13px; color: var(--muted); font-weight: 700; margin: 0 4px; }
 
 </style>
 </head>
@@ -1789,6 +1839,392 @@ window.WORD_BANK = {
 
 </script>
   <script>
+/*
+ * english-mastery · 自然拼读数据与规则引擎（PHONICS）
+ * 为「🔤 拼读拆解」提供每个词的四件事：
+ *   1) 音节切分（yes·ter·day）  2) 音标（/ˈjestədeɪ/）
+ *   3) 音素序列（/j/ /e/ /s/ /t/ /ə/ /d/ /eɪ/）  4) 自然拼读映射（字母组合 → 发音）
+ *
+ * ⚠️ 数据准确度声明（重要，请勿隐瞒使用者）：
+ *   - window.PHONICS：**人工逐词校对**的高频基础词（音标按英式/课标常用记法），
+ *     每条都满足「g 里所有字母组合按顺序拼起来 == 该单词本身」，可被 tools/check_phonics.js 自动校验。
+ *   - 其余单词由下方**规则引擎**按自然拼读规则推导（开闭音节、magic-e、常见字母组合），
+ *     结果标记 src:"rule"，界面上显示「规则推导 · 近似」徽标。
+ *     英语存在大量不规则词，规则推导**可能出错**，仅供参考，不作为权威音标。
+ *   - 要 100% 准确，请以词典/教材音标为准，并把校对好的词条补进 window.PHONICS。
+ *
+ * 字段：s = 音节数组；i = 音标；g = [[字母组合, 音标], ...]（音标 "" 表示不发音）
+ */
+(function () {
+  "use strict";
+
+  /* ============================================================
+   * 一、人工校对词表（优先级最高）
+   * ============================================================ */
+  window.PHONICS = {
+    /* —— 人称代词 / be 动词 / 冠词 / 连词 —— */
+    "i": { s: ["I"], i: "/aɪ/", g: [["I", "/aɪ/"]] },
+    "you": { s: ["you"], i: "/juː/", g: [["y", "/j/"], ["ou", "/uː/"]] },
+    "he": { s: ["he"], i: "/hiː/", g: [["h", "/h/"], ["e", "/iː/"]] },
+    "she": { s: ["she"], i: "/ʃiː/", g: [["sh", "/ʃ/"], ["e", "/iː/"]] },
+    "we": { s: ["we"], i: "/wiː/", g: [["w", "/w/"], ["e", "/iː/"]] },
+    "they": { s: ["they"], i: "/ðeɪ/", g: [["th", "/ð/"], ["ey", "/eɪ/"]] },
+    "am": { s: ["am"], i: "/æm/", g: [["a", "/æ/"], ["m", "/m/"]] },
+    "is": { s: ["is"], i: "/ɪz/", g: [["i", "/ɪ/"], ["s", "/z/"]] },
+    "are": { s: ["are"], i: "/ɑː/", g: [["a", "/ɑː/"], ["re", ""]] },
+    "have": { s: ["have"], i: "/hæv/", g: [["h", "/h/"], ["a", "/æ/"], ["ve", "/v/"]] },
+    "has": { s: ["has"], i: "/hæz/", g: [["h", "/h/"], ["a", "/æ/"], ["s", "/z/"]] },
+    "a": { s: ["a"], i: "/ə/", g: [["a", "/ə/"]] },
+    "an": { s: ["an"], i: "/ən/", g: [["a", "/ə/"], ["n", "/n/"]] },
+    "the": { s: ["the"], i: "/ðə/", g: [["th", "/ð/"], ["e", "/ə/"]] },
+    "and": { s: ["and"], i: "/ænd/", g: [["a", "/æ/"], ["n", "/n/"], ["d", "/d/"]] },
+
+    /* —— 颜色 —— */
+    "red": { s: ["red"], i: "/red/", g: [["r", "/r/"], ["e", "/e/"], ["d", "/d/"]] },
+    "blue": { s: ["blue"], i: "/bluː/", g: [["b", "/b/"], ["l", "/l/"], ["ue", "/uː/"]] },
+    "green": { s: ["green"], i: "/ɡriːn/", g: [["g", "/ɡ/"], ["r", "/r/"], ["ee", "/iː/"], ["n", "/n/"]] },
+    "yellow": { s: ["yel", "low"], i: "/ˈjeləʊ/", g: [["y", "/j/"], ["e", "/e/"], ["ll", "/l/"], ["ow", "/əʊ/"]] },
+
+    /* —— 数字 —— */
+    "one": { s: ["one"], i: "/wʌn/", g: [["o", "/wʌ/"], ["n", "/n/"], ["e", ""]] },
+    "two": { s: ["two"], i: "/tuː/", g: [["t", "/t/"], ["w", ""], ["o", "/uː/"]] },
+    "three": { s: ["three"], i: "/θriː/", g: [["th", "/θ/"], ["r", "/r/"], ["ee", "/iː/"]] },
+    "four": { s: ["four"], i: "/fɔː/", g: [["f", "/f/"], ["our", "/ɔː/"]] },
+    "five": { s: ["five"], i: "/faɪv/", g: [["f", "/f/"], ["i", "/aɪ/"], ["ve", "/v/"]] },
+    "six": { s: ["six"], i: "/sɪks/", g: [["s", "/s/"], ["i", "/ɪ/"], ["x", "/ks/"]] },
+    "seven": { s: ["sev", "en"], i: "/ˈsevn/", g: [["s", "/s/"], ["e", "/e/"], ["v", "/v/"], ["e", "/ə/"], ["n", "/n/"]] },
+    "eight": { s: ["eight"], i: "/eɪt/", g: [["eigh", "/eɪ/"], ["t", "/t/"]] },
+    "nine": { s: ["nine"], i: "/naɪn/", g: [["n", "/n/"], ["i", "/aɪ/"], ["ne", "/n/"]] },
+    "ten": { s: ["ten"], i: "/ten/", g: [["t", "/t/"], ["e", "/e/"], ["n", "/n/"]] },
+
+    /* —— 基础名词 —— */
+    "apple": { s: ["ap", "ple"], i: "/ˈæpəl/", g: [["a", "/æ/"], ["pp", "/p/"], ["le", "/əl/"]] },
+    "book": { s: ["book"], i: "/bʊk/", g: [["b", "/b/"], ["oo", "/ʊ/"], ["k", "/k/"]] },
+    "cat": { s: ["cat"], i: "/kæt/", g: [["c", "/k/"], ["a", "/æ/"], ["t", "/t/"]] },
+    "dog": { s: ["dog"], i: "/dɒɡ/", g: [["d", "/d/"], ["o", "/ɒ/"], ["g", "/ɡ/"]] },
+    "pen": { s: ["pen"], i: "/pen/", g: [["p", "/p/"], ["e", "/e/"], ["n", "/n/"]] },
+    "bag": { s: ["bag"], i: "/bæɡ/", g: [["b", "/b/"], ["a", "/æ/"], ["g", "/ɡ/"]] },
+
+    /* —— 动物 —— */
+    "bird": { s: ["bird"], i: "/bɜːd/", g: [["b", "/b/"], ["ir", "/ɜː/"], ["d", "/d/"]] },
+    "fish": { s: ["fish"], i: "/fɪʃ/", g: [["f", "/f/"], ["i", "/ɪ/"], ["sh", "/ʃ/"]] },
+    "pig": { s: ["pig"], i: "/pɪɡ/", g: [["p", "/p/"], ["i", "/ɪ/"], ["g", "/ɡ/"]] },
+    "cow": { s: ["cow"], i: "/kaʊ/", g: [["c", "/k/"], ["ow", "/aʊ/"]] },
+    "duck": { s: ["duck"], i: "/dʌk/", g: [["d", "/d/"], ["u", "/ʌ/"], ["ck", "/k/"]] },
+    "panda": { s: ["pan", "da"], i: "/ˈpændə/", g: [["p", "/p/"], ["a", "/æ/"], ["n", "/n/"], ["d", "/d/"], ["a", "/ə/"]] },
+    "tiger": { s: ["ti", "ger"], i: "/ˈtaɪɡə/", g: [["t", "/t/"], ["i", "/aɪ/"], ["g", "/ɡ/"], ["er", "/ə/"]] },
+    "lion": { s: ["li", "on"], i: "/ˈlaɪən/", g: [["l", "/l/"], ["i", "/aɪ/"], ["o", "/ə/"], ["n", "/n/"]] },
+    "rabbit": { s: ["rab", "bit"], i: "/ˈræbɪt/", g: [["r", "/r/"], ["a", "/æ/"], ["bb", "/b/"], ["i", "/ɪ/"], ["t", "/t/"]] },
+    "monkey": { s: ["mon", "key"], i: "/ˈmʌŋki/", g: [["m", "/m/"], ["o", "/ʌ/"], ["n", "/n/"], ["k", "/k/"], ["ey", "/i/"]] },
+    "elephant": { s: ["e", "le", "phant"], i: "/ˈelɪfənt/", g: [["e", "/e/"], ["le", "/lɪ/"], ["ph", "/f/"], ["a", "/ə/"], ["n", "/n/"], ["t", "/t/"]] },
+    "bear": { s: ["bear"], i: "/beə/", g: [["b", "/b/"], ["ear", "/eə/"]] },
+    "chicken": { s: ["chick", "en"], i: "/ˈtʃɪkɪn/", g: [["ch", "/tʃ/"], ["i", "/ɪ/"], ["ck", "/k/"], ["e", "/ɪ/"], ["n", "/n/"]] },
+    "horse": { s: ["horse"], i: "/hɔːs/", g: [["h", "/h/"], ["or", "/ɔː/"], ["s", "/s/"], ["e", ""]] },
+    "sheep": { s: ["sheep"], i: "/ʃiːp/", g: [["sh", "/ʃ/"], ["ee", "/iː/"], ["p", "/p/"]] },
+    "mouse": { s: ["mouse"], i: "/maʊs/", g: [["m", "/m/"], ["ou", "/aʊ/"], ["s", "/s/"], ["e", ""]] },
+    "snake": { s: ["snake"], i: "/sneɪk/", g: [["s", "/s/"], ["n", "/n/"], ["a", "/eɪ/"], ["k", "/k/"], ["e", ""]] },
+    "zoo": { s: ["zoo"], i: "/zuː/", g: [["z", "/z/"], ["oo", "/uː/"]] },
+
+    /* —— 食物 —— */
+    "egg": { s: ["egg"], i: "/eɡ/", g: [["e", "/e/"], ["gg", "/ɡ/"]] },
+    "rice": { s: ["rice"], i: "/raɪs/", g: [["r", "/r/"], ["i", "/aɪ/"], ["c", "/s/"], ["e", ""]] },
+    "milk": { s: ["milk"], i: "/mɪlk/", g: [["m", "/m/"], ["i", "/ɪ/"], ["l", "/l/"], ["k", "/k/"]] },
+    "bread": { s: ["bread"], i: "/bred/", g: [["b", "/b/"], ["r", "/r/"], ["ea", "/e/"], ["d", "/d/"]] },
+    "water": { s: ["wa", "ter"], i: "/ˈwɔːtə/", g: [["w", "/w/"], ["a", "/ɔː/"], ["t", "/t/"], ["er", "/ə/"]] },
+    "banana": { s: ["ba", "na", "na"], i: "/bəˈnɑːnə/", g: [["b", "/b/"], ["a", "/ə/"], ["n", "/n/"], ["a", "/ɑː/"], ["n", "/n/"], ["a", "/ə/"]] },
+    "orange": { s: ["or", "ange"], i: "/ˈɒrɪndʒ/", g: [["o", "/ɒ/"], ["r", "/r/"], ["a", "/ɪ/"], ["n", "/n/"], ["g", "/dʒ/"], ["e", ""]] },
+    "pear": { s: ["pear"], i: "/peə/", g: [["p", "/p/"], ["ear", "/eə/"]] },
+    "cake": { s: ["cake"], i: "/keɪk/", g: [["c", "/k/"], ["a", "/eɪ/"], ["k", "/k/"], ["e", ""]] },
+    "meat": { s: ["meat"], i: "/miːt/", g: [["m", "/m/"], ["ea", "/iː/"], ["t", "/t/"]] },
+    "noodle": { s: ["noo", "dle"], i: "/ˈnuːdəl/", g: [["n", "/n/"], ["oo", "/uː/"], ["d", "/d/"], ["le", "/əl/"]] },
+    "tea": { s: ["tea"], i: "/tiː/", g: [["t", "/t/"], ["ea", "/iː/"]] },
+    "juice": { s: ["juice"], i: "/dʒuːs/", g: [["j", "/dʒ/"], ["ui", "/uː/"], ["c", "/s/"], ["e", ""]] },
+    "candy": { s: ["can", "dy"], i: "/ˈkændi/", g: [["c", "/k/"], ["a", "/æ/"], ["n", "/n/"], ["d", "/d/"], ["y", "/i/"]] },
+    "hamburger": { s: ["ham", "bur", "ger"], i: "/ˈhæmbɜːɡə/", g: [["h", "/h/"], ["a", "/æ/"], ["m", "/m/"], ["b", "/b/"], ["ur", "/ɜː/"], ["g", "/ɡ/"], ["er", "/ə/"]] },
+
+    /* —— 学校 —— */
+    "pencil": { s: ["pen", "cil"], i: "/ˈpensəl/", g: [["p", "/p/"], ["e", "/e/"], ["n", "/n/"], ["c", "/s/"], ["i", "/ə/"], ["l", "/l/"]] },
+    "school": { s: ["school"], i: "/skuːl/", g: [["s", "/s/"], ["ch", "/k/"], ["oo", "/uː/"], ["l", "/l/"]] },
+    "teacher": { s: ["teach", "er"], i: "/ˈtiːtʃə/", g: [["t", "/t/"], ["ea", "/iː/"], ["ch", "/tʃ/"], ["er", "/ə/"]] },
+    "student": { s: ["stu", "dent"], i: "/ˈstjuːdnt/", g: [["s", "/s/"], ["t", "/t/"], ["u", "/juː/"], ["d", "/d/"], ["e", "/ə/"], ["n", "/n/"], ["t", "/t/"]] },
+
+    /* —— 第二批：规则必然读错的高频词（不规则拼写、哑音字母、特殊重音） —— */
+    "father": { s: ["fa", "ther"], i: "/ˈfɑːðə/", g: [["f", "/f/"], ["a", "/ɑː/"], ["th", "/ð/"], ["er", "/ə/"]] },
+    "mother": { s: ["mo", "ther"], i: "/ˈmʌðə/", g: [["m", "/m/"], ["o", "/ʌ/"], ["th", "/ð/"], ["er", "/ə/"]] },
+    "brother": { s: ["bro", "ther"], i: "/ˈbrʌðə/", g: [["b", "/b/"], ["r", "/r/"], ["o", "/ʌ/"], ["th", "/ð/"], ["er", "/ə/"]] },
+    "sister": { s: ["sis", "ter"], i: "/ˈsɪstə/", g: [["s", "/s/"], ["i", "/ɪ/"], ["s", "/s/"], ["t", "/t/"], ["er", "/ə/"]] },
+    "son": { s: ["son"], i: "/sʌn/", g: [["s", "/s/"], ["o", "/ʌ/"], ["n", "/n/"]] },
+    "daughter": { s: ["daugh", "ter"], i: "/ˈdɔːtə/", g: [["d", "/d/"], ["au", "/ɔː/"], ["gh", ""], ["t", "/t/"], ["er", "/ə/"]] },
+    "aunt": { s: ["aunt"], i: "/ɑːnt/", g: [["au", "/ɑː/"], ["n", "/n/"], ["t", "/t/"]] },
+    "uncle": { s: ["un", "cle"], i: "/ˈʌŋkl/", g: [["u", "/ʌ/"], ["n", "/ŋ/"], ["c", "/k/"], ["l", "/əl/"], ["e", ""]] },
+    "family": { s: ["fam", "i", "ly"], i: "/ˈfæməli/", g: [["f", "/f/"], ["a", "/æ/"], ["m", "/m/"], ["i", "/ə/"], ["l", "/l/"], ["y", "/i/"]] },
+    "baby": { s: ["ba", "by"], i: "/ˈbeɪbi/", g: [["b", "/b/"], ["a", "/eɪ/"], ["b", "/b/"], ["y", "/i/"]] },
+    "friend": { s: ["friend"], i: "/frend/", g: [["f", "/f/"], ["r", "/r/"], ["ie", "/e/"], ["n", "/n/"], ["d", "/d/"]] },
+    "happy": { s: ["hap", "py"], i: "/ˈhæpi/", g: [["h", "/h/"], ["a", "/æ/"], ["pp", "/p/"], ["y", "/i/"]] },
+    "dance": { s: ["dance"], i: "/dɑːns/", g: [["d", "/d/"], ["a", "/ɑː/"], ["n", "/n/"], ["c", "/s/"], ["e", ""]] },
+    "walk": { s: ["walk"], i: "/wɔːk/", g: [["w", "/w/"], ["al", "/ɔː/"], ["k", "/k/"]] },
+    "learn": { s: ["learn"], i: "/lɜːn/", g: [["l", "/l/"], ["ear", "/ɜː/"], ["n", "/n/"]] },
+    "listen": { s: ["lis", "ten"], i: "/ˈlɪsn/", g: [["l", "/l/"], ["i", "/ɪ/"], ["s", "/s/"], ["t", ""], ["e", "/ə/"], ["n", "/n/"]] },
+    "write": { s: ["write"], i: "/raɪt/", g: [["w", ""], ["r", "/r/"], ["i", "/aɪ/"], ["t", "/t/"], ["e", ""]] },
+    "read": { s: ["read"], i: "/riːd/", g: [["r", "/r/"], ["ea", "/iː/"], ["d", "/d/"]] },
+    "play": { s: ["play"], i: "/pleɪ/", g: [["p", "/p/"], ["l", "/l/"], ["ay", "/eɪ/"]] },
+    "fly": { s: ["fly"], i: "/flaɪ/", g: [["f", "/f/"], ["l", "/l/"], ["y", "/aɪ/"]] },
+    "sky": { s: ["sky"], i: "/skaɪ/", g: [["s", "/s/"], ["k", "/k/"], ["y", "/aɪ/"]] },
+    "rain": { s: ["rain"], i: "/reɪn/", g: [["r", "/r/"], ["ai", "/eɪ/"], ["n", "/n/"]] },
+    "cloud": { s: ["cloud"], i: "/klaʊd/", g: [["c", "/k/"], ["l", "/l/"], ["ou", "/aʊ/"], ["d", "/d/"]] },
+    "wind": { s: ["wind"], i: "/wɪnd/", g: [["w", "/w/"], ["i", "/ɪ/"], ["n", "/n/"], ["d", "/d/"]] },
+    "sun": { s: ["sun"], i: "/sʌn/", g: [["s", "/s/"], ["u", "/ʌ/"], ["n", "/n/"]] },
+    "moon": { s: ["moon"], i: "/muːn/", g: [["m", "/m/"], ["oo", "/uː/"], ["n", "/n/"]] },
+    "star": { s: ["star"], i: "/stɑː/", g: [["s", "/s/"], ["t", "/t/"], ["ar", "/ɑː/"]] },
+    "tree": { s: ["tree"], i: "/triː/", g: [["t", "/t/"], ["r", "/r/"], ["ee", "/iː/"]] },
+    "grass": { s: ["grass"], i: "/ɡrɑːs/", g: [["g", "/ɡ/"], ["r", "/r/"], ["a", "/ɑː/"], ["ss", "/s/"]] },
+    "flower": { s: ["flow", "er"], i: "/ˈflaʊə/", g: [["f", "/f/"], ["l", "/l/"], ["ow", "/aʊ/"], ["er", "/ə/"]] },
+    "fire": { s: ["fi", "re"], i: "/ˈfaɪə/", g: [["f", "/f/"], ["i", "/aɪ/"], ["re", "/ə/"]] },
+    "eat": { s: ["eat"], i: "/iːt/", g: [["ea", "/iː/"], ["t", "/t/"]] },
+    "run": { s: ["run"], i: "/rʌn/", g: [["r", "/r/"], ["u", "/ʌ/"], ["n", "/n/"]] },
+    "look": { s: ["look"], i: "/lʊk/", g: [["l", "/l/"], ["oo", "/ʊ/"], ["k", "/k/"]] },
+    "sing": { s: ["sing"], i: "/sɪŋ/", g: [["s", "/s/"], ["i", "/ɪ/"], ["ng", "/ŋ/"]] },
+    "open": { s: ["o", "pen"], i: "/ˈəʊpən/", g: [["o", "/əʊ/"], ["p", "/p/"], ["e", "/ə/"], ["n", "/n/"]] },
+    "close": { s: ["close"], i: "/kləʊz/", g: [["c", "/k/"], ["l", "/l/"], ["o", "/əʊ/"], ["s", "/z/"], ["e", ""]] },
+    "week": { s: ["week"], i: "/wiːk/", g: [["w", "/w/"], ["ee", "/iː/"], ["k", "/k/"]] },
+    "month": { s: ["month"], i: "/mʌnθ/", g: [["m", "/m/"], ["o", "/ʌ/"], ["n", "/n/"], ["th", "/θ/"]] },
+    "year": { s: ["year"], i: "/jɪə/", g: [["y", "/j/"], ["ear", "/ɪə/"]] },
+    "morning": { s: ["morn", "ing"], i: "/ˈmɔːnɪŋ/", g: [["m", "/m/"], ["or", "/ɔː/"], ["n", "/n/"], ["i", "/ɪ/"], ["ng", "/ŋ/"]] },
+    "evening": { s: ["eve", "ning"], i: "/ˈiːvnɪŋ/", g: [["e", "/iː/"], ["v", "/v/"], ["e", ""], ["n", "/n/"], ["i", "/ɪ/"], ["ng", "/ŋ/"]] },
+    "weather": { s: ["wea", "ther"], i: "/ˈweðə/", g: [["w", "/w/"], ["ea", "/e/"], ["th", "/ð/"], ["er", "/ə/"]] },
+    "healthy": { s: ["health", "y"], i: "/ˈhelθi/", g: [["h", "/h/"], ["ea", "/e/"], ["l", "/l/"], ["th", "/θ/"], ["y", "/i/"]] },
+    "music": { s: ["mu", "sic"], i: "/ˈmjuːzɪk/", g: [["m", "/m/"], ["u", "/juː/"], ["s", "/z/"], ["i", "/ɪ/"], ["c", "/k/"]] },
+    "art": { s: ["art"], i: "/ɑːt/", g: [["ar", "/ɑː/"], ["t", "/t/"]] },
+    "science": { s: ["sci", "ence"], i: "/ˈsaɪəns/", g: [["sci", "/saɪ/"], ["ence", "/əns/"]] },
+    "english": { s: ["eng", "lish"], i: "/ˈɪŋɡlɪʃ/", g: [["e", "/ɪ/"], ["ng", "/ŋ/"], ["l", "/l/"], ["i", "/ɪ/"], ["sh", "/ʃ/"]] },
+    "chinese": { s: ["chi", "nese"], i: "/ˌtʃaɪˈniːz/", g: [["ch", "/tʃ/"], ["i", "/aɪ/"], ["n", "/n/"], ["e", "/iː/"], ["s", "/z/"], ["e", ""]] },
+    "exam": { s: ["ex", "am"], i: "/ɪɡˈzæm/", g: [["e", "/ɪ/"], ["x", "/ɡz/"], ["a", "/æ/"], ["m", "/m/"]] },
+    "subject": { s: ["sub", "ject"], i: "/ˈsʌbdʒɪkt/", g: [["s", "/s/"], ["u", "/ʌ/"], ["b", "/b/"], ["j", "/dʒ/"], ["e", "/ɪ/"], ["c", "/k/"], ["t", "/t/"]] },
+    "homework": { s: ["home", "work"], i: "/ˈhəʊmwɜːk/", g: [["h", "/h/"], ["o", "/əʊ/"], ["m", "/m/"], ["e", ""], ["w", "/w/"], ["or", "/ɜː/"], ["k", "/k/"]] },
+    "question": { s: ["ques", "tion"], i: "/ˈkwestʃən/", g: [["qu", "/kw/"], ["e", "/e/"], ["s", "/s/"], ["tion", "/ʃən/"]] },
+    "answer": { s: ["an", "swer"], i: "/ˈɑːnsə/", g: [["a", "/ɑː/"], ["n", "/n/"], ["s", ""], ["w", ""], ["er", "/ə/"]] },
+    "computer": { s: ["com", "pu", "ter"], i: "/kəmˈpjuːtə/", g: [["c", "/k/"], ["o", "/ə/"], ["m", "/m/"], ["p", "/p/"], ["u", "/juː/"], ["t", "/t/"], ["er", "/ə/"]] },
+    "internet": { s: ["in", "ter", "net"], i: "/ˈɪntənet/", g: [["i", "/ɪ/"], ["n", "/n/"], ["t", "/t/"], ["er", "/ə/"], ["n", "/n/"], ["e", "/e/"], ["t", "/t/"]] },
+    "exercise": { s: ["ex", "er", "cise"], i: "/ˈeksəsaɪz/", g: [["e", "/e/"], ["x", "/ks/"], ["er", "/ə/"], ["c", "/s/"], ["i", "/aɪ/"], ["s", "/z/"], ["e", ""]] },
+    "important": { s: ["im", "por", "tant"], i: "/ɪmˈpɔːtnt/", g: [["i", "/ɪ/"], ["m", "/m/"], ["p", "/p/"], ["or", "/ɔː/"], ["t", "/t/"], ["a", "/ə/"], ["n", "/n/"], ["t", "/t/"]] },
+    "different": { s: ["dif", "fer", "ent"], i: "/ˈdɪfrənt/", g: [["d", "/d/"], ["i", "/ɪ/"], ["ff", "/f/"], ["er", "/ə/"], ["e", "/ə/"], ["n", "/n/"], ["t", "/t/"]] },
+    "together": { s: ["to", "geth", "er"], i: "/təˈɡeðə/", g: [["t", "/t/"], ["o", "/ə/"], ["g", "/ɡ/"], ["e", "/e/"], ["th", "/ð/"], ["er", "/ə/"]] },
+    "beautiful": { s: ["beau", "ti", "ful"], i: "/ˈbjuːtɪfl/", g: [["b", "/b/"], ["eau", "/juː/"], ["t", "/t/"], ["i", "/ɪ/"], ["f", "/f/"], ["u", ""], ["l", "/l/"]] },
+    "favorite": { s: ["fa", "vor", "ite"], i: "/ˈfeɪvərɪt/", g: [["f", "/f/"], ["a", "/eɪ/"], ["v", "/v/"], ["o", "/ə/"], ["r", "/r/"], ["i", "/ɪ/"], ["t", "/t/"], ["e", ""]] },
+    "because": { s: ["be", "cause"], i: "/bɪˈkɒz/", g: [["b", "/b/"], ["e", "/ɪ/"], ["c", "/k/"], ["au", "/ɒ/"], ["s", "/z/"], ["e", ""]] },
+    "before": { s: ["be", "fore"], i: "/bɪˈfɔː/", g: [["b", "/b/"], ["e", "/ɪ/"], ["f", "/f/"], ["o", "/ɔː/"], ["re", ""]] },
+    "after": { s: ["af", "ter"], i: "/ˈɑːftə/", g: [["a", "/ɑː/"], ["f", "/f/"], ["t", "/t/"], ["er", "/ə/"]] },
+    "always": { s: ["al", "ways"], i: "/ˈɔːlweɪz/", g: [["al", "/ɔːl/"], ["w", "/w/"], ["ay", "/eɪ/"], ["s", "/z/"]] },
+    "never": { s: ["ne", "ver"], i: "/ˈnevə/", g: [["n", "/n/"], ["e", "/e/"], ["v", "/v/"], ["er", "/ə/"]] },
+    "dictionary": { s: ["dic", "tion", "ar", "y"], i: "/ˈdɪkʃənəri/", g: [["d", "/d/"], ["i", "/ɪ/"], ["c", "/k/"], ["tion", "/ʃən/"], ["ar", "/ə/"], ["y", "/i/"]] },
+    "vacation": { s: ["va", "ca", "tion"], i: "/vəˈkeɪʃn/", g: [["v", "/v/"], ["a", "/ə/"], ["c", "/k/"], ["a", "/eɪ/"], ["tion", "/ʃən/"]] },
+    "classroom": { s: ["class", "room"], i: "/ˈklɑːsruːm/", g: [["c", "/k/"], ["l", "/l/"], ["a", "/ɑː/"], ["ss", "/s/"], ["r", "/r/"], ["oo", "/uː/"], ["m", "/m/"]] },
+    "blackboard": { s: ["black", "board"], i: "/ˈblækbɔːd/", g: [["b", "/b/"], ["l", "/l/"], ["a", "/æ/"], ["ck", "/k/"], ["b", "/b/"], ["oar", "/ɔː/"], ["d", "/d/"]] },
+    "ruler": { s: ["ru", "ler"], i: "/ˈruːlə/", g: [["r", "/r/"], ["u", "/uː/"], ["l", "/l/"], ["er", "/ə/"]] },
+    "desk": { s: ["desk"], i: "/desk/", g: [["d", "/d/"], ["e", "/e/"], ["s", "/s/"], ["k", "/k/"]] },
+    "chair": { s: ["chair"], i: "/tʃeə/", g: [["ch", "/tʃ/"], ["air", "/eə/"]] },
+
+    /* —— 多音节示例（参考图同款） —— */
+    "yesterday": { s: ["yes", "ter", "day"], i: "/ˈjestədeɪ/", g: [["y", "/j/"], ["e", "/e/"], ["st", "/st/"], ["er", "/ə/"], ["d", "/d/"], ["ay", "/eɪ/"]] }
+  };
+
+  /* ============================================================
+   * 二、音素近似朗读表：把音标近似成语音合成器读得出的拼写
+   *     仅用于「点读单个音」，是近似音，不是真人示范。
+   * ============================================================ */
+  window.PHONICS_SPEAK = {
+    "/j/": "yuh", "/w/": "wuh", "/e/": "eh", "/s/": "sss", "/t/": "tuh", "/d/": "duh",
+    "/ə/": "uh", "/ʌ/": "uh", "/ɪ/": "ih", "/ɒ/": "aw", "/æ/": "aah", "/eɪ/": "ay",
+    "/iː/": "ee", "/uː/": "oo", "/ʊ/": "uu", "/ɜː/": "err", "/ɑː/": "aah", "/ɔː/": "aw",
+    "/aɪ/": "eye", "/aʊ/": "ow", "/ɔɪ/": "oy", "/əʊ/": "oh", "/eə/": "air", "/ɪə/": "ear",
+    "/b/": "buh", "/p/": "puh", "/k/": "kuh", "/ɡ/": "guh", "/f/": "fff", "/v/": "vvv",
+    "/z/": "zzz", "/m/": "mmm", "/n/": "nnn", "/l/": "lll", "/r/": "rrr",
+    "/h/": "huh", "/ʃ/": "shh", "/tʃ/": "ch", "/θ/": "th", "/ð/": "th", "/dʒ/": "juh",
+    "/ŋ/": "ng", "/ks/": "ks", "/kw/": "kw", "/st/": "st", "/ŋk/": "nk",
+    "/əl/": "ul", "/lɪ/": "li", "/ʃən/": "shun", "/ʒən/": "zhun", "/wʌ/": "wuh", "/juː/": "you",
+    "/saɪ/": "sigh", "/əns/": "unce", "/ɡz/": "gz", "/i/": "ee", "/ɔːl/": "all", "/ɑː/": "aah", "/wʌ/": "wuh"
+  };
+
+  /* ============================================================
+   * 三、规则引擎（兜底推导，标记 src:"rule"）
+   * ============================================================ */
+  var VOWELS = "aeiou";
+
+  // 多字母组合 → 音标（长组合优先匹配）
+  var MULTI = [
+    ["eigh", "/eɪ/"], ["igh", "/aɪ/"], ["tch", "/tʃ/"], ["dge", "/dʒ/"],
+    ["tion", "/ʃən/"], ["sion", "/ʒən/"], ["ough", "/ʌf/"],
+    ["alk", "/ɔːk/"], ["oar", "/ɔː/"], ["air", "/eə/"], ["ear", "/ɪə/"], ["oor", "/ɔː/"], ["our", "/ɔː/"], ["ure", "/jʊə/"],
+    ["ck", "/k/"], ["sh", "/ʃ/"], ["ch", "/tʃ/"], ["th", "/θ/"], ["ph", "/f/"], ["wh", "/w/"],
+    ["ng", "/ŋ/"], ["nk", "/ŋk/"], ["qu", "/kw/"], ["gh", ""],
+    ["ee", "/iː/"], ["ea", "/iː/"], ["ai", "/eɪ/"], ["ay", "/eɪ/"], ["oa", "/əʊ/"], ["oe", "/əʊ/"],
+    ["oi", "/ɔɪ/"], ["oy", "/ɔɪ/"], ["oo", "/uː/"], ["ou", "/aʊ/"], ["ow", "/aʊ/"], ["au", "/ɔː/"],
+    ["aw", "/ɔː/"], ["ew", "/uː/"], ["ui", "/uː/"], ["ue", "/uː/"], ["ie", "/iː/"], ["ey", "/i/"],
+    ["ll", "/l/"], ["ss", "/s/"], ["ff", "/f/"], ["zz", "/z/"], ["gg", "/ɡ/"], ["tt", "/t/"],
+    ["pp", "/p/"], ["bb", "/b/"], ["dd", "/d/"], ["mm", "/m/"], ["nn", "/n/"], ["rr", "/r/"],
+    ["ar", "/ɑː/"], ["or", "/ɔː/"], ["er", "/ɜː/"], ["ir", "/ɜː/"], ["ur", "/ɜː/"]
+  ].sort(function (a, b) { return b[0].length - a[0].length; });
+
+  var CONS = {
+    b: "/b/", c: "/k/", d: "/d/", f: "/f/", g: "/ɡ/", h: "/h/", j: "/dʒ/", k: "/k/", l: "/l/",
+    m: "/m/", n: "/n/", p: "/p/", q: "/kw/", r: "/r/", s: "/s/", t: "/t/", v: "/v/",
+    w: "/w/", x: "/ks/", z: "/z/"
+  };
+  var SHORT_V = { a: "/æ/", e: "/e/", i: "/ɪ/", o: "/ɒ/", u: "/ʌ/" };
+  var LONG_V = { a: "/eɪ/", e: "/iː/", i: "/aɪ/", o: "/əʊ/", u: "/uː/" };
+
+  function isVowelLetter(c) { return VOWELS.indexOf(c) >= 0; }
+  function isVowelSound(ph) { return /[aeiouæɒʌɪʊəɜiueeɔɑʌei]/.test(String(ph || "").replace(/[\/]/g, "")); }
+
+  function tokenize(w) {
+    var out = [], i = 0;
+    while (i < w.length) {
+      var hit = null;
+      for (var k = 0; k < MULTI.length; k++) {
+        if (w.substr(i, MULTI[k][0].length) === MULTI[k][0]) { hit = MULTI[k]; break; }
+      }
+      if (hit) { out.push({ g: hit[0], ph: hit[1], st: i, en: i + hit[0].length }); i += hit[0].length; }
+      else { out.push({ g: w.charAt(i), ph: null, st: i, en: i + 1 }); i++; }
+    }
+    return out;
+  }
+
+  /* 不规则高频词的小修正表（比逐词校对省，又能挡住最常见的错）。
+   * 这些词靠通用规则必然读错，用词表纠正；真正的逐词校正在上方 PHONICS。 */
+  var EA_SHORT = ("head bread ready heavy health healthy breakfast weather feather dead death sweat thread " +
+    "spread instead breath measure pleasure treasure deaf sweater").split(" ");
+  var EAR_NURSE = "learn heard earth early earn search research heard".split(" ");
+  var TH_VOICED = ("the this that these those they them then there than their mother father brother other " +
+    "weather together either neither rather whether another").split(" ");
+
+  function assignPhonemes(tokens, w) {
+    // 词尾哑音 e：单词长于 3 个字母、以「辅音+e」结尾，且不是 le / ee / oe / ie 收尾
+    var silentE = -1;
+    if (w.length > 3 && /[^aeiou]e$/.test(w) && !/le$/.test(w) && !/[aeiou]e$/.test(w)) {
+      silentE = tokens.length - 1;
+    }
+    // 词尾 -le（apple / uncle / table）：l 读 /əl/，e 不发音
+    var leAt = -1;
+    if (/[^aeiou]le$/.test(w) && tokens.length >= 2 &&
+        tokens[tokens.length - 1].g === "e" && tokens[tokens.length - 2].g === "l") {
+      leAt = tokens.length - 2;
+      silentE = tokens.length - 1;
+    }
+    // magic-e：哑音 e 之前最后那个单字母元音读长音
+    var longIdx = -1;
+    if (silentE > 0) {
+      for (var j = silentE - 1; j >= 0; j--) {
+        if (tokens[j].ph !== null) break;
+        if (tokens[j].g.length === 1 && isVowelLetter(tokens[j].g)) { longIdx = j; break; }
+      }
+    }
+    // 估算整词元音音组数量（决定词尾 y 读 /i/ 还是 /aɪ/）
+    var vowelSoundCount = 0;
+    for (var a = 0; a < tokens.length; a++) {
+      if (tokens[a].ph && isVowelSound(tokens[a].ph)) vowelSoundCount++;
+      else if (tokens[a].ph === null && (isVowelLetter(tokens[a].g) || (tokens[a].g === "y" && a > 0))) vowelSoundCount++;
+    }
+
+    for (var i = 0; i < tokens.length; i++) {
+      var t = tokens[i];
+      if (t.ph !== null) continue;
+      var c = t.g;
+      if (i === silentE) { t.ph = ""; continue; }
+      if (i === leAt) { t.ph = "/əl/"; continue; }
+      if (c === "y") { t.ph = (i === 0) ? "/j/" : (vowelSoundCount <= 1 ? "/aɪ/" : "/i/"); continue; }
+      if (isVowelLetter(c)) {
+        if (i === longIdx) t.ph = LONG_V[c];
+        else t.ph = SHORT_V[c];
+        continue;
+      }
+      var nxt = (i + 1 < tokens.length) ? tokens[i + 1].g.charAt(0) : "";
+      if (c === "c" && "eiy".indexOf(nxt) >= 0) { t.ph = "/s/"; continue; }
+      if (c === "g" && "eiy".indexOf(nxt) >= 0) { t.ph = "/dʒ/"; continue; }
+      if (c === "s" && i > 0 && i < tokens.length - 1 &&
+          isVowelSound(tokens[i - 1].ph) && isVowelSound(tokens[i + 1].ph)) { t.ph = "/z/"; continue; }
+      t.ph = CONS[c] || "";
+    }
+
+    // 词表修正（覆盖上面的默认判断）
+    for (var x = 0; x < tokens.length; x++) {
+      var g = tokens[x].g;
+      if (g === "ea" && EA_SHORT.indexOf(w) >= 0) tokens[x].ph = "/e/";
+      else if (g === "ear" && EAR_NURSE.indexOf(w) >= 0) tokens[x].ph = "/ɜː/";
+      else if (g === "th") {
+        if (TH_VOICED.indexOf(w) >= 0) tokens[x].ph = "/ð/";
+        else if (x > 0 && x < tokens.length - 1 &&
+                 isVowelSound(tokens[x - 1].ph) && isVowelSound(tokens[x + 1].ph)) tokens[x].ph = "/ð/";
+      }
+    }
+
+    // 非重读词尾：-er / -or / -ar / -ur 读 /ə/（sister / doctor / dollar）
+    for (var z = 0; z < tokens.length; z++) {
+      if (!/^(er|or|ar|ur)$/.test(tokens[z].g)) continue;
+      var last = (z === tokens.length - 1) ||
+        (z === tokens.length - 2 && tokens[tokens.length - 1].ph === "");
+      if (last) tokens[z].ph = "/ə/";
+    }
+  }
+
+  // 音节切分：按「元音音组 + 中间辅音」的数量决定切点
+  function splitSyllables(tokens, w) {
+    var vs = [];
+    for (var i = 0; i < tokens.length; i++) if (tokens[i].ph && isVowelSound(tokens[i].ph)) vs.push(i);
+    if (vs.length < 2) return [w];
+    var cuts = [];
+    for (var k = 0; k < vs.length - 1; k++) {
+      var between = tokens.slice(vs[k] + 1, vs[k + 1]);
+      var cut;
+      if (between.length === 0) cut = tokens[vs[k + 1]].st;                       // 元音相连：li|on
+      else if (between.length === 1) {
+        var t = between[0];
+        if (/^(ck|ng|nk|tch|dge|gh)$/.test(t.g)) cut = t.en;                      // 不能起首的二合字母：归前
+        else if (/^(ch|sh|th|ph|wh)$/.test(t.g)) cut = t.en;                      // 二合字母整体归前：teach|er
+        else if (t.g.length === 2 && t.g.charAt(0) === t.g.charAt(1)) cut = t.st + 1; // 重叠辅音从中间切：rab|bit
+        else cut = t.st;                                                          // V-CV：辅音归后
+      } else cut = between[0].en;                                                 // 多辅音：切在第一个之后
+      cuts.push(cut);
+    }
+    var out = [], prev = 0;
+    for (var j = 0; j < cuts.length; j++) { out.push(w.slice(prev, cuts[j])); prev = cuts[j]; }
+    out.push(w.slice(prev));
+    return out.filter(function (s) { return s.length > 0; });
+  }
+
+  /* 统一出口：优先人工词表，其次规则推导 */
+  window.phonicsFor = function (word) {
+    var w = String(word || "").toLowerCase().trim();
+    if (!w) return null;
+
+    var cur = window.PHONICS[w];
+    if (cur) {
+      return {
+        word: word, syl: cur.s.slice(), ipa: cur.i,
+        seg: cur.g.map(function (p) { return [p[0], p[1]]; }),
+        ph: cur.g.map(function (p) { return p[1]; }).filter(function (x) { return x !== ""; }),
+        src: "curated"
+      };
+    }
+    if (!/^[a-z]+$/.test(w)) return null;   // 含连字符 / 数字 / 空格等不推导
+    if (String(word).length > 1 && String(word) === String(word).toUpperCase()) return null; // 全大写缩写（PE 等）不推导
+
+    var tokens = tokenize(w);
+    assignPhonemes(tokens, w);
+    var syl = splitSyllables(tokens, w);
+    var ph = [], seg = [];
+    for (var i = 0; i < tokens.length; i++) {
+      seg.push([tokens[i].g, tokens[i].ph]);
+      if (tokens[i].ph !== "") ph.push(tokens[i].ph);
+    }
+    // 拼成整词音标：去掉每个音素自带的斜杠再合并
+    var body = ph.map(function (p) { return p.replace(/\//g, ""); }).join("");
+    if (syl.length > 1) body = "ˈ" + body;   // 近似：重音标首音节
+    return { word: word, syl: syl, ipa: "/" + body + "/", seg: seg, ph: ph, src: "rule" };
+  };
+})();
+
+</script>
+  <script>
 /* english-mastery · 应用主逻辑
  * 路由 / 渲染 / 状态 / 互动练习 / localStorage 进度
  * 对齐 math-mastery：纯前端、hash 路由、数据驱动、离线可用
@@ -1804,6 +2240,7 @@ window.WORD_BANK = {
 
   var LS_PROGRESS = "em_progress_v1";
   var LS_STREAK = "em_streak_v1";
+  var LS_READ = "em_read_v1";
 
   var state = { grade: "all", dim: null, q: "", wordGrade: "primary" };
 
@@ -2055,6 +2492,7 @@ window.WORD_BANK = {
     if (back) back.onclick = function () { history.back(); };
 
     bindPractice(m);
+    bindRead(m);
 
     var md = document.getElementById("markDone");
     if (md) md.onclick = function () { toggleDone(m.id); };
@@ -2396,6 +2834,7 @@ window.WORD_BANK = {
         '<span class="mode-tab active" data-mode="flash">🃏 闪卡</span>' +
         '<span class="mode-tab" data-mode="spell">✍️ 拼写自测</span>' +
         '<span class="mode-tab" data-mode="read">🎤 跟读</span>' +
+        '<span class="mode-tab" data-mode="phonics">🔤 拼读拆解</span>' +
       '</div>' +
 
       '<div class="mode-pane" id="pane-flash" data-mode="flash">' +
@@ -2411,6 +2850,11 @@ window.WORD_BANK = {
       '<div class="mode-pane" id="pane-read" data-mode="read" style="display:none">' +
         '<div class="section-title"><span class="bar" style="background:var(--primary)"></span>🎤 跟读：听示范后跟读打分</div>' +
         '<div class="run-box" id="readRun"></div>' +
+      '</div>' +
+
+      '<div class="mode-pane" id="pane-phonics" data-mode="phonics" style="display:none">' +
+        '<div class="section-title"><span class="bar" style="background:var(--senior)"></span>🔤 拼读拆解：学 → 读 → 选 → 拆分 → 拼读 → 拼写</div>' +
+        '<div class="run-box" id="phonicsRun"></div>' +
       '</div>' +
       "</div>";
 
@@ -2437,6 +2881,7 @@ window.WORD_BANK = {
         });
         if (mode === "spell") renderSpellGroup(0);
         if (mode === "read") renderReadGroup(0);
+        if (mode === "phonics") renderPhonics(0);
       };
     });
 
@@ -2563,6 +3008,305 @@ window.WORD_BANK = {
       if (prev && readPage > 0) prev.onclick = function () { renderReadGroup(readPage - 1); };
       if (next && readPage < total - 1) next.onclick = function () { renderReadGroup(readPage + 1); };
     }
+    /* ---------- 拼读拆解（6 步：学 / 读 / 选 / 拆分 / 拼读 / 拼写） ---------- */
+    var phRun = document.getElementById("phonicsRun");
+    var STEP_LABELS = ["学", "读", "选", "拆分", "拼读", "拼写"];
+    var phList = words.filter(function (w) { return window.phonicsFor && window.phonicsFor(w.en); });
+    var phIdx = 0;
+    var phStep = 0;
+
+    function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+    function playSeq(list) {
+      var syn = window.speechSynthesis;
+      if (!syn) { alert("当前浏览器不支持语音朗读，请换 Chrome / Edge"); return; }
+      var k = 0;
+      (function next() {
+        if (k >= list.length) return;
+        syn.cancel();
+        var u = new SpeechSynthesisUtterance(list[k]);
+        u.lang = opt().lang; u.rate = (opt().rate || 1) * 0.85;
+        u.onend = function () { k++; setTimeout(next, 220); };
+        syn.speak(u);
+      })();
+    }
+    function allSplits(word) {
+      var n = word.length, res = [], maxMask = (n > 12) ? 0 : (1 << (n - 1));
+      if (maxMask) {
+        for (var mask = 0; mask < maxMask; mask++) {
+          var s = "";
+          for (var i = 0; i < n; i++) { s += word[i]; if (i < n - 1 && ((mask >> i) & 1)) s += "·"; }
+          res.push(s);
+        }
+      } else {
+        for (var t = 0; t < 300; t++) {
+          var m = 0; for (var b = 0; b < n - 1; b++) if (Math.random() < 0.3) m |= (1 << b);
+          var ss = ""; for (var i2 = 0; i2 < n; i2++) { ss += word[i2]; if (i2 < n - 1 && ((m >> i2) & 1)) ss += "·"; }
+          res.push(ss);
+        }
+      }
+      return res;
+    }
+    var IPA_POOL = ["/æ/","/e/","/ɪ/","/ɒ/","/ʌ/","/ɑː/","/ɔː/","/eɪ/","/aɪ/","/aʊ/","/əʊ/","/iː/","/uː/","/ʊ/","/ɜː/","/ə/","/ʃ/","/tʃ/","/θ/","/ð/","/ŋ/","/s/","/z/"];
+    function genWrongIpa(info) {
+      var ph = (info.ph || []).slice();
+      if (!ph.length) return info.ipa;
+      var i = Math.floor(Math.random() * ph.length);
+      ph[i] = IPA_POOL[Math.floor(Math.random() * IPA_POOL.length)];
+      var body2 = ph.map(function (p) { return String(p).replace(/\//g, ""); }).join("");
+      return "/" + body2 + "/";
+    }
+
+    function renderPhonics(start) {
+      if (typeof start === "number") phIdx = start;
+      if (!phRun) return;
+      if (!phList.length) {
+        phRun.innerHTML = '<div class="empty">本单元暂无可用于「拼读拆解」的单词（含空格、连字符或全大写缩写的词已自动跳过）。</div>';
+        return;
+      }
+      var w = phList[phIdx];
+      var info = window.phonicsFor(w.en);
+      var wordTotal = phList.length;
+
+      var stepBar = STEP_LABELS.map(function (lab, i) {
+        return '<span class="ph-step ' + (i === phStep ? "active" : (i < phStep ? "done" : "")) + '" data-step="' + i + '">' + (i + 1) + ". " + lab + "</span>";
+      }).join("");
+
+      phRun.innerHTML =
+        '<div class="ph-head">' +
+          '<div class="ph-word">' + esc(w.en) + ' <span class="ph-zh">(' + esc(w.zh) + ')</span></div>' +
+          '<div class="ph-badge ' + (info.src === "curated" ? "ok" : "rule") + '">' + (info.src === "curated" ? "✓ 已校对" : "≈ 规则推导") + '</div>' +
+        '</div>' +
+        '<div class="ph-stepbar">' + stepBar + '</div>' +
+        '<div class="ph-body" id="phBody"></div>' +
+        '<div class="run-nav">' +
+          '<button class="ghost" id="phStepPrev"' + (phStep === 0 ? " disabled" : "") + '>← 上一步</button>' +
+          '<button class="ghost" id="phWordPrev"' + (phIdx === 0 ? " disabled" : "") + '>← 上一个词</button>' +
+          '<span class="ph-counter">第 ' + (phIdx + 1) + " / " + wordTotal + ' 词</span>' +
+          '<button class="ghost" id="phWordNext"' + (phIdx >= wordTotal - 1 ? " disabled" : "") + '>下一个词 →</button>' +
+          '<button class="ghost" id="phStepNext"' + (phStep >= 5 ? " disabled" : "") + '>下一步 →</button>' +
+        '</div>';
+
+      Array.prototype.forEach.call(phRun.querySelectorAll(".ph-step"), function (s) {
+        s.onclick = function () { phStep = +s.getAttribute("data-step"); renderPhonics(); };
+      });
+      var sp = document.getElementById("phStepPrev"); if (sp && phStep > 0) sp.onclick = function () { phStep--; renderPhonics(); };
+      var sn = document.getElementById("phStepNext"); if (sn && phStep < 5) sn.onclick = function () { phStep++; renderPhonics(); };
+      var wp = document.getElementById("phWordPrev"); if (wp && phIdx > 0) wp.onclick = function () { phIdx--; phStep = 0; renderPhonics(); };
+      var wn = document.getElementById("phWordNext"); if (wn && phIdx < wordTotal - 1) wn.onclick = function () { phIdx++; phStep = 0; renderPhonics(); };
+
+      bindStep(phStep, info, w);
+    }
+
+    function bindStep(step, info, w) {
+      var body = document.getElementById("phBody");
+      if (!body) return;
+
+      if (step === 0) {
+        var mapRows = info.seg.map(function (p) {
+          var ipa = p[1];
+          var approx = ipa ? (window.PHONICS_SPEAK[ipa] || "") : "";
+          var sCls = ipa ? "" : " silent";
+          return '<div class="ph-grapheme' + sCls + '" data-approx="' + esc(approx) + '">' +
+            '<span class="ph-g">' + esc(p[0]) + '</span>' +
+            '<span class="ph-s">' + (ipa ? esc(ipa) : "∅") + '</span>' +
+            (ipa ? '<span class="ph-a">' + esc(approx || "—") + '</span>' : '<span class="ph-a">不发音</span>') +
+          '</div>';
+        }).join("");
+        body.innerHTML =
+          '<div class="ph-learn-word">' + esc(w.en) + '</div>' +
+          '<div class="ph-syl">' + info.syl.map(function (s) { return esc(s); }).join('<span class="dot">·</span>') + '</div>' +
+          '<div class="ph-ipa">' + esc(info.ipa) + '</div>' +
+          '<button class="ph-play" id="phWhole">🔊 听整词</button>' +
+          '<div class="section-title"><span class="bar"></span>字母组合 → 发音（点任意一格听发音）</div>' +
+          '<div class="ph-map" id="phMap">' + mapRows + '</div>' +
+          '<div class="ph-note">灰色「∅ / 不发音」表示该字母组合不发音（如 write 的 w、have 的 e）。规则推导词仅供参考，音标以词典 / 教材为准。</div>';
+        var whole = document.getElementById("phWhole"); if (whole) whole.onclick = function () { speak(w.en, opt()); };
+        Array.prototype.forEach.call(body.querySelectorAll(".ph-grapheme"), function (t) {
+          t.onclick = function () {
+            var ap = t.getAttribute("data-approx");
+            if (!ap) return;
+            speak(ap, opt());
+          };
+        });
+
+      } else if (step === 1) {
+        body.innerHTML =
+          '<div class="ph-big">' + esc(w.en) + '</div>' +
+          '<div class="ph-syl">' + info.syl.map(function (s) { return esc(s); }).join('<span class="dot">·</span>') + '</div>' +
+          '<div class="ph-read-btns">' +
+            '<button class="ph-play" id="phWhole2">🔊 听示范</button>' +
+            '<button class="ph-play" id="phSyl">🔊 逐音节听</button>' +
+            '<button class="ph-rec" id="phRec">🎤 跟我读</button>' +
+          '</div>' +
+          '<div class="read-fb" id="phReadFb"></div>' +
+          '<div class="ph-note">「跟我读」需要麦克风权限，且仅在 localhost 或 https 下、用 Chrome / Edge 可用。</div>';
+        var whole2 = document.getElementById("phWhole2"); if (whole2) whole2.onclick = function () { speak(w.en, opt()); };
+        var sylB = document.getElementById("phSyl"); if (sylB) sylB.onclick = function () { playSeq(info.syl); };
+        var rec2 = document.getElementById("phRec");
+        var fb2 = document.getElementById("phReadFb");
+        if (!SR) { if (rec2) { rec2.disabled = true; rec2.style.opacity = ".5"; rec2.title = "当前浏览器不支持语音识别，请用 Chrome / Edge，并在本机(localhost)或 https 下打开"; } }
+        else if (rec2) {
+          rec2.onclick = function () {
+            var rec = new SR();
+            rec.lang = accentSel ? accentSel.value : "en-US";
+            rec.interimResults = false; rec.maxAlternatives = 1;
+            rec2.textContent = "🎙 听…"; rec2.disabled = true;
+            rec.onresult = function (e) {
+              var txt = e.results[0][0].transcript;
+              var sc = speechScore(txt, w.en);
+              var stars = Math.max(1, Math.round(sc * 5));
+              var starStr = ""; for (var kk = 0; kk < 5; kk++) starStr += (kk < stars ? "⭐" : "☆");
+              fb2.innerHTML = "你说：<b>" + esc(txt) + "</b><br>匹配度 " + Math.round(sc * 100) + "%　" + starStr;
+              fb2.className = "read-fb " + (sc >= 0.6 ? "ok" : "low");
+            };
+            rec.onerror = function (e) { fb2.textContent = "识别失败：" + e.error; fb2.className = "read-fb low"; };
+            rec.onend = function () { rec2.textContent = "🎤 跟我读"; rec2.disabled = false; };
+            try { rec.start(); } catch (err) { fb2.textContent = "无法启动麦克风：" + err.message; rec2.textContent = "🎤 跟我读"; rec2.disabled = false; }
+          };
+        }
+
+      } else if (step === 2) {
+        var choices, correctStr, qtext;
+        if (info.syl.length > 1) {
+          correctStr = info.syl.join("·");
+          qtext = "这个词怎么分音节？选出正确的一项";
+          var pool = allSplits(w.en).filter(function (s) { return s !== correctStr; });
+          shuffle(pool);
+          choices = [correctStr];
+          if (pool[0]) choices.push(pool[0]);
+          if (pool[1]) choices.push(pool[1]);
+          while (choices.length < 3) { var alt = correctStr.split("").reverse().join(""); if (choices.indexOf(alt) < 0) choices.push(alt); else break; }
+        } else {
+          correctStr = info.ipa;
+          qtext = "这个单词的正确音标是？选出正确的一项";
+          var wp2 = [genWrongIpa(info), genWrongIpa(info)];
+          choices = [correctStr];
+          if (wp2[0]) choices.push(wp2[0]);
+          if (wp2[1] && wp2[1] !== correctStr) choices.push(wp2[1]);
+          if (choices.length < 3 && wp2[1]) choices.push(wp2[1]);
+        }
+        shuffle(choices);
+        body.innerHTML =
+          '<div class="ph-big">' + esc(w.en) + '</div>' +
+          '<div class="ph-q">' + qtext + '</div>' +
+          '<div class="ph-choices" id="phChoices" data-ans="' + esc(correctStr) + '">' +
+            choices.map(function (c) { return '<button class="ph-choice" data-c="' + esc(c) + '">' + esc(c) + '</button>'; }).join("") +
+          '</div>' +
+          '<div class="read-fb" id="phSelFb"></div>';
+        Array.prototype.forEach.call(body.querySelectorAll(".ph-choice"), function (b) {
+          b.onclick = function () {
+            var ans = body.querySelector("#phChoices").getAttribute("data-ans");
+            var pick = b.getAttribute("data-c");
+            if (pick === ans) {
+              b.classList.add("right");
+              var f = document.getElementById("phSelFb");
+              f.textContent = "✅ 正确！" + (info.syl.length > 1 ? ("音节切分：" + info.syl.join("·")) : ("音标：" + info.ipa));
+              f.className = "read-fb ok";
+            } else {
+              b.classList.add("wrong");
+              var f2 = document.getElementById("phSelFb");
+              f2.textContent = "💡 正确答案：" + ans;
+              f2.className = "read-fb low";
+            }
+            Array.prototype.forEach.call(body.querySelectorAll(".ph-choice"), function (x) { x.disabled = true; });
+          };
+        });
+
+      } else if (step === 3) {
+        var sylCuts = []; var cum = 0;
+        for (var si = 0; si < info.syl.length - 1; si++) { cum += info.syl[si].length; sylCuts.push(cum); }
+        var gStart = 0; var correctBreaks = {};
+        for (var gi = 0; gi < info.seg.length; gi++) {
+          var glen = info.seg[gi][0].length;
+          var gEnd = gStart + glen;
+          if (gi < info.seg.length - 1 && sylCuts.indexOf(gEnd) >= 0) correctBreaks[gi] = true;
+          gStart = gEnd;
+        }
+        var q3 = "点击字母之间的「·」标出音节断点，再点「核对」。" + (info.syl.length === 1 ? "（这个单词只有一个音节，不用点断点）" : "");
+        var tiles = "";
+        for (var t = 0; t < info.seg.length; t++) {
+          tiles += '<span class="ph-tile" data-gi="' + t + '">' + esc(info.seg[t][0]) + '</span>';
+          if (t < info.seg.length - 1) tiles += '<span class="ph-gap" data-gap="' + t + '">·</span>';
+        }
+        body.innerHTML =
+          '<div class="ph-big">' + esc(w.en) + '</div>' +
+          '<div class="ph-q">' + q3 + '</div>' +
+          '<div class="ph-split" id="phSplit">' + tiles + '</div>' +
+          '<div class="ph-split-preview" id="phSplitPrev"></div>' +
+          '<div class="ph-read-btns">' +
+            '<button class="check-all" id="phSplitCheck">核对</button>' +
+            '<button class="ghost" id="phSplitAns">显示答案</button>' +
+          '</div>' +
+          '<div class="read-fb" id="phSplitFb"></div>';
+        var active = {};
+        function buildSplit() {
+          var parts = []; var cur = "";
+          for (var t2 = 0; t2 < info.seg.length; t2++) { cur += info.seg[t2][0]; if (active[t2]) { parts.push(cur); cur = ""; } }
+          parts.push(cur);
+          return parts;
+        }
+        Array.prototype.forEach.call(body.querySelectorAll(".ph-gap"), function (g) {
+          g.onclick = function () {
+            var idx = +g.getAttribute("data-gap");
+            if (active[idx]) { delete active[idx]; g.classList.remove("on"); } else { active[idx] = true; g.classList.add("on"); }
+            var pv = document.getElementById("phSplitPrev");
+            if (pv) pv.textContent = "你的切分：" + buildSplit().join(" · ");
+          };
+        });
+        var checkB = document.getElementById("phSplitCheck");
+        if (checkB) checkB.onclick = function () {
+          var fb = document.getElementById("phSplitFb");
+          if (buildSplit().join("·") === info.syl.join("·")) { fb.textContent = "✅ 切分正确：" + info.syl.join("·"); fb.className = "read-fb ok"; }
+          else { fb.textContent = "💡 还不对，正确切分是：" + info.syl.join(" · "); fb.className = "read-fb low"; }
+        };
+        var ansB = document.getElementById("phSplitAns");
+        if (ansB) ansB.onclick = function () {
+          var fb = document.getElementById("phSplitFb");
+          fb.textContent = "正确切分：" + info.syl.join(" · ");
+          fb.className = "read-fb ok";
+        };
+
+      } else if (step === 4) {
+        body.innerHTML =
+          '<div class="ph-big">' + esc(w.en) + '</div>' +
+          '<div class="ph-syl-blocks" id="phSylBlocks">' +
+            info.syl.map(function (s, i) { return '<span class="ph-syl-block" data-i="' + i + '">' + esc(s) + '</span>'; }).join('<span class="ph-arrow">→</span>') +
+          '</div>' +
+          '<div class="ph-read-btns">' +
+            '<button class="ph-play" id="phBlendEach">🔊 逐音节慢读</button>' +
+            '<button class="ph-play" id="phBlendAll">🔊 连起来拼读</button>' +
+          '</div>' +
+          '<div class="ph-note">先听每个音节，再跟着连起来读。会了就点「✅ 我会拼读了」。</div>' +
+          '<button class="check-all" id="phBlendOk">✅ 我会拼读了</button>';
+        var eachB = document.getElementById("phBlendEach"); if (eachB) eachB.onclick = function () { playSeq(info.syl); };
+        var allB = document.getElementById("phBlendAll"); if (allB) allB.onclick = function () { speak(w.en, opt()); };
+        var okB = document.getElementById("phBlendOk"); if (okB) okB.onclick = function () { okB.textContent = "🎉 太棒了！"; okB.classList.add("done"); };
+
+      } else if (step === 5) {
+        body.innerHTML =
+          '<div class="ph-q">听发音，写出这个单词的拼写：</div>' +
+          '<div class="ph-spell-row">' +
+            '<button class="ph-play" id="phSpellPlay">🔊 听</button>' +
+            '<input class="ph-spell-in" id="phSpellIn" placeholder="拼写出英文" autocomplete="off" />' +
+            '<button class="check" id="phSpellCheck">核对</button>' +
+            '<span class="res" id="phSpellRes"></span>' +
+          '</div>' +
+          '<div class="ph-note">提示：音节 = ' + info.syl.join(" · ") + (info.src === "rule" ? "（规则推导，仅供参考）" : "") + '</div>';
+        var playB = document.getElementById("phSpellPlay"); if (playB) playB.onclick = function () { speak(w.en, opt()); };
+        var inp = document.getElementById("phSpellIn");
+        var resEl = document.getElementById("phSpellRes");
+        function doCheck() {
+          if (!inp || !resEl) return;
+          var ans = w.en.trim().toLowerCase();
+          var val = inp.value.trim().toLowerCase();
+          if (val === ans) { resEl.textContent = "✅ 正确"; resEl.style.color = "#1c7a4d"; }
+          else { resEl.textContent = "✏️ 应为 " + w.en; resEl.style.color = "#b23b3b"; }
+        }
+        if (inp) { inp.onkeydown = function (e) { if (e.key === "Enter") doCheck(); }; inp.focus(); }
+        var chk = document.getElementById("phSpellCheck"); if (chk) chk.onclick = doCheck;
+      }
+    }
+
   }
 
   /* ---------- 路由 ---------- */

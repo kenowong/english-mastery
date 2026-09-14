@@ -13,6 +13,7 @@
 
   var LS_PROGRESS = "em_progress_v1";
   var LS_STREAK = "em_streak_v1";
+  var LS_READ = "em_read_v1";
 
   var state = { grade: "all", dim: null, q: "", wordGrade: "primary" };
 
@@ -264,6 +265,7 @@
     if (back) back.onclick = function () { history.back(); };
 
     bindPractice(m);
+    bindRead(m);
 
     var md = document.getElementById("markDone");
     if (md) md.onclick = function () { toggleDone(m.id); };
@@ -605,6 +607,7 @@
         '<span class="mode-tab active" data-mode="flash">🃏 闪卡</span>' +
         '<span class="mode-tab" data-mode="spell">✍️ 拼写自测</span>' +
         '<span class="mode-tab" data-mode="read">🎤 跟读</span>' +
+        '<span class="mode-tab" data-mode="phonics">🔤 拼读拆解</span>' +
       '</div>' +
 
       '<div class="mode-pane" id="pane-flash" data-mode="flash">' +
@@ -620,6 +623,11 @@
       '<div class="mode-pane" id="pane-read" data-mode="read" style="display:none">' +
         '<div class="section-title"><span class="bar" style="background:var(--primary)"></span>🎤 跟读：听示范后跟读打分</div>' +
         '<div class="run-box" id="readRun"></div>' +
+      '</div>' +
+
+      '<div class="mode-pane" id="pane-phonics" data-mode="phonics" style="display:none">' +
+        '<div class="section-title"><span class="bar" style="background:var(--senior)"></span>🔤 拼读拆解：学 → 读 → 选 → 拆分 → 拼读 → 拼写</div>' +
+        '<div class="run-box" id="phonicsRun"></div>' +
       '</div>' +
       "</div>";
 
@@ -646,6 +654,7 @@
         });
         if (mode === "spell") renderSpellGroup(0);
         if (mode === "read") renderReadGroup(0);
+        if (mode === "phonics") renderPhonics(0);
       };
     });
 
@@ -772,6 +781,305 @@
       if (prev && readPage > 0) prev.onclick = function () { renderReadGroup(readPage - 1); };
       if (next && readPage < total - 1) next.onclick = function () { renderReadGroup(readPage + 1); };
     }
+    /* ---------- 拼读拆解（6 步：学 / 读 / 选 / 拆分 / 拼读 / 拼写） ---------- */
+    var phRun = document.getElementById("phonicsRun");
+    var STEP_LABELS = ["学", "读", "选", "拆分", "拼读", "拼写"];
+    var phList = words.filter(function (w) { return window.phonicsFor && window.phonicsFor(w.en); });
+    var phIdx = 0;
+    var phStep = 0;
+
+    function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+    function playSeq(list) {
+      var syn = window.speechSynthesis;
+      if (!syn) { alert("当前浏览器不支持语音朗读，请换 Chrome / Edge"); return; }
+      var k = 0;
+      (function next() {
+        if (k >= list.length) return;
+        syn.cancel();
+        var u = new SpeechSynthesisUtterance(list[k]);
+        u.lang = opt().lang; u.rate = (opt().rate || 1) * 0.85;
+        u.onend = function () { k++; setTimeout(next, 220); };
+        syn.speak(u);
+      })();
+    }
+    function allSplits(word) {
+      var n = word.length, res = [], maxMask = (n > 12) ? 0 : (1 << (n - 1));
+      if (maxMask) {
+        for (var mask = 0; mask < maxMask; mask++) {
+          var s = "";
+          for (var i = 0; i < n; i++) { s += word[i]; if (i < n - 1 && ((mask >> i) & 1)) s += "·"; }
+          res.push(s);
+        }
+      } else {
+        for (var t = 0; t < 300; t++) {
+          var m = 0; for (var b = 0; b < n - 1; b++) if (Math.random() < 0.3) m |= (1 << b);
+          var ss = ""; for (var i2 = 0; i2 < n; i2++) { ss += word[i2]; if (i2 < n - 1 && ((m >> i2) & 1)) ss += "·"; }
+          res.push(ss);
+        }
+      }
+      return res;
+    }
+    var IPA_POOL = ["/æ/","/e/","/ɪ/","/ɒ/","/ʌ/","/ɑː/","/ɔː/","/eɪ/","/aɪ/","/aʊ/","/əʊ/","/iː/","/uː/","/ʊ/","/ɜː/","/ə/","/ʃ/","/tʃ/","/θ/","/ð/","/ŋ/","/s/","/z/"];
+    function genWrongIpa(info) {
+      var ph = (info.ph || []).slice();
+      if (!ph.length) return info.ipa;
+      var i = Math.floor(Math.random() * ph.length);
+      ph[i] = IPA_POOL[Math.floor(Math.random() * IPA_POOL.length)];
+      var body2 = ph.map(function (p) { return String(p).replace(/\//g, ""); }).join("");
+      return "/" + body2 + "/";
+    }
+
+    function renderPhonics(start) {
+      if (typeof start === "number") phIdx = start;
+      if (!phRun) return;
+      if (!phList.length) {
+        phRun.innerHTML = '<div class="empty">本单元暂无可用于「拼读拆解」的单词（含空格、连字符或全大写缩写的词已自动跳过）。</div>';
+        return;
+      }
+      var w = phList[phIdx];
+      var info = window.phonicsFor(w.en);
+      var wordTotal = phList.length;
+
+      var stepBar = STEP_LABELS.map(function (lab, i) {
+        return '<span class="ph-step ' + (i === phStep ? "active" : (i < phStep ? "done" : "")) + '" data-step="' + i + '">' + (i + 1) + ". " + lab + "</span>";
+      }).join("");
+
+      phRun.innerHTML =
+        '<div class="ph-head">' +
+          '<div class="ph-word">' + esc(w.en) + ' <span class="ph-zh">(' + esc(w.zh) + ')</span></div>' +
+          '<div class="ph-badge ' + (info.src === "curated" ? "ok" : "rule") + '">' + (info.src === "curated" ? "✓ 已校对" : "≈ 规则推导") + '</div>' +
+        '</div>' +
+        '<div class="ph-stepbar">' + stepBar + '</div>' +
+        '<div class="ph-body" id="phBody"></div>' +
+        '<div class="run-nav">' +
+          '<button class="ghost" id="phStepPrev"' + (phStep === 0 ? " disabled" : "") + '>← 上一步</button>' +
+          '<button class="ghost" id="phWordPrev"' + (phIdx === 0 ? " disabled" : "") + '>← 上一个词</button>' +
+          '<span class="ph-counter">第 ' + (phIdx + 1) + " / " + wordTotal + ' 词</span>' +
+          '<button class="ghost" id="phWordNext"' + (phIdx >= wordTotal - 1 ? " disabled" : "") + '>下一个词 →</button>' +
+          '<button class="ghost" id="phStepNext"' + (phStep >= 5 ? " disabled" : "") + '>下一步 →</button>' +
+        '</div>';
+
+      Array.prototype.forEach.call(phRun.querySelectorAll(".ph-step"), function (s) {
+        s.onclick = function () { phStep = +s.getAttribute("data-step"); renderPhonics(); };
+      });
+      var sp = document.getElementById("phStepPrev"); if (sp && phStep > 0) sp.onclick = function () { phStep--; renderPhonics(); };
+      var sn = document.getElementById("phStepNext"); if (sn && phStep < 5) sn.onclick = function () { phStep++; renderPhonics(); };
+      var wp = document.getElementById("phWordPrev"); if (wp && phIdx > 0) wp.onclick = function () { phIdx--; phStep = 0; renderPhonics(); };
+      var wn = document.getElementById("phWordNext"); if (wn && phIdx < wordTotal - 1) wn.onclick = function () { phIdx++; phStep = 0; renderPhonics(); };
+
+      bindStep(phStep, info, w);
+    }
+
+    function bindStep(step, info, w) {
+      var body = document.getElementById("phBody");
+      if (!body) return;
+
+      if (step === 0) {
+        var mapRows = info.seg.map(function (p) {
+          var ipa = p[1];
+          var approx = ipa ? (window.PHONICS_SPEAK[ipa] || "") : "";
+          var sCls = ipa ? "" : " silent";
+          return '<div class="ph-grapheme' + sCls + '" data-approx="' + esc(approx) + '">' +
+            '<span class="ph-g">' + esc(p[0]) + '</span>' +
+            '<span class="ph-s">' + (ipa ? esc(ipa) : "∅") + '</span>' +
+            (ipa ? '<span class="ph-a">' + esc(approx || "—") + '</span>' : '<span class="ph-a">不发音</span>') +
+          '</div>';
+        }).join("");
+        body.innerHTML =
+          '<div class="ph-learn-word">' + esc(w.en) + '</div>' +
+          '<div class="ph-syl">' + info.syl.map(function (s) { return esc(s); }).join('<span class="dot">·</span>') + '</div>' +
+          '<div class="ph-ipa">' + esc(info.ipa) + '</div>' +
+          '<button class="ph-play" id="phWhole">🔊 听整词</button>' +
+          '<div class="section-title"><span class="bar"></span>字母组合 → 发音（点任意一格听发音）</div>' +
+          '<div class="ph-map" id="phMap">' + mapRows + '</div>' +
+          '<div class="ph-note">灰色「∅ / 不发音」表示该字母组合不发音（如 write 的 w、have 的 e）。规则推导词仅供参考，音标以词典 / 教材为准。</div>';
+        var whole = document.getElementById("phWhole"); if (whole) whole.onclick = function () { speak(w.en, opt()); };
+        Array.prototype.forEach.call(body.querySelectorAll(".ph-grapheme"), function (t) {
+          t.onclick = function () {
+            var ap = t.getAttribute("data-approx");
+            if (!ap) return;
+            speak(ap, opt());
+          };
+        });
+
+      } else if (step === 1) {
+        body.innerHTML =
+          '<div class="ph-big">' + esc(w.en) + '</div>' +
+          '<div class="ph-syl">' + info.syl.map(function (s) { return esc(s); }).join('<span class="dot">·</span>') + '</div>' +
+          '<div class="ph-read-btns">' +
+            '<button class="ph-play" id="phWhole2">🔊 听示范</button>' +
+            '<button class="ph-play" id="phSyl">🔊 逐音节听</button>' +
+            '<button class="ph-rec" id="phRec">🎤 跟我读</button>' +
+          '</div>' +
+          '<div class="read-fb" id="phReadFb"></div>' +
+          '<div class="ph-note">「跟我读」需要麦克风权限，且仅在 localhost 或 https 下、用 Chrome / Edge 可用。</div>';
+        var whole2 = document.getElementById("phWhole2"); if (whole2) whole2.onclick = function () { speak(w.en, opt()); };
+        var sylB = document.getElementById("phSyl"); if (sylB) sylB.onclick = function () { playSeq(info.syl); };
+        var rec2 = document.getElementById("phRec");
+        var fb2 = document.getElementById("phReadFb");
+        if (!SR) { if (rec2) { rec2.disabled = true; rec2.style.opacity = ".5"; rec2.title = "当前浏览器不支持语音识别，请用 Chrome / Edge，并在本机(localhost)或 https 下打开"; } }
+        else if (rec2) {
+          rec2.onclick = function () {
+            var rec = new SR();
+            rec.lang = accentSel ? accentSel.value : "en-US";
+            rec.interimResults = false; rec.maxAlternatives = 1;
+            rec2.textContent = "🎙 听…"; rec2.disabled = true;
+            rec.onresult = function (e) {
+              var txt = e.results[0][0].transcript;
+              var sc = speechScore(txt, w.en);
+              var stars = Math.max(1, Math.round(sc * 5));
+              var starStr = ""; for (var kk = 0; kk < 5; kk++) starStr += (kk < stars ? "⭐" : "☆");
+              fb2.innerHTML = "你说：<b>" + esc(txt) + "</b><br>匹配度 " + Math.round(sc * 100) + "%　" + starStr;
+              fb2.className = "read-fb " + (sc >= 0.6 ? "ok" : "low");
+            };
+            rec.onerror = function (e) { fb2.textContent = "识别失败：" + e.error; fb2.className = "read-fb low"; };
+            rec.onend = function () { rec2.textContent = "🎤 跟我读"; rec2.disabled = false; };
+            try { rec.start(); } catch (err) { fb2.textContent = "无法启动麦克风：" + err.message; rec2.textContent = "🎤 跟我读"; rec2.disabled = false; }
+          };
+        }
+
+      } else if (step === 2) {
+        var choices, correctStr, qtext;
+        if (info.syl.length > 1) {
+          correctStr = info.syl.join("·");
+          qtext = "这个词怎么分音节？选出正确的一项";
+          var pool = allSplits(w.en).filter(function (s) { return s !== correctStr; });
+          shuffle(pool);
+          choices = [correctStr];
+          if (pool[0]) choices.push(pool[0]);
+          if (pool[1]) choices.push(pool[1]);
+          while (choices.length < 3) { var alt = correctStr.split("").reverse().join(""); if (choices.indexOf(alt) < 0) choices.push(alt); else break; }
+        } else {
+          correctStr = info.ipa;
+          qtext = "这个单词的正确音标是？选出正确的一项";
+          var wp2 = [genWrongIpa(info), genWrongIpa(info)];
+          choices = [correctStr];
+          if (wp2[0]) choices.push(wp2[0]);
+          if (wp2[1] && wp2[1] !== correctStr) choices.push(wp2[1]);
+          if (choices.length < 3 && wp2[1]) choices.push(wp2[1]);
+        }
+        shuffle(choices);
+        body.innerHTML =
+          '<div class="ph-big">' + esc(w.en) + '</div>' +
+          '<div class="ph-q">' + qtext + '</div>' +
+          '<div class="ph-choices" id="phChoices" data-ans="' + esc(correctStr) + '">' +
+            choices.map(function (c) { return '<button class="ph-choice" data-c="' + esc(c) + '">' + esc(c) + '</button>'; }).join("") +
+          '</div>' +
+          '<div class="read-fb" id="phSelFb"></div>';
+        Array.prototype.forEach.call(body.querySelectorAll(".ph-choice"), function (b) {
+          b.onclick = function () {
+            var ans = body.querySelector("#phChoices").getAttribute("data-ans");
+            var pick = b.getAttribute("data-c");
+            if (pick === ans) {
+              b.classList.add("right");
+              var f = document.getElementById("phSelFb");
+              f.textContent = "✅ 正确！" + (info.syl.length > 1 ? ("音节切分：" + info.syl.join("·")) : ("音标：" + info.ipa));
+              f.className = "read-fb ok";
+            } else {
+              b.classList.add("wrong");
+              var f2 = document.getElementById("phSelFb");
+              f2.textContent = "💡 正确答案：" + ans;
+              f2.className = "read-fb low";
+            }
+            Array.prototype.forEach.call(body.querySelectorAll(".ph-choice"), function (x) { x.disabled = true; });
+          };
+        });
+
+      } else if (step === 3) {
+        var sylCuts = []; var cum = 0;
+        for (var si = 0; si < info.syl.length - 1; si++) { cum += info.syl[si].length; sylCuts.push(cum); }
+        var gStart = 0; var correctBreaks = {};
+        for (var gi = 0; gi < info.seg.length; gi++) {
+          var glen = info.seg[gi][0].length;
+          var gEnd = gStart + glen;
+          if (gi < info.seg.length - 1 && sylCuts.indexOf(gEnd) >= 0) correctBreaks[gi] = true;
+          gStart = gEnd;
+        }
+        var q3 = "点击字母之间的「·」标出音节断点，再点「核对」。" + (info.syl.length === 1 ? "（这个单词只有一个音节，不用点断点）" : "");
+        var tiles = "";
+        for (var t = 0; t < info.seg.length; t++) {
+          tiles += '<span class="ph-tile" data-gi="' + t + '">' + esc(info.seg[t][0]) + '</span>';
+          if (t < info.seg.length - 1) tiles += '<span class="ph-gap" data-gap="' + t + '">·</span>';
+        }
+        body.innerHTML =
+          '<div class="ph-big">' + esc(w.en) + '</div>' +
+          '<div class="ph-q">' + q3 + '</div>' +
+          '<div class="ph-split" id="phSplit">' + tiles + '</div>' +
+          '<div class="ph-split-preview" id="phSplitPrev"></div>' +
+          '<div class="ph-read-btns">' +
+            '<button class="check-all" id="phSplitCheck">核对</button>' +
+            '<button class="ghost" id="phSplitAns">显示答案</button>' +
+          '</div>' +
+          '<div class="read-fb" id="phSplitFb"></div>';
+        var active = {};
+        function buildSplit() {
+          var parts = []; var cur = "";
+          for (var t2 = 0; t2 < info.seg.length; t2++) { cur += info.seg[t2][0]; if (active[t2]) { parts.push(cur); cur = ""; } }
+          parts.push(cur);
+          return parts;
+        }
+        Array.prototype.forEach.call(body.querySelectorAll(".ph-gap"), function (g) {
+          g.onclick = function () {
+            var idx = +g.getAttribute("data-gap");
+            if (active[idx]) { delete active[idx]; g.classList.remove("on"); } else { active[idx] = true; g.classList.add("on"); }
+            var pv = document.getElementById("phSplitPrev");
+            if (pv) pv.textContent = "你的切分：" + buildSplit().join(" · ");
+          };
+        });
+        var checkB = document.getElementById("phSplitCheck");
+        if (checkB) checkB.onclick = function () {
+          var fb = document.getElementById("phSplitFb");
+          if (buildSplit().join("·") === info.syl.join("·")) { fb.textContent = "✅ 切分正确：" + info.syl.join("·"); fb.className = "read-fb ok"; }
+          else { fb.textContent = "💡 还不对，正确切分是：" + info.syl.join(" · "); fb.className = "read-fb low"; }
+        };
+        var ansB = document.getElementById("phSplitAns");
+        if (ansB) ansB.onclick = function () {
+          var fb = document.getElementById("phSplitFb");
+          fb.textContent = "正确切分：" + info.syl.join(" · ");
+          fb.className = "read-fb ok";
+        };
+
+      } else if (step === 4) {
+        body.innerHTML =
+          '<div class="ph-big">' + esc(w.en) + '</div>' +
+          '<div class="ph-syl-blocks" id="phSylBlocks">' +
+            info.syl.map(function (s, i) { return '<span class="ph-syl-block" data-i="' + i + '">' + esc(s) + '</span>'; }).join('<span class="ph-arrow">→</span>') +
+          '</div>' +
+          '<div class="ph-read-btns">' +
+            '<button class="ph-play" id="phBlendEach">🔊 逐音节慢读</button>' +
+            '<button class="ph-play" id="phBlendAll">🔊 连起来拼读</button>' +
+          '</div>' +
+          '<div class="ph-note">先听每个音节，再跟着连起来读。会了就点「✅ 我会拼读了」。</div>' +
+          '<button class="check-all" id="phBlendOk">✅ 我会拼读了</button>';
+        var eachB = document.getElementById("phBlendEach"); if (eachB) eachB.onclick = function () { playSeq(info.syl); };
+        var allB = document.getElementById("phBlendAll"); if (allB) allB.onclick = function () { speak(w.en, opt()); };
+        var okB = document.getElementById("phBlendOk"); if (okB) okB.onclick = function () { okB.textContent = "🎉 太棒了！"; okB.classList.add("done"); };
+
+      } else if (step === 5) {
+        body.innerHTML =
+          '<div class="ph-q">听发音，写出这个单词的拼写：</div>' +
+          '<div class="ph-spell-row">' +
+            '<button class="ph-play" id="phSpellPlay">🔊 听</button>' +
+            '<input class="ph-spell-in" id="phSpellIn" placeholder="拼写出英文" autocomplete="off" />' +
+            '<button class="check" id="phSpellCheck">核对</button>' +
+            '<span class="res" id="phSpellRes"></span>' +
+          '</div>' +
+          '<div class="ph-note">提示：音节 = ' + info.syl.join(" · ") + (info.src === "rule" ? "（规则推导，仅供参考）" : "") + '</div>';
+        var playB = document.getElementById("phSpellPlay"); if (playB) playB.onclick = function () { speak(w.en, opt()); };
+        var inp = document.getElementById("phSpellIn");
+        var resEl = document.getElementById("phSpellRes");
+        function doCheck() {
+          if (!inp || !resEl) return;
+          var ans = w.en.trim().toLowerCase();
+          var val = inp.value.trim().toLowerCase();
+          if (val === ans) { resEl.textContent = "✅ 正确"; resEl.style.color = "#1c7a4d"; }
+          else { resEl.textContent = "✏️ 应为 " + w.en; resEl.style.color = "#b23b3b"; }
+        }
+        if (inp) { inp.onkeydown = function (e) { if (e.key === "Enter") doCheck(); }; inp.focus(); }
+        var chk = document.getElementById("phSpellCheck"); if (chk) chk.onclick = doCheck;
+      }
+    }
+
   }
 
   /* ---------- 路由 ---------- */
