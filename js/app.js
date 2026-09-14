@@ -345,14 +345,27 @@
     Object.keys(setR).forEach(function (w) { if (setT[w]) hit += Math.min(setT[w], setR[w]); });
     return hit / t.length;
   }
+  var _voiceCache = null;
+  function pickVoice() {
+    var synth = window.speechSynthesis;
+    if (!synth || !synth.getVoices) return null;
+    if (_voiceCache) return _voiceCache;
+    var vs = synth.getVoices() || [];
+    _voiceCache = vs.filter(function (v) { return /en[-_]US/i.test(v.lang); })[0] ||
+                  vs.filter(function (v) { return /^en/i.test(v.lang); })[0] || null;
+    return _voiceCache;
+  }
   function speak(text, opts) {
     opts = opts || {};
     var synth = window.speechSynthesis;
     if (!synth) { alert("当前浏览器不支持语音朗读，请换 Chrome / Edge"); return; }
     synth.cancel();
     var u = new SpeechSynthesisUtterance(text);
-    u.lang = opts.lang || "en-US";
+    var v = pickVoice();
+    if (v) u.voice = v;
+    u.lang = (v && v.lang) || opts.lang || "en-US";
     u.rate = opts.rate || 1;
+    u.pitch = (opts.pitch != null) ? opts.pitch : 1;
     synth.speak(u);
   }
   function updateReadSummary(id, total) {
@@ -802,6 +815,26 @@
         syn.speak(u);
       })();
     }
+    // 逐音拼读：把整词按音素序列依次读出（替代旧版「按音节字母碎片读」，后者 TTS 会把 py 读成 pee-eye）
+    function speakPhonemes(info, slow) {
+      var syn = window.speechSynthesis;
+      if (!syn) { alert("当前浏览器不支持语音朗读，请换 Chrome / Edge"); return; }
+      var toks = (info.ph || []).map(function (ph) {
+        return window.PHONICS_BLEND[ph] || window.PHONICS_SPEAK[ph] || "";
+      }).filter(Boolean);
+      if (!toks.length) { speak(info.word || "", opt()); return; }
+      var k = 0;
+      (function next() {
+        if (k >= toks.length) return;
+        syn.cancel();
+        var u = new SpeechSynthesisUtterance(toks[k]);
+        var v = pickVoice(); if (v) u.voice = v;
+        u.lang = (v && v.lang) || opt().lang;
+        u.rate = slow ? 0.55 : 0.82;
+        u.onend = function () { k++; setTimeout(next, 170); };
+        syn.speak(u);
+      })();
+    }
     function allSplits(word) {
       var n = word.length, res = [], maxMask = (n > 12) ? 0 : (1 << (n - 1));
       if (maxMask) {
@@ -908,13 +941,13 @@
           '<div class="ph-syl">' + info.syl.map(function (s) { return esc(s); }).join('<span class="dot">·</span>') + '</div>' +
           '<div class="ph-read-btns">' +
             '<button class="ph-play" id="phWhole2">🔊 听示范</button>' +
-            '<button class="ph-play" id="phSyl">🔊 逐音节听</button>' +
+            '<button class="ph-play" id="phSyl">🔊 音素拼读</button>' +
             '<button class="ph-rec" id="phRec">🎤 跟我读</button>' +
           '</div>' +
           '<div class="read-fb" id="phReadFb"></div>' +
           '<div class="ph-note">「跟我读」需要麦克风权限，且仅在 localhost 或 https 下、用 Chrome / Edge 可用。</div>';
         var whole2 = document.getElementById("phWhole2"); if (whole2) whole2.onclick = function () { speak(w.en, opt()); };
-        var sylB = document.getElementById("phSyl"); if (sylB) sylB.onclick = function () { playSeq(info.syl); };
+        var sylB = document.getElementById("phSyl"); if (sylB) sylB.onclick = function () { speakPhonemes(info, false); };
         var rec2 = document.getElementById("phRec");
         var fb2 = document.getElementById("phReadFb");
         if (!SR) { if (rec2) { rec2.disabled = true; rec2.style.opacity = ".5"; rec2.title = "当前浏览器不支持语音识别，请用 Chrome / Edge，并在本机(localhost)或 https 下打开"; } }
@@ -1046,12 +1079,12 @@
             info.syl.map(function (s, i) { return '<span class="ph-syl-block" data-i="' + i + '">' + esc(s) + '</span>'; }).join('<span class="ph-arrow">→</span>') +
           '</div>' +
           '<div class="ph-read-btns">' +
-            '<button class="ph-play" id="phBlendEach">🔊 逐音节慢读</button>' +
+            '<button class="ph-play" id="phBlendEach">🔊 音素慢读</button>' +
             '<button class="ph-play" id="phBlendAll">🔊 连起来拼读</button>' +
           '</div>' +
-          '<div class="ph-note">先听每个音节，再跟着连起来读。会了就点「✅ 我会拼读了」。</div>' +
+          '<div class="ph-note">先逐音拼读，再跟着连起来读（听整词）。会了就点「✅ 我会拼读了」。</div>' +
           '<button class="check-all" id="phBlendOk">✅ 我会拼读了</button>';
-        var eachB = document.getElementById("phBlendEach"); if (eachB) eachB.onclick = function () { playSeq(info.syl); };
+        var eachB = document.getElementById("phBlendEach"); if (eachB) eachB.onclick = function () { speakPhonemes(info, true); };
         var allB = document.getElementById("phBlendAll"); if (allB) allB.onclick = function () { speak(w.en, opt()); };
         var okB = document.getElementById("phBlendOk"); if (okB) okB.onclick = function () { okB.textContent = "🎉 太棒了！"; okB.classList.add("done"); };
 
@@ -1105,6 +1138,8 @@
 
   window.addEventListener("hashchange", route);
   document.addEventListener("DOMContentLoaded", function () {
+    // 预热语音列表，确保首次朗读就能选到英文嗓音
+    try { if (window.speechSynthesis) { speechSynthesis.getVoices(); pickVoice(); } } catch (e) {}
     // 注入顶栏与统计容器
     var top = el('<div class="topbar" id="topbar"></div>');
     document.body.insertBefore(top, document.body.firstChild);
