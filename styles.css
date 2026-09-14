@@ -380,3 +380,5 @@ a:hover { text-decoration: underline; }
 .ph-word-quiz .ph-zh { font-size: 18px; color: var(--ink); font-weight: 800; }
 .ph-hint-btn { margin-left: 8px; font-size: 12px; padding: 3px 10px; }
 .ph-hint-txt { margin-left: 6px; color: var(--ink); font-weight: 800; }
+/* 拼读拆解 · 学：格子里的「例词」小标签（区别于该音本身的读法） */
+.ph-a .ph-lbl { font-style: normal; font-size: 10px; color: #a9b3c2; margin-right: 3px; }

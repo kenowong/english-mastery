@@ -802,16 +802,20 @@
     var phStep = 0;
 
     function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-    function playSeq(list) {
+    function playSeq(list, opts) {
+      opts = opts || {};
       var syn = window.speechSynthesis;
       if (!syn) { alert("当前浏览器不支持语音朗读，请换 Chrome / Edge"); return; }
+      var seq = list.filter(Boolean);
       var k = 0;
       (function next() {
-        if (k >= list.length) return;
+        if (k >= seq.length) return;
         syn.cancel();
-        var u = new SpeechSynthesisUtterance(list[k]);
-        u.lang = opt().lang; u.rate = (opt().rate || 1) * 0.85;
-        u.onend = function () { k++; setTimeout(next, 220); };
+        var u = new SpeechSynthesisUtterance(seq[k]);
+        var v = pickVoice(); if (v) u.voice = v;
+        u.lang = (v && v.lang) || opt().lang || "en-US";
+        u.rate = (opts.rate || opt().rate || 1) * 0.85;
+        u.onend = function () { k++; setTimeout(next, opts.gap == null ? 220 : opts.gap); };
         syn.speak(u);
       })();
     }
@@ -913,12 +917,15 @@
       if (step === 0) {
         var mapRows = info.seg.map(function (p) {
           var ipa = p[1];
-          var approx = ipa ? (window.PHONICS_SPEAK[ipa] || "") : "";
+          var snd = ipa ? (window.PHONICS_BLEND[ipa] || "") : "";
+          var ex = ipa ? (window.PHONICS_SPEAK[ipa] || "") : "";
           var sCls = ipa ? "" : " silent";
-          return '<div class="ph-grapheme' + sCls + '" data-approx="' + esc(approx) + '">' +
+          return '<div class="ph-grapheme' + sCls + '" data-sound="' + esc(snd) + '" data-word="' + esc(ex) + '">' +
             '<span class="ph-g">' + esc(p[0]) + '</span>' +
             '<span class="ph-s">' + (ipa ? esc(ipa) : "∅") + '</span>' +
-            (ipa ? '<span class="ph-a">' + esc(approx || "—") + '</span>' : '<span class="ph-a">不发音</span>') +
+            (ipa
+              ? '<span class="ph-a"><i class="ph-lbl">例词</i>' + esc(ex || "—") + '</span>'
+              : '<span class="ph-a">不发音</span>') +
           '</div>';
         }).join("");
         body.innerHTML =
@@ -926,15 +933,17 @@
           '<div class="ph-syl">' + info.syl.map(function (s) { return esc(s); }).join('<span class="dot">·</span>') + '</div>' +
           '<div class="ph-ipa">' + esc(info.ipa) + '</div>' +
           '<button class="ph-play" id="phWhole">🔊 听整词</button>' +
-          '<div class="section-title"><span class="bar"></span>字母组合 → 发音（点任意一格听发音）</div>' +
+          '<div class="section-title"><span class="bar"></span>字母组合 → 发音（点格子：先听该音，再听例词）</div>' +
           '<div class="ph-map" id="phMap">' + mapRows + '</div>' +
-          '<div class="ph-note">灰色「∅ / 不发音」表示该字母组合不发音（如 write 的 w、have 的 e）。规则推导词仅供参考，音标以词典 / 教材为准。</div>';
+          '<div class="ph-note">点格子会先读该音的近似读法（如 f → 「fuh」），再读一个例词帮记忆；整词的标准发音请点「听整词」。灰色「∅ / 不发音」表示该字母组合不发音（如 write 的 w、have 的 e）。规则推导词仅供参考，音标以词典 / 教材为准。</div>';
         var whole = document.getElementById("phWhole"); if (whole) whole.onclick = function () { speak(w.en, opt()); };
         Array.prototype.forEach.call(body.querySelectorAll(".ph-grapheme"), function (t) {
           t.onclick = function () {
-            var ap = t.getAttribute("data-approx");
-            if (!ap) return;
-            speak(ap, opt());
+            var snd = t.getAttribute("data-sound");
+            var ex = t.getAttribute("data-word");
+            var seq = (snd && ex && snd !== ex) ? [snd, ex] : [ex || snd];
+            if (!seq[0]) return;
+            playSeq(seq, { gap: 280 });
           };
         });
 

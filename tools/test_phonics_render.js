@@ -1,20 +1,40 @@
 /*
  * 极简 DOM mock 渲染校验：真跑「单词单元 → 拼读拆解 6 步」渲染路径，
- * 并模拟点击「听整词 / 音素拼读 / 音素慢读」按钮，确认新发音路径不抛错且读出正确的音素 token。
- * 另含两条关键断言：
- *   - 第 6 步「听音拼写」词头必须隐藏答案（不得出现单词），只给词义；
- *   - 全词库音素都必须有「拼读 token」（防空音）。
+ * 并模拟点击「学」格子 / 「听整词 / 音素拼读 / 音素慢读」按钮，确认发音路径不抛错且播出正确的 token。
+ * 关键断言：
+ *   ① 「学」格子必须「先读该音、再读例词」，不得只读例词（本轮修的 bug）；
+ *   ② PHONICS_BLEND 的 token 必须含元音字母——否则 TTS 会读成字母名（sh→ess-aitch、th→tee-aitch）；
+ *   ③ 第 6 步「听音拼写」词头必须隐藏答案（不得出现单词），只给词义，且音节提示默认收起；
+ *   ④ 全词库音素都必须有拼读 token（防空音，且必须真扫到词）。
  * 仅用于本地校验，不随页面加载。
  */
 const fs = require('fs');
 const vm = require('vm');
 const dir = 'E:/WorkBuddy/workspace/english-mastery';
 
+// 从 innerHTML 里解析出「学」格子（.ph-grapheme）的属性，让点击路径可被真实触发
+function parseGraphemes(html) {
+  const out = [];
+  const re = /<div class="ph-grapheme[^"]*"([^>]*)>/g;
+  let m;
+  while ((m = re.exec(html))) {
+    const attrs = m[1] || '';
+    const snd = /data-sound="([^"]*)"/.exec(attrs);
+    const wd = /data-word="([^"]*)"/.exec(attrs);
+    const e = makeEl();
+    e._attrs['data-sound'] = snd ? snd[1] : '';
+    e._attrs['data-word'] = wd ? wd[1] : '';
+    out.push(e);
+  }
+  return out;
+}
+
 function makeEl(id) {
   const el = {
     id: id || '',
     _attrs: {},
     _html: '',
+    _graphemes: [],
     onclick: null,
     disabled: false,
     value: '',
@@ -27,9 +47,12 @@ function makeEl(id) {
     appendChild() {},
     removeChild() {},
     querySelector() { return makeEl(); },
-    querySelectorAll() { return []; },
+    querySelectorAll(sel) { return sel === '.ph-grapheme' ? this._graphemes : []; },
   };
-  Object.defineProperty(el, 'innerHTML', { get() { return this._html; }, set(v) { this._html = String(v); } });
+  Object.defineProperty(el, 'innerHTML', {
+    get() { return this._html; },
+    set(v) { this._html = String(v); this._graphemes = parseGraphemes(this._html); },
+  });
   return el;
 }
 
@@ -119,6 +142,43 @@ if (!phWhole.onclick) throw new Error('phWhole.onclick 缺失');
 phWhole.onclick();
 if (!spoken.length) throw new Error('听整词未触发语音');
 
+// ①b 学：点格子必须先读「该音的读法」再读「例词」——不得只读例词（旧 bug：读的是整词，等于没教发音）
+const graphemes = getEl('phBody').querySelectorAll('.ph-grapheme');
+if (!graphemes.length) throw new Error('「学」步骤未渲染出字母组合格子（.ph-grapheme）');
+const g0 = graphemes.filter((g) => g.getAttribute('data-sound'))[0];
+if (!g0) throw new Error('格子缺少 data-sound（该音读法）');
+spoken.length = 0;
+g0.onclick();
+const snd = g0.getAttribute('data-sound');
+const exw = g0.getAttribute('data-word');
+if (spoken[0] !== snd) throw new Error('点格子未先读该音：期望 ' + snd + '，实际 ' + JSON.stringify(spoken));
+if (exw && exw !== snd && spoken[1] !== exw) throw new Error('点格子未跟读例词：期望 ' + exw + '，实际 ' + JSON.stringify(spoken));
+if (!exw && spoken.length !== 1) throw new Error('无例词时不应多读：' + JSON.stringify(spoken));
+if (snd === exw && spoken.length !== 1) throw new Error('该音与例词相同时应只读一次：' + JSON.stringify(spoken));
+console.log('  学·点格子 ✓ 该音=' + snd + ' 例词=' + (exw || '（无）') + ' 实际播放=' + JSON.stringify(spoken));
+
+// ①c 关键回归：找一个「该音 ≠ 例词」的格子，必须读成 [该音, 例词] 两声
+//     —— 旧版这里只读了例词（等于再念一遍整词），根本没教该字母组合怎么发音
+let found2 = false;
+for (let i = 0; i < 12 && !found2; i++) {
+  const gs = getEl('phBody').querySelectorAll('.ph-grapheme');
+  for (const g of gs) {
+    const a = g.getAttribute('data-sound');
+    const b = g.getAttribute('data-word');
+    if (a && b && a !== b) {
+      spoken.length = 0;
+      g.onclick();
+      const want = JSON.stringify([a, b]);
+      if (spoken[0] !== a || spoken[1] !== b) throw new Error('「该音 + 例词」双读失败：期望 ' + want + '，实际 ' + JSON.stringify(spoken));
+      console.log('  学·双读 ✓ 该音=' + a + ' → 例词=' + b);
+      found2 = true;
+      break;
+    }
+  }
+  if (!found2) { const wn2 = getEl('phWordNext'); if (wn2.onclick) wn2.onclick(); }
+}
+if (!found2) throw new Error('未找到「该音 ≠ 例词」的格子，双读路径未被覆盖');
+
 // ② 读：音素拼读（逐音拼读，应读出 PHONICS_BLEND/PHONICS_SPEAK 的 token）
 const stepNext = getEl('phStepNext');
 if (!stepNext.onclick) throw new Error('phStepNext.onclick 缺失');
@@ -191,5 +251,14 @@ const missKeys = Object.keys(missing);
 if (!scanned) throw new Error('词库覆盖校验未扫到任何单词（遍历层级可能写错）');
 if (missKeys.length) throw new Error('存在无拼读 token 的音素: ' + JSON.stringify(missing));
 console.log('  全词库 ' + scanned + ' 词音素均有拼读 token ✓');
+
+// ⑧ 反字母名守卫：拼读 token 必须含元音字母，否则 TTS 会读成字母名（sh→ess-aitch、th→tee-aitch）
+const badTok = [];
+Object.keys(windowMock.PHONICS_BLEND).forEach((k) => {
+  const t = windowMock.PHONICS_BLEND[k];
+  if (!/[aeiouy]/i.test(t)) badTok.push(k + '->' + t);
+});
+if (badTok.length) throw new Error('拼读 token 不含元音字母，TTS 会读成字母名: ' + JSON.stringify(badTok));
+console.log('  拼读 token 反字母名守卫 ✓ 共 ' + Object.keys(windowMock.PHONICS_BLEND).length + ' 条');
 
 console.log('PHONICS_RENDER_OK methods=' + methods.length + ' syl=' + sample.syl.join('·') + ' ipa=' + sample.ipa);

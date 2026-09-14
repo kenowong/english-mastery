@@ -388,6 +388,8 @@ a:hover { text-decoration: underline; }
 .ph-word-quiz .ph-zh { font-size: 18px; color: var(--ink); font-weight: 800; }
 .ph-hint-btn { margin-left: 8px; font-size: 12px; padding: 3px 10px; }
 .ph-hint-txt { margin-left: 6px; color: var(--ink); font-weight: 800; }
+/* 拼读拆解 · 学：格子里的「例词」小标签（区别于该音本身的读法） */
+.ph-a .ph-lbl { font-style: normal; font-size: 10px; color: #a9b3c2; margin-right: 3px; }
 
 </style>
 </head>
@@ -2066,9 +2068,13 @@ window.WORD_BANK = {
     "/jʊə/": "Europe"
   };
 
-  /* 音素 → 拼读用短音（用于「读 / 拼读」里的逐音拼读：尽量让 TTS 读出该音，且能连成词音）。
-   * 元音用含该元音的极短片段（at/et/it…），辅音用「辅音+轻元音」（puh/buh…），均为近似示范，
-   * 真正标准的整词发音以「听示范 / 听整词 / 连起来拼读」读出的真实单词为准。 */
+  /* 音素 → 单音示范（用于「学」里点格子听的单个音，也用于「读 / 拼读」的逐音拼读）。
+   * 两条硬规则（否则 TTS 会读错）：
+   *   ① 辅音一律写成「辅音 + 轻元音」：fuh / shuh / thuh / juh / nguh…
+   *      —— 光写 "sh" "th" "ng" 会被读成字母名（ess-aitch / tee-aitch / en-jee），这是踩过的坑。
+   *   ② 每个 token 必须含元音字母，保证 TTS 按「音」读，而不是按「字母名」读。
+   * 元音本身即该音，用最短的可读片段（it / et / at / ah / ay…）。全部为近似示范，
+   * 标准整词发音以「听整词 / 听示范 / 连起来拼读」读出的真实单词为准。 */
   window.PHONICS_BLEND = {
     "/j/": "yuh", "/w/": "wuh", "/e/": "et", "/s/": "suh", "/t/": "tuh", "/d/": "duh",
     "/ə/": "uh", "/ʌ/": "uh", "/ɪ/": "it", "/ɒ/": "ot", "/æ/": "at", "/eɪ/": "ay",
@@ -2076,10 +2082,10 @@ window.WORD_BANK = {
     "/aɪ/": "eye", "/aʊ/": "ow", "/ɔɪ/": "oy", "/əʊ/": "oh", "/eə/": "air", "/ɪə/": "ear",
     "/b/": "buh", "/p/": "puh", "/k/": "kuh", "/ɡ/": "guh", "/f/": "fuh", "/v/": "vuh",
     "/z/": "zuh", "/m/": "muh", "/n/": "nuh", "/l/": "luh", "/r/": "ruh",
-    "/h/": "huh", "/ʃ/": "sh", "/tʃ/": "ch", "/θ/": "th", "/ð/": "th", "/dʒ/": "j",
-    "/ŋ/": "ng", "/ks/": "x", "/kw/": "kw", "/st/": "st", "/ŋk/": "nk",
-    "/əl/": "ul", "/ʃən/": "shun", "/ʒən/": "zhun", "/juː/": "you", "/ɔːl/": "all",
-    "/jʊə/": "you-er"
+    "/h/": "huh", "/ʃ/": "shuh", "/tʃ/": "chuh", "/θ/": "thuh", "/ð/": "thuh", "/dʒ/": "juh",
+    "/ŋ/": "nguh", "/ks/": "ksuh", "/kw/": "kwuh", "/st/": "stuh", "/ŋk/": "nkuh",
+    "/əl/": "ul", "/lɪ/": "li", "/ʃən/": "shun", "/ʒən/": "zhun", "/juː/": "you", "/ɔːl/": "all",
+    "/jʊə/": "you-er", "/saɪ/": "sigh", "/əns/": "unce", "/ɡz/": "guhz", "/wʌ/": "wuh"
   };
 
   /* ============================================================
@@ -3066,16 +3072,20 @@ window.WORD_BANK = {
     var phStep = 0;
 
     function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-    function playSeq(list) {
+    function playSeq(list, opts) {
+      opts = opts || {};
       var syn = window.speechSynthesis;
       if (!syn) { alert("当前浏览器不支持语音朗读，请换 Chrome / Edge"); return; }
+      var seq = list.filter(Boolean);
       var k = 0;
       (function next() {
-        if (k >= list.length) return;
+        if (k >= seq.length) return;
         syn.cancel();
-        var u = new SpeechSynthesisUtterance(list[k]);
-        u.lang = opt().lang; u.rate = (opt().rate || 1) * 0.85;
-        u.onend = function () { k++; setTimeout(next, 220); };
+        var u = new SpeechSynthesisUtterance(seq[k]);
+        var v = pickVoice(); if (v) u.voice = v;
+        u.lang = (v && v.lang) || opt().lang || "en-US";
+        u.rate = (opts.rate || opt().rate || 1) * 0.85;
+        u.onend = function () { k++; setTimeout(next, opts.gap == null ? 220 : opts.gap); };
         syn.speak(u);
       })();
     }
@@ -3177,12 +3187,15 @@ window.WORD_BANK = {
       if (step === 0) {
         var mapRows = info.seg.map(function (p) {
           var ipa = p[1];
-          var approx = ipa ? (window.PHONICS_SPEAK[ipa] || "") : "";
+          var snd = ipa ? (window.PHONICS_BLEND[ipa] || "") : "";
+          var ex = ipa ? (window.PHONICS_SPEAK[ipa] || "") : "";
           var sCls = ipa ? "" : " silent";
-          return '<div class="ph-grapheme' + sCls + '" data-approx="' + esc(approx) + '">' +
+          return '<div class="ph-grapheme' + sCls + '" data-sound="' + esc(snd) + '" data-word="' + esc(ex) + '">' +
             '<span class="ph-g">' + esc(p[0]) + '</span>' +
             '<span class="ph-s">' + (ipa ? esc(ipa) : "∅") + '</span>' +
-            (ipa ? '<span class="ph-a">' + esc(approx || "—") + '</span>' : '<span class="ph-a">不发音</span>') +
+            (ipa
+              ? '<span class="ph-a"><i class="ph-lbl">例词</i>' + esc(ex || "—") + '</span>'
+              : '<span class="ph-a">不发音</span>') +
           '</div>';
         }).join("");
         body.innerHTML =
@@ -3190,15 +3203,17 @@ window.WORD_BANK = {
           '<div class="ph-syl">' + info.syl.map(function (s) { return esc(s); }).join('<span class="dot">·</span>') + '</div>' +
           '<div class="ph-ipa">' + esc(info.ipa) + '</div>' +
           '<button class="ph-play" id="phWhole">🔊 听整词</button>' +
-          '<div class="section-title"><span class="bar"></span>字母组合 → 发音（点任意一格听发音）</div>' +
+          '<div class="section-title"><span class="bar"></span>字母组合 → 发音（点格子：先听该音，再听例词）</div>' +
           '<div class="ph-map" id="phMap">' + mapRows + '</div>' +
-          '<div class="ph-note">灰色「∅ / 不发音」表示该字母组合不发音（如 write 的 w、have 的 e）。规则推导词仅供参考，音标以词典 / 教材为准。</div>';
+          '<div class="ph-note">点格子会先读该音的近似读法（如 f → 「fuh」），再读一个例词帮记忆；整词的标准发音请点「听整词」。灰色「∅ / 不发音」表示该字母组合不发音（如 write 的 w、have 的 e）。规则推导词仅供参考，音标以词典 / 教材为准。</div>';
         var whole = document.getElementById("phWhole"); if (whole) whole.onclick = function () { speak(w.en, opt()); };
         Array.prototype.forEach.call(body.querySelectorAll(".ph-grapheme"), function (t) {
           t.onclick = function () {
-            var ap = t.getAttribute("data-approx");
-            if (!ap) return;
-            speak(ap, opt());
+            var snd = t.getAttribute("data-sound");
+            var ex = t.getAttribute("data-word");
+            var seq = (snd && ex && snd !== ex) ? [snd, ex] : [ex || snd];
+            if (!seq[0]) return;
+            playSeq(seq, { gap: 280 });
           };
         });
 
