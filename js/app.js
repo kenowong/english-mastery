@@ -879,7 +879,10 @@
 
       phRun.innerHTML =
         '<div class="ph-head">' +
-          '<div class="ph-word">' + esc(w.en) + ' <span class="ph-zh">(' + esc(w.zh) + ')</span></div>' +
+          (phStep === 5
+            ? '<div class="ph-word ph-word-quiz"><span class="ph-lock">🔒 听音拼写</span> <span class="ph-zh">(' + esc(w.zh) + ')</span></div>'
+            : '<div class="ph-word">' + esc(w.en) + ' <span class="ph-zh">(' + esc(w.zh) + ')</span></div>'
+          ) +
           '<div class="ph-badge ' + (info.src === "curated" ? "ok" : "rule") + '">' + (info.src === "curated" ? "✓ 已校对" : "≈ 规则推导") + '</div>' +
         '</div>' +
         '<div class="ph-stepbar">' + stepBar + '</div>' +
@@ -1090,15 +1093,24 @@
 
       } else if (step === 5) {
         body.innerHTML =
-          '<div class="ph-q">听发音，写出这个单词的拼写：</div>' +
+          '<div class="ph-q">听发音，写出这个单词的拼写：<span class="ph-zh">（' + esc(w.zh) + '）</span></div>' +
           '<div class="ph-spell-row">' +
             '<button class="ph-play" id="phSpellPlay">🔊 听</button>' +
             '<input class="ph-spell-in" id="phSpellIn" placeholder="拼写出英文" autocomplete="off" />' +
             '<button class="check" id="phSpellCheck">核对</button>' +
             '<span class="res" id="phSpellRes"></span>' +
           '</div>' +
-          '<div class="ph-note">提示：音节 = ' + info.syl.join(" · ") + (info.src === "rule" ? "（规则推导，仅供参考）" : "") + '</div>';
+          '<div class="ph-note">听录音写单词（本题不显示单词，只给词义）；卡住了可点「音节提示」。' +
+            '<button class="ghost ph-hint-btn" id="phSpellHint">🔍 音节提示（共 ' + info.syl.length + ' 个音节）</button>' +
+            '<span class="ph-hint-txt" id="phSpellHintTxt"></span>' +
+          '</div>';
         var playB = document.getElementById("phSpellPlay"); if (playB) playB.onclick = function () { speak(w.en, opt()); };
+        var hintB = document.getElementById("phSpellHint");
+        var hintTxt = document.getElementById("phSpellHintTxt");
+        if (hintB) hintB.onclick = function () {
+          if (hintTxt) hintTxt.textContent = " 音节 = " + info.syl.join(" · ") + (info.src === "rule" ? "（音标为规则推导，仅供参考）" : "");
+          hintB.style.display = "none";
+        };
         var inp = document.getElementById("phSpellIn");
         var resEl = document.getElementById("phSpellRes");
         function doCheck() {

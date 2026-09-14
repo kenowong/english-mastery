@@ -382,6 +382,13 @@ a:hover { text-decoration: underline; }
 .ph-spell-row .res { font-weight: 700; }
 .ph-counter { font-size: 13px; color: var(--muted); font-weight: 700; margin: 0 4px; }
 
+/* 拼读拆解（6 步）· 第 6 步「听音拼写」：不显示单词，只给词义 */
+.ph-word-quiz { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.ph-lock { font-size: 15px; font-weight: 800; color: var(--muted); background: #f1f3f7; border: 1px dashed #c9d2e0; border-radius: 8px; padding: 3px 10px; }
+.ph-word-quiz .ph-zh { font-size: 18px; color: var(--ink); font-weight: 800; }
+.ph-hint-btn { margin-left: 8px; font-size: 12px; padding: 3px 10px; }
+.ph-hint-txt { margin-left: 6px; color: var(--ink); font-weight: 800; }
+
 </style>
 </head>
 <body>
@@ -2025,7 +2032,17 @@ window.WORD_BANK = {
     "chair": { s: ["chair"], i: "/tʃeə/", g: [["ch", "/tʃ/"], ["air", "/eə/"]] },
 
     /* —— 多音节示例（参考图同款） —— */
-    "yesterday": { s: ["yes", "ter", "day"], i: "/ˈjestədeɪ/", g: [["y", "/j/"], ["e", "/e/"], ["st", "/st/"], ["er", "/ə/"], ["d", "/d/"], ["ay", "/eɪ/"]] }
+    "yesterday": { s: ["yes", "ter", "day"], i: "/ˈjestədeɪ/", g: [["y", "/j/"], ["e", "/e/"], ["st", "/st/"], ["er", "/ə/"], ["d", "/d/"], ["ay", "/eɪ/"]] },
+
+    /* —— 规则引擎易错的常见词（人工补校，避免推导出 eye→/ie/、store→/stə/ 之类） —— */
+    "eye": { s: ["eye"], i: "/aɪ/", g: [["eye", "/aɪ/"]] },
+    "buy": { s: ["buy"], i: "/baɪ/", g: [["b", "/b/"], ["uy", "/aɪ/"]] },
+    "store": { s: ["store"], i: "/stɔː/", g: [["s", "/s/"], ["t", "/t/"], ["ore", "/ɔː/"]] },
+    "island": { s: ["is", "land"], i: "/ˈaɪlənd/", g: [["i", "/aɪ/"], ["s", ""], ["l", "/l/"], ["a", "/ə/"], ["n", "/n/"], ["d", "/d/"]] },
+    "knowledge": { s: ["know", "ledge"], i: "/ˈnɒlɪdʒ/", g: [["k", ""], ["n", "/n/"], ["ow", "/ɒ/"], ["l", "/l/"], ["e", "/ɪ/"], ["dge", "/dʒ/"]] },
+    "hospital": { s: ["hos", "pi", "tal"], i: "/ˈhɒspɪtl/", g: [["h", "/h/"], ["o", "/ɒ/"], ["s", "/s/"], ["p", "/p/"], ["i", "/ɪ/"], ["t", "/t/"], ["a", "/ə/"], ["l", "/l/"]] },
+    "history": { s: ["his", "to", "ry"], i: "/ˈhɪstri/", g: [["h", "/h/"], ["i", "/ɪ/"], ["s", "/s/"], ["t", "/t/"], ["o", "/ə/"], ["r", "/r/"], ["y", "/i/"]] },
+    "clothes": { s: ["clothes"], i: "/kləʊðz/", g: [["c", "/k/"], ["l", "/l/"], ["o", "/əʊ/"], ["th", "/ð/"], ["e", ""], ["s", "/z/"]] }
   };
 
   /* ============================================================
@@ -2045,7 +2062,8 @@ window.WORD_BANK = {
     "/h/": "hat", "/ʃ/": "she", "/tʃ/": "chair", "/θ/": "thumb", "/ð/": "this", "/dʒ/": "jump",
     "/ŋ/": "sing", "/ks/": "box", "/kw/": "queen", "/st/": "star", "/ŋk/": "ink",
     "/əl/": "apple", "/lɪ/": "little", "/ʃən/": "nation", "/ʒən/": "vision", "/wʌ/": "one", "/juː/": "you",
-    "/saɪ/": "rice", "/əns/": "dance", "/ɡz/": "exam", "/i/": "see", "/ɔːl/": "all"
+    "/saɪ/": "rice", "/əns/": "dance", "/ɡz/": "exam", "/i/": "see", "/ɔːl/": "all",
+    "/jʊə/": "Europe"
   };
 
   /* 音素 → 拼读用短音（用于「读 / 拼读」里的逐音拼读：尽量让 TTS 读出该音，且能连成词音）。
@@ -2060,7 +2078,8 @@ window.WORD_BANK = {
     "/z/": "zuh", "/m/": "muh", "/n/": "nuh", "/l/": "luh", "/r/": "ruh",
     "/h/": "huh", "/ʃ/": "sh", "/tʃ/": "ch", "/θ/": "th", "/ð/": "th", "/dʒ/": "j",
     "/ŋ/": "ng", "/ks/": "x", "/kw/": "kw", "/st/": "st", "/ŋk/": "nk",
-    "/əl/": "ul", "/ʃən/": "shun", "/ʒən/": "zhun", "/juː/": "you", "/ɔːl/": "all"
+    "/əl/": "ul", "/ʃən/": "shun", "/ʒən/": "zhun", "/juː/": "you", "/ɔːl/": "all",
+    "/jʊə/": "you-er"
   };
 
   /* ============================================================
@@ -3124,7 +3143,10 @@ window.WORD_BANK = {
 
       phRun.innerHTML =
         '<div class="ph-head">' +
-          '<div class="ph-word">' + esc(w.en) + ' <span class="ph-zh">(' + esc(w.zh) + ')</span></div>' +
+          (phStep === 5
+            ? '<div class="ph-word ph-word-quiz"><span class="ph-lock">🔒 听音拼写</span> <span class="ph-zh">(' + esc(w.zh) + ')</span></div>'
+            : '<div class="ph-word">' + esc(w.en) + ' <span class="ph-zh">(' + esc(w.zh) + ')</span></div>'
+          ) +
           '<div class="ph-badge ' + (info.src === "curated" ? "ok" : "rule") + '">' + (info.src === "curated" ? "✓ 已校对" : "≈ 规则推导") + '</div>' +
         '</div>' +
         '<div class="ph-stepbar">' + stepBar + '</div>' +
@@ -3335,15 +3357,24 @@ window.WORD_BANK = {
 
       } else if (step === 5) {
         body.innerHTML =
-          '<div class="ph-q">听发音，写出这个单词的拼写：</div>' +
+          '<div class="ph-q">听发音，写出这个单词的拼写：<span class="ph-zh">（' + esc(w.zh) + '）</span></div>' +
           '<div class="ph-spell-row">' +
             '<button class="ph-play" id="phSpellPlay">🔊 听</button>' +
             '<input class="ph-spell-in" id="phSpellIn" placeholder="拼写出英文" autocomplete="off" />' +
             '<button class="check" id="phSpellCheck">核对</button>' +
             '<span class="res" id="phSpellRes"></span>' +
           '</div>' +
-          '<div class="ph-note">提示：音节 = ' + info.syl.join(" · ") + (info.src === "rule" ? "（规则推导，仅供参考）" : "") + '</div>';
+          '<div class="ph-note">听录音写单词（本题不显示单词，只给词义）；卡住了可点「音节提示」。' +
+            '<button class="ghost ph-hint-btn" id="phSpellHint">🔍 音节提示（共 ' + info.syl.length + ' 个音节）</button>' +
+            '<span class="ph-hint-txt" id="phSpellHintTxt"></span>' +
+          '</div>';
         var playB = document.getElementById("phSpellPlay"); if (playB) playB.onclick = function () { speak(w.en, opt()); };
+        var hintB = document.getElementById("phSpellHint");
+        var hintTxt = document.getElementById("phSpellHintTxt");
+        if (hintB) hintB.onclick = function () {
+          if (hintTxt) hintTxt.textContent = " 音节 = " + info.syl.join(" · ") + (info.src === "rule" ? "（音标为规则推导，仅供参考）" : "");
+          hintB.style.display = "none";
+        };
         var inp = document.getElementById("phSpellIn");
         var resEl = document.getElementById("phSpellRes");
         function doCheck() {

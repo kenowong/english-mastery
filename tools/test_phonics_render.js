@@ -1,6 +1,9 @@
 /*
  * 极简 DOM mock 渲染校验：真跑「单词单元 → 拼读拆解 6 步」渲染路径，
  * 并模拟点击「听整词 / 音素拼读 / 音素慢读」按钮，确认新发音路径不抛错且读出正确的音素 token。
+ * 另含两条关键断言：
+ *   - 第 6 步「听音拼写」词头必须隐藏答案（不得出现单词），只给词义；
+ *   - 全词库音素都必须有「拼读 token」（防空音）。
  * 仅用于本地校验，不随页面加载。
  */
 const fs = require('fs');
@@ -125,7 +128,6 @@ const phSyl = getEl('phSyl');
 if (!phSyl.onclick) throw new Error('phSyl.onclick 缺失');
 phSyl.onclick();
 if (!spoken.length) throw new Error('音素拼读未触发语音');
-const tokSet = Object.assign({}, windowMock.PHONICS_BLEND, windowMock.PHONICS_SPEAK);
 const bad = spoken.filter((t) => !t || typeof t !== 'string' || t === 'undefined');
 if (bad.length) throw new Error('音素拼读出现非法 token: ' + JSON.stringify(bad));
 console.log('  音素拼读 tokens = ' + JSON.stringify(spoken));
@@ -143,16 +145,42 @@ getEl('phWordNext').onclick && getEl('phWordNext').onclick();
 const sample = windowMock.phonicsFor('yesterday');
 if (!sample || !sample.syl || !sample.ipa || !sample.seg) throw new Error('phonicsFor 字段缺失');
 
-// ⑤ 全词库音素「拼读 token」覆盖校验：确保任意词的逐音拼读都不会出现空 token
+// ⑤ 第 6 步「听音拼写」：词头必须隐藏答案（单词），只给词义
 const WB = windowMock.WORD_BANK || {};
+const pUnits = (WB.primary && WB.primary.units) || [];
+const pCore = pUnits.find((u) => u.id === 'p-core') || pUnits[0];
+const phWords = ((pCore && pCore.words) || []).filter((w) => windowMock.phonicsFor(w.en));
+const firstWord = phWords[0];
+if (!firstWord) throw new Error('未取到 p-core 的首个拼读单词');
+
+phonicsTab.onclick();                              // 回到第 1 个词、第 1 步
+for (let i = 0; i < 5; i++) stepNext.onclick();    // step 0 -> 5
+const spellHtml = getEl('phonicsRun')._html;
+if (spellHtml.indexOf('ph-word-quiz') < 0) throw new Error('第 6 步词头未切换为「隐藏答案」态');
+const leak = new RegExp('(^|[^A-Za-z])' + firstWord.en + '([^A-Za-z]|$)', 'i');
+if (leak.test(spellHtml)) throw new Error('第 6 步泄漏了答案：' + firstWord.en);
+if (spellHtml.indexOf(firstWord.zh) < 0) throw new Error('第 6 步未给出词义提示：' + firstWord.zh);
+
+// ⑥ 音节提示默认收起，点击后才展开（避免直接给答案）
+const hintB = getEl('phSpellHint');
+if (!hintB.onclick) throw new Error('phSpellHint.onclick 缺失');
+const hintTxt = getEl('phSpellHintTxt');
+if (hintTxt.textContent) throw new Error('音节提示默认不应展开');
+hintB.onclick();
+if (!hintTxt.textContent || hintTxt.textContent.indexOf('音节') < 0) throw new Error('点击后音节提示未展开');
+console.log('  第 6 步隐藏答案 ✓ 词义=' + firstWord.zh + ' 提示=' + hintTxt.textContent.trim());
+
+// ⑦ 全词库音素「拼读 token」覆盖校验：确保任意词的逐音拼读都不会出现空 token
+// 注意：WORD_BANK[grade] 形如 {label, note, units:[...]}，必须下钻到 units 才能遍历到词
 const missing = {};
+let scanned = 0;
 for (const g in WB) {
-  const units = WB[g];
-  if (!Array.isArray(units)) continue;
+  const units = (WB[g] && WB[g].units) || [];
   units.forEach((u) => {
     (u.words || []).forEach((wd) => {
       const info = windowMock.phonicsFor(wd.en);
       if (!info) return;
+      scanned++;
       (info.ph || []).forEach((ph) => {
         if (!(ph in windowMock.PHONICS_BLEND) && !(ph in windowMock.PHONICS_SPEAK)) missing[ph] = (missing[ph] || 0) + 1;
       });
@@ -160,7 +188,8 @@ for (const g in WB) {
   });
 }
 const missKeys = Object.keys(missing);
-if (missKeys.length) console.log('  缺失音素 token: ' + JSON.stringify(missing));
-else console.log('  全词库音素均有拼读 token ✓');
+if (!scanned) throw new Error('词库覆盖校验未扫到任何单词（遍历层级可能写错）');
+if (missKeys.length) throw new Error('存在无拼读 token 的音素: ' + JSON.stringify(missing));
+console.log('  全词库 ' + scanned + ' 词音素均有拼读 token ✓');
 
 console.log('PHONICS_RENDER_OK methods=' + methods.length + ' syl=' + sample.syl.join('·') + ' ipa=' + sample.ipa);
