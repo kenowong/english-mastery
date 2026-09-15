@@ -382,3 +382,10 @@ a:hover { text-decoration: underline; }
 .ph-hint-txt { margin-left: 6px; color: var(--ink); font-weight: 800; }
 /* 拼读拆解 · 学：格子里的「例词」小标签（区别于该音本身的读法） */
 .ph-a .ph-lbl { font-style: normal; font-size: 10px; color: #a9b3c2; margin-right: 3px; }
+
+/* 课文跟读 · 逐词批改高亮 */
+.tb-target { display:block; margin-top:5px; line-height:1.9; }
+.tb-target .w { display:inline-block; padding:0 3px; border-radius:4px; margin:1px; }
+.tb-target .w.ok { color:#1c7a4d; background:rgba(43,182,115,.14); }
+.tb-target .w.miss { color:#b23b3b; background:rgba(178,59,59,.14); text-decoration:line-through; }
+.tb-row .read-en { font-size:19px; font-weight:800; }

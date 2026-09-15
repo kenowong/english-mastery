@@ -100,16 +100,20 @@
 
   /* ---------- 顶部「学习技巧 / 单词练习」切换 Tab（所有页面共用，保证能来回切） ---------- */
   function topTabsHtml(activeView) {
+    function cls(v) { return "top-tab" + (activeView === v ? " active" : ""); }
     return '<div class="top-tabs">' +
-      '<span class="top-tab ' + (activeView === "words" ? "" : "active") + '" data-view="methods">📚 学习技巧</span>' +
-      '<span class="top-tab ' + (activeView === "words" ? "active" : "") + '" data-view="words">🔤 单词练习</span>' +
+      '<span class="' + cls("methods") + '" data-view="methods">📚 学习技巧</span>' +
+      '<span class="' + cls("words") + '" data-view="words">🔤 单词练习</span>' +
+      '<span class="' + cls("textbook") + '" data-view="textbook">📖 课文跟读</span>' +
       '</div>';
   }
   function bindTopTabs() {
     var root = document.getElementById("app");
     Array.prototype.forEach.call(root.querySelectorAll(".top-tab"), function (t) {
       t.onclick = function () {
-        if (t.getAttribute("data-view") === "words") location.hash = "#/words";
+        var v = t.getAttribute("data-view");
+        if (v === "words") location.hash = "#/words";
+        else if (v === "textbook") location.hash = "#/textbook";
         else location.hash = "#/";
       };
     });
@@ -170,12 +174,6 @@
     }
     grid += "</div>";
 
-    var isWords = (location.hash || "").indexOf("#/words") === 0;
-    var tabsHtml =
-      '<div class="top-tabs">' +
-      '<span class="top-tab ' + (isWords ? "" : "active") + '" data-view="methods">📚 学习技巧</span>' +
-      '<span class="top-tab ' + (isWords ? "active" : "") + '" data-view="words">🔤 单词练习</span>' +
-      "</div>";
     root.innerHTML = topTabsHtml("methods") + filters + grid;
 
     // 事件
@@ -344,6 +342,20 @@
     var hit = 0;
     Object.keys(setR).forEach(function (w) { if (setT[w]) hit += Math.min(setT[w], setR[w]); });
     return hit / t.length;
+  }
+  // 逐词批改：返回每个目标词是否被孩子读中（用于高亮「对 / 漏」）
+  function speechScoreDetail(recognized, target) {
+    var t = normWords(target), r = normWords(recognized);
+    if (!t.length) return { score: 0, detail: [] };
+    var rCount = {}; r.forEach(function (w) { rCount[w] = (rCount[w] || 0) + 1; });
+    var used = {};
+    var detail = t.map(function (w) {
+      var avail = (rCount[w] || 0) - (used[w] || 0);
+      if (avail > 0) { used[w] = (used[w] || 0) + 1; return { w: w, ok: true }; }
+      return { w: w, ok: false };
+    });
+    var hit = 0; detail.forEach(function (d) { if (d.ok) hit++; });
+    return { score: t.length ? hit / t.length : 0, detail: detail };
   }
   var _voiceCache = null;
   function pickVoice() {
@@ -1136,6 +1148,138 @@
 
   }
 
+  /* ---------- 课文跟读（人教版 PEP 句库 + 听示范 + 语音识别逐词批改） ---------- */
+  function renderTextbook(hashStr) {
+    var root = document.getElementById("app");
+    var TB = window.TEXTBOOK || [];
+    var h = hashStr || "#/textbook";
+    var parts = h.replace(/^#\/textbook\/?/, "").split("/").filter(Boolean);
+    var gradeKey = parts[0], unitId = parts[1];
+    var grade = null;
+    if (gradeKey) { for (var i = 0; i < TB.length; i++) if (TB[i].key === gradeKey) grade = TB[i]; }
+    if (!grade && TB.length) grade = TB[0];
+
+    if (unitId && grade) { renderTextbookUnit(grade, unitId); return; }
+
+    var tabs = '<div class="grade-tabs">';
+    TB.forEach(function (g) {
+      tabs += '<span class="grade-tab ' + (grade && g.key === grade.key ? "active" : "") + '" data-grade="' + g.key + '">' + esc(g.label) + '</span>';
+    });
+    tabs += '</div>';
+    var cards = (grade.units || []).map(function (u) {
+      return '<div class="card unit-card" data-grade="' + grade.key + '" data-unit="' + u.id + '">' +
+        '<div class="top"><span class="icon">📖</span>' +
+        '<span class="badge-grade" style="background:' + gradeColor("primary") + '">' + esc(grade.label) + '</span></div>' +
+        '<h3>' + esc(u.title) + '</h3>' +
+        '<p class="summary">共 ' + (u.sentences ? u.sentences.length : 0) + ' 句</p>' +
+        '</div>';
+    }).join("");
+    root.innerHTML = topTabsHtml("textbook") + tabs +
+      '<div class="words-intro">选一个单元，点句子听示范、再「跟我读」，系统会自动逐词批改对不对（推荐 Chrome / Edge，localhost 或 https 下可用）。</div>' +
+      '<div class="grid">' + (cards || '<div class="empty">该年级暂无课文</div>') + '</div>';
+    bindTopTabs();
+    Array.prototype.forEach.call(root.querySelectorAll(".grade-tab"), function (t) {
+      t.onclick = function () { location.hash = "#/textbook/" + t.getAttribute("data-grade"); };
+    });
+    Array.prototype.forEach.call(root.querySelectorAll(".unit-card"), function (c) {
+      c.onclick = function () { location.hash = "#/textbook/" + c.getAttribute("data-grade") + "/" + c.getAttribute("data-unit"); };
+    });
+  }
+  function renderTextbookUnit(grade, unitId) {
+    var root = document.getElementById("app");
+    var unit = null;
+    (grade.units || []).forEach(function (u) { if (u.id === unitId) unit = u; });
+    if (!unit) { root.innerHTML = '<div class="empty">找不到该单元 😢</div>'; return; }
+    var list = unit.sentences || [];
+    var rows = list.map(function (s, i) {
+      return '<div class="read-row tb-row" data-i="' + i + '">' +
+        '<div class="read-en">' + esc(s.en) + '</div>' +
+        '<div class="read-zh">' + (s.zh ? esc(s.zh) : "") + '</div>' +
+        '<div class="read-btns">' +
+          '<button class="rb-play" data-i="' + i + '">▶ 听示范</button>' +
+          '<button class="rb-record" data-i="' + i + '">🎤 跟我读</button>' +
+        '</div>' +
+        '<div class="read-fb" data-i="' + i + '"></div>' +
+      '</div>';
+    }).join("");
+    root.innerHTML = topTabsHtml("textbook") +
+      '<div class="detail words-detail">' +
+      '<button class="back" id="back">← 返回单元列表</button>' +
+      '<div class="head"><span class="icon">📖</span><div><h2>' + esc(unit.title) + '</h2>' +
+      '<p class="sub">' + esc(grade.label) + ' · ' + esc(grade.edition) + ' · 共 ' + list.length + ' 句</p></div></div>' +
+      '<div class="read-toolbar">口音：' +
+        '<select id="tbAccent"><option value="en-US">美音</option><option value="en-GB">英音</option></select>' +
+        '<label class="read-slow"><input type="checkbox" id="tbSlow"> 慢速</label>' +
+        '<span class="read-hint">听示范后跟读，语音识别逐词批改</span>' +
+      '</div>' +
+      '<div class="read-box">' + rows +
+        '<div class="read-summary" id="readSummary"></div>' +
+      '</div>' +
+      '</div>';
+    var back = document.getElementById("back");
+    if (back) back.onclick = function () { location.hash = "#/textbook/" + grade.key; };
+    bindTopTabs();
+    bindTextbook(grade, unit, list);
+  }
+  function bindTextbook(grade, unit, list) {
+    if (!list.length) return;
+    var accentSel = document.getElementById("tbAccent");
+    var slowChk = document.getElementById("tbSlow");
+    var key = "tb:" + grade.key + ":" + unit.id;
+    Array.prototype.forEach.call(document.querySelectorAll(".rb-play"), function (b) {
+      b.onclick = function () { speak(list[+b.getAttribute("data-i")].en, { lang: accentSel ? accentSel.value : "en-US", rate: (slowChk && slowChk.checked) ? 0.7 : 1 }); };
+    });
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      Array.prototype.forEach.call(document.querySelectorAll(".rb-record"), function (b) {
+        b.disabled = true; b.style.opacity = ".5";
+        b.title = "当前浏览器不支持语音识别，请用 Chrome / Edge，并在 localhost 或 https 下打开";
+      });
+    } else {
+      Array.prototype.forEach.call(document.querySelectorAll(".rb-record"), function (b) {
+        b.onclick = function () {
+          var i = +b.getAttribute("data-i");
+          var fb = document.querySelector('.read-fb[data-i="' + i + '"]');
+          var rec = new SR();
+          rec.lang = accentSel ? accentSel.value : "en-US";
+          rec.interimResults = false; rec.maxAlternatives = 1;
+          b.textContent = "🎙 听…"; b.disabled = true;
+          rec.onresult = function (e) {
+            var txt = e.results[0][0].transcript;
+            var r = speechScoreDetail(txt, list[i].en);
+            var stars = Math.max(1, Math.round(r.score * 5));
+            var starStr = ""; for (var k = 0; k < 5; k++) starStr += (k < stars ? "⭐" : "☆");
+            var wordsHtml = r.detail.map(function (d) { return '<span class="w ' + (d.ok ? "ok" : "miss") + '">' + esc(d.w) + '</span>'; }).join(" ");
+            fb.innerHTML = "你说：<b>" + esc(txt) + "</b><br>" +
+              '<span class="tb-target">标准逐词：' + wordsHtml + '</span><br>' +
+              "匹配度 " + Math.round(r.score * 100) + "%　" + starStr;
+            fb.className = "read-fb " + (r.score >= 0.6 ? "ok" : "low");
+            markTextbookDone(key, i, r.score >= 0.6, list.length);
+          };
+          rec.onerror = function (e) { fb.textContent = "识别失败：" + e.error; fb.className = "read-fb low"; };
+          rec.onend = function () { b.textContent = "🎤 跟我读"; b.disabled = false; };
+          try { rec.start(); } catch (err) { fb.textContent = "无法启动麦克风：" + err.message; b.textContent = "🎤 跟我读"; b.disabled = false; }
+        };
+      });
+    }
+    updateTextbookSummary(key, list.length);
+  }
+  function markTextbookDone(key, i, ok, total) {
+    if (!ok) return;
+    var o = loadRead();
+    if (!o[key]) o[key] = [];
+    if (o[key].indexOf(i) < 0) { o[key].push(i); saveRead(o); }
+    updateTextbookSummary(key, total);
+  }
+  function updateTextbookSummary(key, total) {
+    var sum = document.getElementById("readSummary");
+    if (!sum) return;
+    var o = loadRead();
+    var done = (o[key] || []).length;
+    if (total && done >= total) sum.innerHTML = "🎉 本单元跟读通关！" + done + "/" + total + " 句都达标啦";
+    else sum.textContent = "已完成 " + done + "/" + total + " 句跟读（逐词匹配度 ≥ 60% 算达标）";
+  }
+
   /* ---------- 路由 ---------- */
   function route() {
     var h = location.hash || "#/";
@@ -1143,6 +1287,8 @@
       renderDetail(h.slice(4));
     } else if (h.indexOf("#/words") === 0) {
       renderWords(h);
+    } else if (h.indexOf("#/textbook") === 0) {
+      renderTextbook(h);
     } else {
       renderHome();
     }
