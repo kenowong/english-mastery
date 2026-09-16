@@ -389,3 +389,18 @@ a:hover { text-decoration: underline; }
 .tb-target .w.ok { color:#1c7a4d; background:rgba(43,182,115,.14); }
 .tb-target .w.miss { color:#b23b3b; background:rgba(178,59,59,.14); text-decoration:line-through; }
 .tb-row .read-en { font-size:19px; font-weight:800; }
+
+/* ---------- 同步课堂（国家平台课程视频） ---------- */
+.vol-tabs { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 4px; }
+.vol-tab { padding:6px 14px; border-radius:999px; background:var(--bg); border:1px solid var(--line); cursor:pointer; font-size:14px; font-weight:700; color:var(--muted); }
+.vol-tab.active { background:var(--primary); color:#fff; border-color:transparent; }
+.courses-note { font-size:13px; color:var(--muted); background:rgba(43,182,115,.10); border:1px solid rgba(43,182,115,.25); border-radius:10px; padding:10px 12px; margin:10px 0; line-height:1.6; }
+.lesson-box { margin-top:8px; }
+.lesson-row { border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:12px; background:#fff; }
+.lesson-title { font-size:16px; font-weight:800; color:var(--ink); margin-bottom:8px; }
+.lesson-video { width:100%; max-height:340px; border-radius:10px; background:#000; display:block; }
+.lesson-dlstate { font-size:13px; color:var(--muted); margin-top:6px; }
+.lesson-dlstate.ok { color:var(--junior); font-weight:700; }
+.lesson-actions { margin-top:8px; }
+.lesson-link { display:inline-block; padding:7px 14px; border-radius:10px; background:var(--primary); color:#fff; font-weight:700; font-size:13px; text-decoration:none; }
+.lesson-link:hover { opacity:.92; }

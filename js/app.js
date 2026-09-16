@@ -10,6 +10,7 @@
   var GRADES = window.GRADES || [];
   var READ = window.READ_SENTENCES || [];
   var WORDS = window.WORD_BANK || {};
+  var COURSES = window.COURSES || {};
 
   var LS_PROGRESS = "em_progress_v1";
   var LS_STREAK = "em_streak_v1";
@@ -105,6 +106,7 @@
       '<span class="' + cls("methods") + '" data-view="methods">📚 学习技巧</span>' +
       '<span class="' + cls("words") + '" data-view="words">🔤 单词练习</span>' +
       '<span class="' + cls("textbook") + '" data-view="textbook">📖 课文跟读</span>' +
+      '<span class="' + cls("courses") + '" data-view="courses">📺 同步课堂</span>' +
       '</div>';
   }
   function bindTopTabs() {
@@ -114,6 +116,7 @@
         var v = t.getAttribute("data-view");
         if (v === "words") location.hash = "#/words";
         else if (v === "textbook") location.hash = "#/textbook";
+        else if (v === "courses") location.hash = "#/courses";
         else location.hash = "#/";
       };
     });
@@ -1280,6 +1283,134 @@
     else sum.textContent = "已完成 " + done + "/" + total + " 句跟读（逐词匹配度 ≥ 60% 算达标）";
   }
 
+  /* ---------- 同步课堂（国家平台课程视频） ---------- */
+  function renderCourses(hashStr) {
+    var root = document.getElementById("app");
+    var C = window.COURSES || {};
+    if (!C.grades || !C.grades.length) {
+      root.innerHTML = topTabsHtml("courses") + '<div class="empty">暂未配置课程。运行 tools/fetch_courses.js 拉取国家平台课程。</div>';
+      bindTopTabs();
+      return;
+    }
+    var h = hashStr || "#/courses";
+    var parts = h.replace(/^#\/courses\/?/, "").split("/").filter(Boolean);
+    var gradeKey = parts[0], volKey = parts[1], unitIdx = parts[2] !== undefined ? parseInt(parts[2], 10) : -1;
+    var grade = null;
+    for (var i = 0; i < C.grades.length; i++) if (C.grades[i].key === gradeKey) grade = C.grades[i];
+    if (!grade) grade = C.grades[0];
+    var vol = null;
+    for (var j = 0; j < (grade.volumes || []).length; j++) if (grade.volumes[j].key === volKey) vol = grade.volumes[j];
+    if (!vol && grade.volumes && grade.volumes.length) vol = grade.volumes[0];
+
+    if (vol && unitIdx >= 0 && vol.units && vol.units[unitIdx] !== undefined) { renderCoursesUnit(grade, vol, unitIdx, C); return; }
+
+    var gtabs = '<div class="grade-tabs">';
+    C.grades.forEach(function (g) {
+      gtabs += '<span class="grade-tab ' + (g.key === grade.key ? "active" : "") + '" data-grade="' + g.key + '">' + esc(g.label) + '</span>';
+    });
+    gtabs += '</div>';
+    var vtabs = '<div class="vol-tabs">';
+    (grade.volumes || []).forEach(function (v) {
+      vtabs += '<span class="vol-tab ' + (v.key === vol.key ? "active" : "") + '" data-vol="' + v.key + '">' + esc(v.label) + '</span>';
+    });
+    vtabs += '</div>';
+    var cards = (vol.units || []).map(function (u, idx) {
+      var n = (u.lessons || []).length;
+      var dl = (u.lessons || []).filter(function (l) { return l.local; }).length;
+      return '<div class="card unit-card" data-grade="' + grade.key + '" data-vol="' + vol.key + '" data-unit="' + idx + '">' +
+        '<div class="top"><span class="icon">📺</span>' +
+        '<span class="badge-grade" style="background:' + gradeColor("primary") + '">' + esc(grade.label) + ' · ' + esc(vol.label) + '</span></div>' +
+        '<h3>' + esc(u.title) + '</h3>' +
+        '<p class="summary">' + n + ' 课时' + (dl ? ' · 已下 ' + dl : '') + '</p>' +
+        '</div>';
+    }).join("");
+    var note = C.note ? '<div class="courses-note">' + esc(C.note) + '</div>' : '';
+    root.innerHTML = topTabsHtml("courses") + gtabs + vtabs + note +
+      '<div class="words-intro">选单元看国家平台同步课。绿标「已下」= 已下到本地可离线播放；没下的点「在平台看」跳转（需登录）。</div>' +
+      '<div class="grid">' + (cards || '<div class="empty">该册暂无单元</div>') + '</div>';
+    bindTopTabs();
+    Array.prototype.forEach.call(root.querySelectorAll(".grade-tab"), function (t) {
+      t.onclick = function () { location.hash = "#/courses/" + t.getAttribute("data-grade"); };
+    });
+    Array.prototype.forEach.call(root.querySelectorAll(".vol-tab"), function (t) {
+      t.onclick = function () { location.hash = "#/courses/" + grade.key + "/" + t.getAttribute("data-vol"); };
+    });
+    Array.prototype.forEach.call(root.querySelectorAll(".unit-card"), function (c) {
+      c.onclick = function () { location.hash = "#/courses/" + c.getAttribute("data-grade") + "/" + c.getAttribute("data-vol") + "/" + c.getAttribute("data-unit"); };
+    });
+  }
+  function renderCoursesUnit(grade, vol, unitIdx, C) {
+    var root = document.getElementById("app");
+    var unit = vol.units[unitIdx];
+    var list = unit.lessons || [];
+    var rows = list.map(function (l, i) {
+      var media;
+      if (l.local) {
+        media = '<video class="lesson-video" data-src="' + esc(l.local) + '" controls preload="metadata"></video>' +
+          '<div class="lesson-dlstate ok">✅ 已下载 · 离线可看</div>';
+      } else {
+        media = '<div class="lesson-dlstate">⬇ 未下载到本地（点右侧「在平台看」可在线观看；或跑 download_courses.js 下到本地）</div>';
+      }
+      return '<div class="lesson-row" data-i="' + i + '">' +
+        '<div class="lesson-title">▶ ' + esc(l.title) + '</div>' +
+        '<div class="lesson-media">' + media + '</div>' +
+        '<div class="lesson-actions">' +
+        (l.platform ? '<a class="lesson-link" href="' + esc(l.platform) + '" target="_blank" rel="noopener">▶ 在平台看</a>' : '') +
+        '</div>' +
+        '</div>';
+    }).join("");
+    root.innerHTML = topTabsHtml("courses") +
+      '<div class="detail words-detail">' +
+      '<button class="back" id="back">← 返回单元列表</button>' +
+      '<div class="head"><span class="icon">📺</span><div><h2>' + esc(unit.title) + '</h2>' +
+      '<p class="sub">' + esc(grade.label) + ' · ' + esc(vol.label) + ' · ' + esc(C.edition || '') + ' · ' + list.length + ' 课时</p></div></div>' +
+      '<div class="lesson-box">' + rows + '</div>' +
+      '</div>';
+    var back = document.getElementById("back");
+    if (back) back.onclick = function () { location.hash = "#/courses/" + grade.key + "/" + vol.key; };
+    bindTopTabs();
+    bindCoursesMedia();
+  }
+  function bindCoursesMedia() {
+    Array.prototype.forEach.call(document.querySelectorAll(".lesson-video"), function (v) {
+      var src = v.getAttribute("data-src");
+      if (!src) return;
+      if (/\.m3u8($|\?)/i.test(src)) {
+        ensureHls(function () {
+          if (window.Hls && window.Hls.isSupported && window.Hls.isSupported()) {
+            var hls = new window.Hls();
+            hls.loadSource(src); hls.attachMedia(v);
+            v._hls = hls;
+          } else if (v.canPlayType("application/vnd.apple.mpegurl")) {
+            v.src = src;
+          } else {
+            showMediaFallback(v);
+          }
+        });
+      } else {
+        v.src = src;
+      }
+      v.addEventListener("error", function () { showMediaFallback(v); });
+    });
+  }
+  function showMediaFallback(v) {
+    var box = v.parentNode;
+    if (!box) return;
+    var p = document.createElement("div");
+    p.className = "lesson-dlstate";
+    p.textContent = "本地视频文件缺失（运行 download_courses.js 下载后可见；或点「在平台看」在线观看）";
+    v.style.display = "none";
+    box.appendChild(p);
+  }
+  function ensureHls(cb) {
+    if (window.Hls) return cb();
+    var s = document.createElement("script");
+    s.src = "js/lib/hls.min.js";
+    s.onload = function () { cb(); };
+    s.onerror = function () { cb(); };
+    document.head.appendChild(s);
+  }
+
   /* ---------- 路由 ---------- */
   function route() {
     var h = location.hash || "#/";
@@ -1289,6 +1420,8 @@
       renderWords(h);
     } else if (h.indexOf("#/textbook") === 0) {
       renderTextbook(h);
+    } else if (h.indexOf("#/courses") === 0) {
+      renderCourses(h);
     } else {
       renderHome();
     }
