@@ -2,6 +2,11 @@
 tools/.token.txt
 tools/_p4*_raw.json
 tools/_nl_*.json
+tools/_catalog_en.json
+tools/_detail_*.json
+tools/_verify*.json
+tools/_*.txt
+tools/_*.js
 videos/
 node_modules/
 .DS_Store

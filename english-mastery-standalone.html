@@ -4434,6 +4434,24 @@ window.COURSES = {
           ]
         }
       ]
+    },
+    {
+      // —— 下载验证样例：用「任一 .ts 切片直链」经 tools/dl_one_lesson.js 匿名整课拉取，证明私有 CDN 切片公开、无需登录 ——
+      key: "dl_demo", label: "下载验证样例",
+      volumes: [
+        {
+          key: "d", label: "私有CDN直链",
+          materialId: "19738cb3-43c1-47ee-94f4-731589a77286",
+          units: [
+            {
+              title: "样例课（你提供的 .ts 直链，匿名整课下载）",
+              lessons: [
+                { title: "整课视频（106 切片 / HLS 离线）", platform: "https://basic.smartedu.cn/syncClassroom/classActivity", local: "videos/lesson_19738cb3/playlist.m3u8" }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 };
