@@ -1,0 +1,17 @@
+# ============================================================
+# 课时清单 —— 一行一条，发给 dl_batch.js 批量下载
+#
+# 写法（三种都行）：
+#   1) 完整切片 URL：  https://r3-ndr-private.ykt.cbern.com.cn/.../videos/<长名>-00023.ts
+#   2) 课时前缀：      https://r3-ndr-private.ykt.cbern.com.cn/.../videos/<长名>
+#   3) 任意一种 + 竖线 + 课时名：  <地址>|四年级上 Unit1 第1课时
+#
+# 用「浏览器控制台_采集课时地址.js」里的脚本 A，可一次采集整页所有课时地址，
+# 直接 Ctrl+V 覆盖本文件内容即可（记得把采集结果粘进来时前面别带 #）。
+#
+# 打包好之后运行：  node tools/dl_batch.js
+# 先试跑看看有几课：node tools/dl_batch.js --dry
+# ============================================================
+
+# 下面是已验证可用的一课（样例，取消注释即可重跑）
+# https://r3-ndr-private.ykt.cbern.com.cn/edu_product/esp/assets/19738cb3-43c1-47ee-94f4-731589a77286.t/zh-CN/1703758454581/videos/3aede4e7-5b02-4034-98f0-72733883d8fe-916x516-true-c21ed0b4673ec3b35a121ae1bfbd5e5c-f324b25750664074aefef4dde71e9085-00023.ts|样例课(用户提供的切片直链)
